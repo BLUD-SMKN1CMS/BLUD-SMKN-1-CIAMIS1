@@ -1,0 +1,168 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Tefa;
+use App\Models\Product;
+use App\Models\RentalService;
+use App\Models\Contact;
+use App\Models\Carousel;
+use App\Models\Admin;
+use Carbon\Carbon;
+
+class DashboardController extends Controller
+{
+    public function index()
+    {
+        // Data statistik utama
+        $stats = [
+            'tefa_count' => Tefa::count(),
+            'product_count' => Product::count(),
+            'service_count' => RentalService::count(),
+            'contact_count' => Contact::count(),
+            'unread_contacts' => Contact::where('status', 'new')->count(),
+            'active_carousels' => Carousel::where('status', 'active')->count(),
+            'admin_count' => Admin::count(),
+        ];
+        
+        // Data untuk chart produk per TEFA
+        $tefaProducts = Tefa::withCount(['products as product_count' => function($query) {
+            $query->where('status', 'active');
+        }])->get();
+        
+        // Pesan masuk terbaru (5 pesan)
+        $recentContacts = Contact::latest()->take(5)->get();
+        
+        // Produk terbaru (5 produk)
+        $recentProducts = Product::with('tefa')->latest()->take(5)->get();
+        
+        // Layanan terbaru (5 layanan)
+        $recentServices = RentalService::latest()->take(5)->get();
+        
+        // Statistik bulanan
+        $monthlyStats = $this->getMonthlyStats();
+        
+        // Top 5 TEFA dengan produk terbanyak
+        $topTefas = Tefa::withCount('products')
+            ->orderBy('products_count', 'desc')
+            ->take(5)
+            ->get();
+        
+        return view('admin.dashboard.index', compact(
+            'stats',
+            'tefaProducts',
+            'recentContacts',
+            'recentProducts',
+            'recentServices',
+            'monthlyStats',
+            'topTefas'
+        ));
+    }
+    
+    private function getMonthlyStats()
+    {
+        $currentYear = Carbon::now()->year;
+        
+        // Data kontak per bulan
+        $monthlyContacts = Contact::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+            ->whereYear('created_at', $currentYear)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get()
+            ->pluck('count', 'month')
+            ->toArray();
+        
+        // Data produk per bulan
+        $monthlyProducts = Product::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+            ->whereYear('created_at', $currentYear)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get()
+            ->pluck('count', 'month')
+            ->toArray();
+        
+        // Isi array dengan 12 bulan
+        $months = range(1, 12);
+        $contactData = [];
+        $productData = [];
+        
+        foreach ($months as $month) {
+            $contactData[] = $monthlyContacts[$month] ?? 0;
+            $productData[] = $monthlyProducts[$month] ?? 0;
+        }
+        
+        return [
+            'contact_data' => $contactData,
+            'product_data' => $productData,
+            'months' => ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des']
+        ];
+    }
+    
+    public function getDashboardStats()
+    {
+        $stats = [
+            'tefa_count' => Tefa::count(),
+            'product_count' => Product::count(),
+            'service_count' => RentalService::count(),
+            'contact_count' => Contact::count(),
+            'unread_contacts' => Contact::where('status', 'new')->count(),
+        ];
+        
+        return response()->json($stats);
+    }
+    
+    public function getRecentActivities()
+    {
+        // Gabungkan aktivitas terbaru dari berbagai model
+        $activities = collect();
+        
+        // Tambahkan kontak terbaru
+        $recentContacts = Contact::latest()->take(3)->get()
+            ->map(function($contact) {
+                return [
+                    'type' => 'contact',
+                    'icon' => 'fas fa-envelope',
+                    'color' => 'primary',
+                    'title' => 'Pesan baru dari ' . $contact->name,
+                    'time' => $contact->created_at->diffForHumans(),
+                    'url' => route('admin.contacts.show', $contact->id)
+                ];
+            });
+        
+        // Tambahkan produk terbaru
+        $recentProducts = Product::latest()->take(3)->get()
+            ->map(function($product) {
+                return [
+                    'type' => 'product',
+                    'icon' => 'fas fa-box',
+                    'color' => 'success',
+                    'title' => 'Produk baru: ' . $product->name,
+                    'time' => $product->created_at->diffForHumans(),
+                    'url' => route('admin.products.show', $product->id)
+                ];
+            });
+        
+        // Tambahkan layanan terbaru
+        $recentServices = RentalService::latest()->take(3)->get()
+            ->map(function($service) {
+                return [
+                    'type' => 'service',
+                    'icon' => 'fas fa-concierge-bell',
+                    'color' => 'warning',
+                    'title' => 'Layanan baru: ' . $service->name,
+                    'time' => $service->created_at->diffForHumans(),
+                    'url' => route('admin.services.show', $service->id)
+                ];
+            });
+        
+        // Gabungkan semua aktivitas dan urutkan berdasarkan waktu
+        $activities = $recentContacts->merge($recentProducts)->merge($recentServices)
+            ->sortByDesc(function($activity) {
+                return strtotime($activity['time']);
+            })
+            ->take(6);
+        
+        return response()->json($activities->values());
+    }
+}

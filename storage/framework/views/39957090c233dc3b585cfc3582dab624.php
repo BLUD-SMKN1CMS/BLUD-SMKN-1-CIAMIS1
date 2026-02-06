@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Beranda - BLUD SMKN 1 CIAMIS'); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -844,4 +842,4 @@
 <?php echo $__env->make('layouts.app', [
     'socialMedia' => $socialMedia,
     'contactInfo' => $contactInfo
-], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\xampp_new\htdocs\tefa_smkn1_ciamis\resources\views/home.blade.php ENDPATH**/ ?>
+], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\BLUD-SMKN-1-CIAMIS\resources\views/home.blade.php ENDPATH**/ ?>

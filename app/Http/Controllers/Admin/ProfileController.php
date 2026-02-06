@@ -80,7 +80,7 @@ class ProfileController extends Controller
             'password' => Hash::make($request->new_password),
         ]);
 
-        return redirect()->route('admin.profile.changePassword')
+        return redirect()->route('admin.profile.change-password')
             ->with('success', 'Password berhasil diubah!');
     }
 }

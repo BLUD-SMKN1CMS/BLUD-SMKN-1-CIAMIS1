@@ -100,7 +100,7 @@ Route::fallback(function () {
 // ==================== REDIRECT FOR OLD LOGIN ====================
 Route::get('/login', function() {
     return redirect()->route('admin.login');
-})->name('login.redirect');
+})->name('login');
 
 Route::post('/login', function() {
     return redirect()->route('admin.login');

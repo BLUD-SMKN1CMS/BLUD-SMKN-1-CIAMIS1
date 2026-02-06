@@ -1,42 +1,42 @@
-@extends('admin.layouts.app')
+<?php $__env->startSection('title', 'Kelola Carousel'); ?>
 
-@section('title', 'Kelola Carousel')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Kelola Carousel</h1>
-            <a href="{{ route('admin.carousels.create') }}" class="btn btn-primary">
+            <a href="<?php echo e(route('admin.carousels.create')); ?>" class="btn btn-primary">
                 <i class="fas fa-plus me-2"></i>Tambah Carousel Baru
             </a>
         </div>
 
         <!-- Alert Messages -->
-        @if (session('success'))
+        <?php if(session('success')): ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
+                <i class="fas fa-check-circle me-2"></i><?php echo e(session('success')); ?>
 
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        @endif
+        <?php endif; ?>
+
+        <?php if(session('error')): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i><?php echo e(session('error')); ?>
+
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Daftar Carousel</h6>
             </div>
             <div class="card-body">
-                @if ($carousels->isEmpty())
+                <?php if($carousels->isEmpty()): ?>
                     <div class="text-center py-5">
                         <i class="fas fa-images fa-3x text-gray-300 mb-3"></i>
                         <p class="text-muted">Belum ada carousel. Tambahkan carousel pertama Anda!</p>
                     </div>
-                @else
+                <?php else: ?>
                     <div class="table-responsive">
                         <table class="table table-hover" id="dataTable">
                             <thead>
@@ -51,41 +51,44 @@
                                 </tr>
                             </thead>
                             <tbody id="sortable">
-                                @foreach ($carousels as $carousel)
-                                    <tr data-id="{{ $carousel->id }}">
-                                        <td>{{ ($carousels->currentPage() - 1) * $carousels->perPage() + $loop->iteration }}
+                                <?php $__currentLoopData = $carousels; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $carousel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <tr data-id="<?php echo e($carousel->id); ?>">
+                                        <td><?php echo e(($carousels->currentPage() - 1) * $carousels->perPage() + $loop->iteration); ?>
+
                                         </td>
                                         <td>
-                                            @if ($carousel->image)
-                                                <img src="{{ asset('storage/' . $carousel->image) }}"
-                                                    alt="{{ $carousel->title }}" class="img-thumbnail"
+                                            <?php if($carousel->image): ?>
+                                                <img src="<?php echo e(asset('storage/' . $carousel->image)); ?>"
+                                                    alt="<?php echo e($carousel->title); ?>" 
+                                                    class="img-thumbnail"
                                                     style="width: 80px; height: 45px; object-fit: cover; border-radius: 4px;"
                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                                <div class="bg-light text-center d-none align-items-center justify-content-center"
-                                                    style="width: 80px; height: 45px; border: 1px dashed #ddd; border-radius: 4px;">
+                                                <div class="bg-light text-center d-none align-items-center justify-content-center" 
+                                                     style="width: 80px; height: 45px; border: 1px dashed #ddd; border-radius: 4px;">
                                                     <i class="fas fa-image text-muted"></i>
                                                 </div>
-                                            @else
-                                                <div class="bg-light text-center d-flex align-items-center justify-content-center"
-                                                    style="width: 80px; height: 45px; border: 1px dashed #ddd; border-radius: 4px;">
+                                            <?php else: ?>
+                                                <div class="bg-light text-center d-flex align-items-center justify-content-center" 
+                                                     style="width: 80px; height: 45px; border: 1px dashed #ddd; border-radius: 4px;">
                                                     <i class="fas fa-image text-muted"></i>
                                                 </div>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
                                         <td>
-                                            <strong>{{ $carousel->title }}</strong><br>
-                                            <small class="text-muted">{{ Str::limit($carousel->description, 50) }}</small>
+                                            <strong><?php echo e($carousel->title); ?></strong><br>
+                                            <small class="text-muted"><?php echo e(Str::limit($carousel->description, 50)); ?></small>
                                         </td>
                                         <td>
                                             <span
-                                                class="badge bg-{{ $carousel->status === 'active' ? 'success' : 'secondary' }}">
-                                                {{ $carousel->status === 'active' ? 'Aktif' : 'Nonaktif' }}
+                                                class="badge bg-<?php echo e($carousel->status === 'active' ? 'success' : 'secondary'); ?>">
+                                                <?php echo e($carousel->status === 'active' ? 'Aktif' : 'Nonaktif'); ?>
+
                                             </span>
                                         </td>
                                         <td>
-                                            <span class="badge bg-info">{{ $carousel->order }}</span>
+                                            <span class="badge bg-info"><?php echo e($carousel->order); ?></span>
                                         </td>
-                                        <td>{{ $carousel->created_at->format('d/m/Y') }}</td>
+                                        <td><?php echo e($carousel->created_at->format('d/m/Y')); ?></td>
                                         <td>
                                             <div class="dropdown">
                                                 <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
@@ -95,20 +98,21 @@
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
                                                         <a class="dropdown-item"
-                                                            href="{{ route('admin.carousels.edit', $carousel->id) }}">
+                                                            href="<?php echo e(route('admin.carousels.edit', $carousel->id)); ?>">
                                                             <i class="fas fa-edit me-2 text-warning"></i> Edit
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <form
-                                                            action="{{ route('admin.carousels.toggle-status', $carousel->id) }}"
+                                                            action="<?php echo e(route('admin.carousels.toggle-status', $carousel->id)); ?>"
                                                             method="POST" class="dropdown-item p-0">
-                                                            @csrf
+                                                            <?php echo csrf_field(); ?>
                                                             <button type="submit"
                                                                 class="dropdown-item text-decoration-none w-100 text-start">
                                                                 <i
-                                                                    class="fas fa-{{ $carousel->status === 'active' ? 'eye-slash' : 'eye' }} me-2 text-{{ $carousel->status === 'active' ? 'secondary' : 'success' }}"></i>
-                                                                {{ $carousel->status === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}
+                                                                    class="fas fa-<?php echo e($carousel->status === 'active' ? 'eye-slash' : 'eye'); ?> me-2 text-<?php echo e($carousel->status === 'active' ? 'secondary' : 'success'); ?>"></i>
+                                                                <?php echo e($carousel->status === 'active' ? 'Nonaktifkan' : 'Aktifkan'); ?>
+
                                                             </button>
                                                         </form>
                                                     </li>
@@ -117,9 +121,9 @@
                                                     </li>
                                                     <li>
                                                         <form
-                                                            action="{{ route('admin.carousels.destroy', $carousel->id) }}"
+                                                            action="<?php echo e(route('admin.carousels.destroy', $carousel->id)); ?>"
                                                             method="POST" class="dropdown-item p-0">
-                                                            @csrf @method('DELETE')
+                                                            <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
                                                             <button type="submit"
                                                                 class="dropdown-item text-danger text-decoration-none w-100 text-start"
                                                                 onclick="return confirm('Hapus carousel ini?')">
@@ -131,7 +135,7 @@
                                             </div>
                                         </td>
                                     </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
                     </div>
@@ -140,12 +144,13 @@
                     <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
                         <div class="text-muted small">
                             <i class="fas fa-info-circle me-1"></i>
-                            Menampilkan <strong>{{ $carousels->firstItem() }}</strong> -
-                            <strong>{{ $carousels->lastItem() }}</strong> dari <strong>{{ $carousels->total() }}</strong>
+                            Menampilkan <strong><?php echo e($carousels->firstItem()); ?></strong> -
+                            <strong><?php echo e($carousels->lastItem()); ?></strong> dari <strong><?php echo e($carousels->total()); ?></strong>
                             carousel
                         </div>
                         <nav aria-label="Pagination">
-                            {{ $carousels->links('pagination::bootstrap-5') }}
+                            <?php echo e($carousels->links('pagination::bootstrap-5')); ?>
+
                         </nav>
                     </div>
 
@@ -154,13 +159,13 @@
                         <i class="fas fa-arrows-alt me-2"></i>
                         <strong>Tips:</strong> Drag & drop baris tabel untuk mengubah urutan carousel
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
     <style>
         .table tbody tr {
             cursor: move;
@@ -235,9 +240,9 @@
             opacity: 0.5;
         }
     </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <!-- Sortable JS -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script>
@@ -264,10 +269,10 @@
                 });
 
                 $.ajax({
-                    url: '{{ route('admin.carousels.update-order') }}',
+                    url: '<?php echo e(route('admin.carousels.update-order')); ?>',
                     method: 'POST',
                     data: {
-                        _token: '{{ csrf_token() }}',
+                        _token: '<?php echo e(csrf_token()); ?>',
                         order: order
                     },
                     success: function(response) {
@@ -309,4 +314,6 @@
             }
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('admin.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\BLUD-SMKN-1-CIAMIS\resources\views/admin/carousels/index.blade.php ENDPATH**/ ?>

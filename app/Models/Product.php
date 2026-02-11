@@ -18,6 +18,9 @@ class Product extends Model
         'price',
         'category',
         'image',
+        'image_2',
+        'image_3',
+        'image_4',
         'stock',
         'status',
         'is_featured',
@@ -31,7 +34,7 @@ class Product extends Model
     ];
 
     // TAMBAHKAN INI - agar otomatis include accessor
-    protected $appends = ['image_url', 'formatted_price'];
+    protected $appends = ['image_url', 'image_2_url', 'image_3_url', 'image_4_url', 'formatted_price'];
 
     // Relasi ke Tefa
     public function tefa()
@@ -98,45 +101,36 @@ class Product extends Model
             return $this->generatePlaceholder();
         }
 
-        // Jika sudah URL lengkap
+        // Jika sudah URL lengkap (http/https)
         if (filter_var($this->image, FILTER_VALIDATE_URL)) {
             return $this->image;
         }
 
-        // Controller menyimpan: 'uploads/products/filename.jpg'
-        // Cek file dengan berbagai kemungkinan path
-        
-        // 1. Path asli dari database
-        $originalPath = $this->image;
-        $publicPath = public_path($originalPath);
-        
-        if (file_exists($publicPath)) {
-            return asset($originalPath);
-        }
+        // Langsung return asset URL
+        // Controller menyimpan path sebagai: 'uploads/products/filename.jpg'
+        // Jadi kita langsung gunakan asset() helper
+        return asset($this->image);
+    }
 
-        // 2. Jika tanpa 'uploads/' prefix, tambahkan
-        if (!str_starts_with($originalPath, 'uploads/') && !str_starts_with($originalPath, '/uploads/')) {
-            $withUploads = 'uploads/' . ltrim($originalPath, '/');
-            if (file_exists(public_path($withUploads))) {
-                return asset($withUploads);
-            }
-        }
+    public function getImage2UrlAttribute()
+    {
+        if (empty($this->image_2)) return null;
+        if (filter_var($this->image_2, FILTER_VALIDATE_URL)) return $this->image_2;
+        return asset($this->image_2);
+    }
 
-        // 3. Cek dengan 'public/' prefix
-        $withPublic = 'public/' . ltrim($originalPath, '/');
-        if (file_exists(public_path($withPublic))) {
-            return asset($withPublic);
-        }
+    public function getImage3UrlAttribute()
+    {
+        if (empty($this->image_3)) return null;
+        if (filter_var($this->image_3, FILTER_VALIDATE_URL)) return $this->image_3;
+        return asset($this->image_3);
+    }
 
-        // 4. Coba ambil hanya filename
-        $filename = basename($originalPath);
-        $filenamePath = 'uploads/products/' . $filename;
-        if (file_exists(public_path($filenamePath))) {
-            return asset($filenamePath);
-        }
-
-        // 5. Jika semua gagal, placeholder
-        return $this->generatePlaceholder();
+    public function getImage4UrlAttribute()
+    {
+        if (empty($this->image_4)) return null;
+        if (filter_var($this->image_4, FILTER_VALIDATE_URL)) return $this->image_4;
+        return asset($this->image_4);
     }
 
     /**

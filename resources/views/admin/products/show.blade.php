@@ -306,7 +306,7 @@
                         </a>
                         
                         <!-- Lihat di Frontend -->
-                        <a href="{{ route('product.show', $product->slug) }}" 
+                        <a href="{{ route('products.show', $product->slug) }}" 
                            target="_blank"
                            class="list-group-item list-group-item-action border-0">
                             <div class="d-flex align-items-center">

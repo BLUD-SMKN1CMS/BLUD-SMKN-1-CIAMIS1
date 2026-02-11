@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
         $this->command->info('   • TEFA: 7 jurusan');
         $this->command->info('   • Settings: Kontak, sosial media, jam operasional');
         $this->command->info('   • Statistics: Counter dinamis');
-        $this->command->info('   • Services: 3 layanan sewa');
+        $this->command->info('   • Services: 6 layanan sewa');
         $this->command->info('   • Products: KOSONG (siap ditambah via admin)');
         $this->command->info('   • Carousels: KOSONG (siap ditambah via admin)');
     }

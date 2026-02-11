@@ -203,52 +203,50 @@
                 </div>
             </div>
             
-            <!-- ======= Featured Products Section ======= -->
-<section id="featured-products" class="featured-products">
-    <div class="container">
-        <div class="row">
-            <!-- PRODUK UNGGULAN BARU -->
-            @foreach($featuredProducts as $product)
-            <div class="col-md-3 col-sm-6" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
-                <div class="product-card card shadow-sm h-100">
-                    <div class="position-relative overflow-hidden">
-                        <img src="{{ $product->image_url }}" 
-                             class="card-img-top product-img" 
-                             alt="{{ $product->name }}" 
-                             loading="lazy" 
-                             style="height: 200px; object-fit: cover;"
-                             onerror="this.src='https://via.placeholder.com/300x200/4A90E2/FFFFFF?text={{ urlencode(substr($product->name, 0, 20)) }}'">
-                        
-                        <span class="position-absolute top-0 end-0 m-2 badge bg-success">
-                            {{ $product->tefa->code ?? 'TEFA' }}
-                        </span>
-                        @if($product->is_featured)
-                            <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark">
-                                <i class="fas fa-star me-1"></i> Unggulan
+            <!-- ======= Featured Products List ======= -->
+            <div class="row">
+                <!-- PRODUK UNGGULAN BARU -->
+                @foreach($featuredProducts as $product)
+                <div class="col-md-3 col-sm-6" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
+                    <div class="product-card card shadow-sm h-100">
+                        <div class="position-relative overflow-hidden">
+                            <img src="{{ $product->image_url }}" 
+                                 class="card-img-top product-img" 
+                                 alt="{{ $product->name }}" 
+                                 loading="lazy" 
+                                 style="height: 200px; object-fit: cover;"
+                                 onerror="this.src='https://via.placeholder.com/300x200/4A90E2/FFFFFF?text={{ urlencode(substr($product->name, 0, 20)) }}'">
+                            
+                            <span class="position-absolute top-0 end-0 m-2 badge bg-success">
+                                {{ $product->tefa->code ?? 'TEFA' }}
                             </span>
-                        @endif
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ $product->name }}</h5>
-                        <p class="card-text flex-grow-1 small text-muted">
-                            {{ Str::limit($product->description, 60) }}
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                            <span class="fw-bold text-primary">
-                                Rp {{ number_format($product->price, 0, ',', '.') }}
-                            </span>
-                            <a href="{{ route('product.show', $product->slug) }}" 
-                               class="btn btn-sm btn-outline-primary">
-                                Detail <i class="fas fa-arrow-right ms-1"></i>
-                            </a>
+                            @if($product->is_featured)
+                                <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark">
+                                    <i class="fas fa-star me-1"></i> Unggulan
+                                </span>
+                            @endif
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ $product->name }}</h5>
+                            <p class="card-text flex-grow-1 small text-muted">
+                                {{ Str::limit($product->description, 60) }}
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                <span class="fw-bold text-primary">
+                                    Rp {{ number_format($product->price, 0, ',', '.') }}
+                                </span>
+                                <a href="{{ route('products.show', $product->slug) }}" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    Detail <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
+                @endforeach
             </div>
-            @endforeach
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- Rental Services -->
 <section id="layanan-section" class="py-5" data-aos="fade-up">
@@ -268,7 +266,18 @@
                         <div class="card border-0 shadow-sm h-100 service-card">
                             <div class="card-body text-center p-4">
                                 <div class="service-icon-wrapper mb-3">
-                                    <i class="fas fa-{{ $service->name == 'Air Minum' ? 'tint' : ($service->name == 'Gedung Serbaguna' ? 'building' : 'bus') }} fa-3x service-icon"></i>
+                                    @php
+                                        $icon = 'concierge-bell';
+                                        $name = strtolower($service->name);
+                                        if(str_contains($name, 'gedung') || str_contains($name, 'ruang')) $icon = 'building';
+                                        elseif(str_contains($name, 'transport') || str_contains($name, 'bus') || str_contains($name, 'mobil')) $icon = 'bus';
+                                        elseif(str_contains($name, 'komputer') || str_contains($name, 'laptop') || str_contains($name, 'lab')) $icon = 'desktop';
+                                        elseif(str_contains($name, 'alat') || str_contains($name, 'peralatan')) $icon = 'tools';
+                                        elseif(str_contains($name, 'musik') || str_contains($name, 'sound')) $icon = 'music';
+                                        elseif(str_contains($name, 'minum') || str_contains($name, 'galon')) $icon = 'tint';
+                                        elseif(str_contains($name, 'foto') || str_contains($name, 'studio')) $icon = 'camera';
+                                    @endphp
+                                    <i class="fas fa-{{ $icon }} fa-3x service-icon"></i>
                                 </div>
                                 <h4 class="card-title fw-bold">{{ $service->name }}</h4>
                                 <p class="card-text text-muted">{{ $service->description ?? 'Layanan penyewaan ' . $service->name }}</p>
@@ -332,7 +341,7 @@
                                 </div>
                                 <div>
                                     <h6 class="mb-1 fw-bold">Alamat</h6>
-                                    <p class="mb-0 small text-muted">Jl. Raya Ciamis No.123, Jawa Barat</p>
+                                    <p class="mb-0 small text-muted">{{ $contactInfo['company_address'] ?? 'Jl. Raya Ciamis No.123, Jawa Barat' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -344,7 +353,7 @@
                                 </div>
                                 <div>
                                     <h6 class="mb-1 fw-bold">Telepon</h6>
-                                    <p class="mb-0 small text-muted">(0265) 123456</p>
+                                    <p class="mb-0 small text-muted">{{ $contactInfo['company_phone'] ?? '(0265) 123456' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -356,7 +365,7 @@
                                 </div>
                                 <div>
                                     <h6 class="mb-1 fw-bold">Email</h6>
-                                    <p class="mb-0 small text-muted">blud@smkn1ciamis.sch.id</p>
+                                    <p class="mb-0 small text-muted">{{ $contactInfo['company_email'] ?? 'blud@smkn1ciamis.sch.id' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -368,7 +377,7 @@
                                 </div>
                                 <div>
                                     <h6 class="mb-1 fw-bold">WhatsApp</h6>
-                                    <p class="mb-0 small text-muted">+62 812 3456 7890</p>
+                                    <p class="mb-0 small text-muted">+{{ $contactInfo['whatsapp_number'] ?? '6281234567890' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -380,13 +389,13 @@
                         <div class="bg-white rounded-3 shadow-sm p-3">
                             <div class="d-flex justify-content-between mb-2">
                                 <span>Senin - Jumat</span>
-                                <span class="fw-bold">08:00 - 16:00</span>
+                                <span class="fw-bold">{{ $contactInfo['opening_hours_weekdays'] ?? '08:00 - 16:00' }}</span>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span>Sabtu</span>
-                                <span class="fw-bold">08:00 - 14:00</span>
+                                <span class="fw-bold">{{ $contactInfo['opening_hours_saturday'] ?? '08:00 - 14:00' }}</span>
                             </div>
-                            <small class="text-muted d-block mt-2">Minggu & Hari Libur Nasional: Tutup</small>
+                            <small class="text-muted d-block mt-2">{{ $contactInfo['opening_hours_sunday'] ?? 'Minggu & Hari Libur Nasional: Tutup' }}</small>
                         </div>
                     </div>
                 </div>

@@ -368,6 +368,81 @@ class HomeController extends Controller
         ));
     }
     
+    // ========== ABOUT PAGE ==========
+    public function about()
+    {
+        // 1. Statistics
+        $stats = [
+            'total_tefas' => Tefa::where('is_active', true)->count(),
+            'total_products' => Product::where('status', 'active')->count(),
+            'total_services' => Service::where('status', 'available')->count(),
+            'years_exp' => 15 // Hardcoded for simplified version
+        ];
+
+        // FIX: Tambahkan footer data
+        $footerServices = Service::where('status', 'available')->limit(3)->get();
+        $footerTefas = Tefa::where('is_active', true)->orderBy('order')->get();
+        
+        // Settings untuk kontak
+        $settings = Setting::getAllGrouped();
+        
+        $contactInfo = [
+            'company_address' => $settings['contact']['company_address'] ?? 'Jl. Raya Ciamis No.123, Jawa Barat',
+            'company_phone' => $settings['contact']['company_phone'] ?? '(0265) 123456',
+            'company_email' => $settings['contact']['company_email'] ?? 'blud@smkn1ciamis.sch.id',
+            'whatsapp_number' => $settings['contact']['whatsapp_number'] ?? '6281234567890',
+        ];
+
+        $socialMedia = [
+            'facebook' => $settings['social']['facebook_url'] ?? '#',
+            'instagram' => $settings['social']['instagram_url'] ?? '#',
+            'youtube' => $settings['social']['youtube_url'] ?? '#',
+            'tiktok' => $settings['social']['tiktok_url'] ?? '#',
+            'twitter' => $settings['social']['twitter_url'] ?? '#',
+        ];
+
+        return view('about', compact(
+            'stats',
+            'footerServices',
+            'footerTefas',
+            'contactInfo',
+            'socialMedia'
+        ));
+    }
+
+    // ========== FAQ PAGE ==========
+    public function faq()
+    {
+        // FIX: Tambahkan footer data
+        $footerServices = Service::where('status', 'available')->limit(3)->get();
+        $footerTefas = Tefa::where('is_active', true)->orderBy('order')->get();
+        
+        // Settings untuk kontak
+        $settings = Setting::getAllGrouped();
+        
+        $contactInfo = [
+            'company_address' => $settings['contact']['company_address'] ?? 'Jl. Raya Ciamis No.123, Jawa Barat',
+            'company_phone' => $settings['contact']['company_phone'] ?? '(0265) 123456',
+            'company_email' => $settings['contact']['company_email'] ?? 'blud@smkn1ciamis.sch.id',
+            'whatsapp_number' => $settings['contact']['whatsapp_number'] ?? '6281234567890',
+        ];
+
+        $socialMedia = [
+            'facebook' => $settings['social']['facebook_url'] ?? '#',
+            'instagram' => $settings['social']['instagram_url'] ?? '#',
+            'youtube' => $settings['social']['youtube_url'] ?? '#',
+            'tiktok' => $settings['social']['tiktok_url'] ?? '#',
+            'twitter' => $settings['social']['twitter_url'] ?? '#',
+        ];
+
+        return view('faq', compact(
+            'footerServices',
+            'footerTefas',
+            'contactInfo',
+            'socialMedia'
+        ));
+    }
+
     // ========== CONTACT PAGE ==========
     public function contact()
     {

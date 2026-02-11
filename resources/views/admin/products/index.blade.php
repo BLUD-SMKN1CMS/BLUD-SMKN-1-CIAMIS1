@@ -60,26 +60,17 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
-                                        @php
-                                            // Cek apakah gambar ada di storage
-                                            $imagePath = $product->image;
-                                            $hasImage = $imagePath && file_exists(public_path($imagePath));
-
-                                            // Buat placeholder jika tidak ada gambar
-                                            $placeholder =
-                                                'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2250%22%20height%3D%2250%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23f8f9fa%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22Arial%22%20font-size%3D%228%22%20fill%3D%22%236c757d%22%20text-anchor%3D%22middle%22%20dy%3D%22.3em%22%3E' .
-                                                urlencode(substr($product->name, 0, 10)) .
-                                                '%3C%2Ftext%3E%3C%2Fsvg%3E';
-                                        @endphp
-
-                                        @if ($hasImage)
-                                            <img src="{{ asset($imagePath) }}" alt="{{ $product->name }}"
-                                                style="width: 50px; height: 50px; object-fit: cover;" class="rounded border"
-                                                onerror="this.src='{{ $placeholder }}'" title="{{ $product->name }}">
+                                        @if($product->image)
+                                            <img src="{{ $product->image_url }}" 
+                                                 alt="{{ $product->name }}"
+                                                 style="width: 50px; height: 50px; object-fit: cover;" 
+                                                 class="rounded border"
+                                                 onerror="this.onerror=null; this.src='data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2250%22%20height%3D%2250%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23f8f9fa%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22Arial%22%20font-size%3D%2210%22%20fill%3D%22%236c757d%22%20text-anchor%3D%22middle%22%20dy%3D%22.3em%22%3ENo%20Image%3C%2Ftext%3E%3C%2Fsvg%3E';"
+                                                 title="{{ $product->name }}">
                                         @else
                                             <div class="bg-light rounded d-flex align-items-center justify-content-center border"
-                                                style="width: 50px; height: 50px;"
-                                                title="Gambar tidak tersedia: {{ basename($imagePath ?? 'Tidak ada') }}">
+                                                 style="width: 50px; height: 50px;"
+                                                 title="Tidak ada gambar">
                                                 <i class="fas fa-image text-muted"></i>
                                             </div>
                                         @endif

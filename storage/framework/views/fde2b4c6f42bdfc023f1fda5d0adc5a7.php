@@ -45,6 +45,10 @@
             scroll-behavior: smooth;
         }
         
+        html {
+            scroll-padding-top: 80px;
+        }
+        
         body {
             background-color: var(--soft-bg);
             color: #333;
@@ -235,7 +239,8 @@
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             height: 100%;
             position: relative;
-            overflow: hidden;
+            /* overflow: hidden; REMOVED to prevent cutting off floating elements */
+            margin-top: 30px; /* Add margin to compensate for floating icon */
         }
         
         .tefa-card::before, .product-card::before {
@@ -273,12 +278,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: -40px auto 20px;
+            margin: -40px auto 20px; /* Floating effect restored */
             border: 4px solid white;
             font-size: 30px;
             color: var(--primary-blue);
             transition: all 0.4s ease;
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            position: relative;
+            z-index: 10; /* Higher z-index to be above card */
         }
         
         .tefa-card:hover .tefa-icon {
@@ -823,22 +830,22 @@
                         <a class="nav-link <?php echo e(request()->routeIs('home') ? 'active' : ''); ?>" href="<?php echo e(route('home')); ?>">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#tefa-section">TEFA</a>
+                        <a class="nav-link <?php echo e(request()->routeIs('about') ? 'active' : ''); ?>" href="<?php echo e(route('about')); ?>">Tentang Kami</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#produk-section">Produk</a>
+                        <a class="nav-link <?php echo e(request()->routeIs('faq') ? 'active' : ''); ?>" href="<?php echo e(route('faq')); ?>">FAQ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#layanan-section">Layanan</a>
+                        <a class="nav-link" href="<?php echo e(request()->routeIs('home') ? '#tefa-section' : url('/#tefa-section')); ?>">TEFA</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#kontak-section">Kontak</a>
+                        <a class="nav-link" href="<?php echo e(request()->routeIs('home') ? '#produk-section' : url('/#produk-section')); ?>">Produk</a>
                     </li>
-                    <!-- Admin button hanya di desktop -->
-                    <li class="nav-item d-none d-lg-block ms-3">
-                        <a href="<?php echo e(route('admin.login')); ?>" class="btn btn-sm btn-outline-warning px-3 py-1">
-                            <i class="fas fa-lock me-1"></i> Admin
-                        </a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?php echo e(request()->routeIs('home') ? '#layanan-section' : url('/#layanan-section')); ?>">Layanan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?php echo e(request()->routeIs('home') ? '#kontak-section' : url('/#kontak-section')); ?>">Kontak</a>
                     </li>
                 </ul>
             </div>
@@ -1010,11 +1017,11 @@
 
         <!-- Footer Bottom -->
         <div class="footer-bottom" data-aos="fade-up" data-aos-delay="300">
-            <div class="footer-logo">
+            <div class="footer-logo" id="secret-logo-trigger" style="cursor: pointer; user-select: none;">
                 <img src="<?php echo e(asset('assets/iconsmea.png')); ?>" alt="Logo BLUD">
                 <h6 class="text-white">BLUD SMKN 1 CIAMIS</h6>
             </div>
-            <p class="copyright mb-0">
+            <p class="copyright mb-0" id="secret-copyright-trigger" style="cursor: pointer; user-select: none;">
                 &copy; <?php echo e(date('Y')); ?> BLUD SMKN 1 CIAMIS. All rights reserved. | 
                 <span class="text-primary">Versi 1.0.0</span>
             </p>
@@ -1216,6 +1223,58 @@
                     });
                 }
             }, 1000);
+        });
+        // Secret Login Trigger (3x click)
+        const secretTriggers = ['secret-logo-trigger', 'secret-copyright-trigger'];
+        let clickCount = 0;
+        let clickTimer;
+
+        secretTriggers.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('click', function(e) {
+                    // Prevent default behavior if needed (though div/p usually don't have any)
+                    
+                    clickCount++;
+                    
+                    // Reset timer on each click
+                    clearTimeout(clickTimer);
+                    
+                    // If 3 clicks reached
+                    if (clickCount >= 3) {
+                        // Create a ripple effect or visual feedback
+                        const ripple = document.createElement('div');
+                        ripple.style.position = 'fixed';
+                        ripple.style.top = '0';
+                        ripple.style.left = '0';
+                        ripple.style.width = '100%';
+                        ripple.style.height = '100%';
+                        ripple.style.background = 'white';
+                        ripple.style.opacity = '0';
+                        ripple.style.transition = 'opacity 0.5s';
+                        ripple.style.zIndex = '9999';
+                        document.body.appendChild(ripple);
+                        
+                        // Flash effect
+                        requestAnimationFrame(() => {
+                            ripple.style.opacity = '1';
+                        });
+                        
+                        setTimeout(() => {
+                            window.location.href = "<?php echo e(route('admin.login')); ?>";
+                        }, 500);
+                        
+                        // Reset count
+                        clickCount = 0;
+                        return;
+                    }
+                    
+                    // Reset count if no next click within 500ms
+                    clickTimer = setTimeout(() => {
+                        clickCount = 0;
+                    }, 500);
+                });
+            }
         });
     </script>
     

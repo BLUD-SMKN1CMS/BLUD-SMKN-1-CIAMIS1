@@ -15,6 +15,15 @@ class ServiceSeeder extends Seeder
         
         $services = [
             [
+                'name' => 'Sewa Gedung',
+                'description' => 'Gedung serbaguna dengan kapasitas besar, cocok untuk acara pernikahan, seminar, workshop, dan berbagai kegiatan lainnya. Dilengkapi dengan AC, sound system, proyektor, dan tempat parkir luas.',
+                'price_per_hour' => 500000,
+                'price_per_day' => 3500000,
+                'capacity' => 500,
+                'unit' => 'orang',
+                'status' => 'available',
+            ],
+            [
                 'name' => 'Sewa Ruang Meeting',
                 'description' => 'Ruang meeting lengkap dengan AC, proyektor, dan sound system',
                 'price_per_hour' => 150000,

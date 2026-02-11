@@ -14,7 +14,9 @@ class Tefa extends Model
         'code',
         'name',
         'slug',
+        'icon',
         'description',
+        'services',
         'logo',
         'banner',
         'contact_person',
@@ -28,6 +30,7 @@ class Tefa extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'order' => 'integer',
+        'services' => 'array',
     ];
 
     // Relasi ke Products

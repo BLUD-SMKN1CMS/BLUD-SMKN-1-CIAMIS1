@@ -59,17 +59,16 @@
                                         <td>
                                             <?php if($carousel->image): ?>
                                                 <img src="<?php echo e(asset('storage/' . $carousel->image)); ?>"
-                                                    alt="<?php echo e($carousel->title); ?>" 
-                                                    class="img-thumbnail"
+                                                    alt="<?php echo e($carousel->title); ?>" class="img-thumbnail"
                                                     style="width: 80px; height: 45px; object-fit: cover; border-radius: 4px;"
                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                                <div class="bg-light text-center d-none align-items-center justify-content-center" 
-                                                     style="width: 80px; height: 45px; border: 1px dashed #ddd; border-radius: 4px;">
+                                                <div class="bg-light text-center d-none align-items-center justify-content-center"
+                                                    style="width: 80px; height: 45px; border: 1px dashed #ddd; border-radius: 4px;">
                                                     <i class="fas fa-image text-muted"></i>
                                                 </div>
                                             <?php else: ?>
-                                                <div class="bg-light text-center d-flex align-items-center justify-content-center" 
-                                                     style="width: 80px; height: 45px; border: 1px dashed #ddd; border-radius: 4px;">
+                                                <div class="bg-light text-center d-flex align-items-center justify-content-center"
+                                                    style="width: 80px; height: 45px; border: 1px dashed #ddd; border-radius: 4px;">
                                                     <i class="fas fa-image text-muted"></i>
                                                 </div>
                                             <?php endif; ?>

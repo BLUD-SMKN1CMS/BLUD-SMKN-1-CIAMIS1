@@ -12,20 +12,28 @@ use App\Http\Controllers\Admin\ContactController as AdminContactController;
 use App\Http\Controllers\Admin\CarouselController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\BookingController;
 
 // ==================== PUBLIC ROUTES ====================
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/tefa', [HomeController::class, 'allTefa'])->name('tefa.all');
 Route::get('/tefa/{slug}', [HomeController::class, 'showTefa'])->name('tefa.show');
 Route::get('/produk', [HomeController::class, 'allProducts'])->name('products.all');
-Route::get('/produk/{slug}', [HomeController::class, 'showProduct'])->name('product.show');
+Route::get('/produk/{slug}', [HomeController::class, 'showProduct'])->name('products.show');
 Route::get('/layanan', [HomeController::class, 'allServices'])->name('services.all');
 Route::get('/layanan/{slug}', [HomeController::class, 'showService'])->name('service.show');
+Route::get('/tentang-kami', [HomeController::class, 'about'])->name('about');
+Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
 Route::get('/kontak', [HomeController::class, 'contact'])->name('contact');
 Route::post('/kontak', [ContactController::class, 'store'])->name('contact.submit');
 Route::get('/search', [HomeController::class, 'search'])->name('search');
 Route::get('/api/featured-products', [HomeController::class, 'getFeaturedProducts'])->name('api.featured-products');
 Route::get('/api/latest-products', [HomeController::class, 'getLatestProducts'])->name('api.latest-products');
+
+// Booking Routes
+Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
+Route::get('/booking/success/{transactionId}', [BookingController::class, 'success'])->name('booking.success');
 
 // ==================== ADMIN ROUTES ====================
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -43,6 +51,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('tefas', TefaController::class);
         Route::resource('products', ProductController::class);
         Route::resource('services', ServiceController::class);
+        Route::resource('payments', PaymentController::class);
+        
+        // Payment Actions
+        Route::post('/payments/{payment}/confirm', [PaymentController::class, 'confirm'])->name('payments.confirm');
+        Route::post('/payments/{payment}/cancel', [PaymentController::class, 'cancel'])->name('payments.cancel');
         
         // Contact Management
         Route::resource('contacts', AdminContactController::class)->except(['create', 'store']);

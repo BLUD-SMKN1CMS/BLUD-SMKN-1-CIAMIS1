@@ -280,12 +280,7 @@
         cursor: pointer;
     }
 </style>
-@endpush
-
 @push('scripts')
-<!-- Bootstrap 5 JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
 $(document).ready(function() {
     // ============ ICON PICKER FIXED ============
@@ -332,6 +327,13 @@ $(document).ready(function() {
     // Inisialisasi icons
     loadIcons();
     
+    // Manual trigger untuk membuka modal (fix untuk issue tidak bisa diklik)
+    $('button[data-bs-target="#iconModal"]').on('click', function(e) {
+        e.preventDefault();
+        const iconModal = new bootstrap.Modal(document.getElementById('iconModal'));
+        iconModal.show();
+    });
+    
     // Search icons
     $('#iconSearch').on('input', function() {
         loadIcons($(this).val());
@@ -351,7 +353,12 @@ $(document).ready(function() {
             $('#iconInput').val(selectedIcon);
             $('#iconPreview i').attr('class', selectedIcon + ' fa-2x mb-2 text-primary');
             $('#iconName').text(selectedIcon);
-            $('#iconModal').modal('hide');
+            
+            // Close modal menggunakan Bootstrap 5 API
+            const iconModal = bootstrap.Modal.getInstance(document.getElementById('iconModal'));
+            if (iconModal) {
+                iconModal.hide();
+            }
             
             // Feedback
             showToast('Icon berhasil dipilih: ' + selectedIcon.replace('fas fa-', ''), 'success');

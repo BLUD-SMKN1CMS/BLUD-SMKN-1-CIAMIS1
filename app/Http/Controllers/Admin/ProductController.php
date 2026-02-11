@@ -60,25 +60,28 @@ class ProductController extends Controller
         }
 
         $data = $request->except(['_token']);
+        if (!isset($data['description']) || $data['description'] === null) {
+            $data['description'] = '';
+        }
         $data['slug'] = Str::slug($request->name);
-        
+
         // Handle image uploads
         $imageFields = ['image', 'image_2', 'image_3', 'image_4'];
-        
+
         foreach ($imageFields as $field) {
             if ($request->hasFile($field)) {
                 $image = $request->file($field);
-                
+
                 // Validasi ekstensi manual
                 $allowedExtensions = ['jpeg', 'jpg', 'png', 'gif', 'webp'];
                 $extension = strtolower($image->getClientOriginalExtension());
-                
+
                 if (!in_array($extension, $allowedExtensions)) {
                     return redirect()->back()
                         ->withInput()
                         ->withErrors([$field => 'Format file tidak didukung. Gunakan: jpeg, png, jpg, gif, atau webp']);
                 }
-                
+
                 // Validasi ukuran (dalam bytes)
                 $maxSize = 2 * 1024 * 1024; // 2MB dalam bytes
                 if ($image->getSize() > $maxSize) {
@@ -86,16 +89,16 @@ class ProductController extends Controller
                         ->withInput()
                         ->withErrors([$field => 'Ukuran gambar terlalu besar. Maksimal 2MB']);
                 }
-                
+
                 // Pastikan folder uploads/products ada
                 $uploadPath = public_path('uploads/products');
                 if (!file_exists($uploadPath)) {
                     mkdir($uploadPath, 0777, true);
                 }
-                
+
                 // Generate nama file unik
                 $filename = 'product_' . $field . '_' . time() . '_' . uniqid() . '.' . $extension;
-                
+
                 // Simpan gambar dengan kualitas optimal
                 try {
                     $image->move($uploadPath, $filename);
@@ -110,30 +113,29 @@ class ProductController extends Controller
                 $data[$field] = null;
             }
         }
-        
+
         // Set default values jika kosong
         if (empty($data['order'])) {
             $data['order'] = 0;
         }
-        
+
         if (!isset($data['is_featured'])) {
             $data['is_featured'] = false;
         }
-        
+
         try {
             Product::create($data);
-            
+
             return redirect()->route('admin.products.index')
                 ->with('success', '✅ Produk berhasil ditambahkan!');
-                
         } catch (\Exception $e) {
             \Log::error('Error creating product: ' . $e->getMessage());
-            
+
             // Hapus gambar jika upload gagal
             if (isset($data['image']) && file_exists(public_path($data['image']))) {
                 @unlink(public_path($data['image']));
             }
-            
+
             return redirect()->back()
                 ->withInput()
                 ->withErrors(['error' => 'Gagal menyimpan produk. Error: ' . $e->getMessage()]);
@@ -156,7 +158,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
-        
+
         // VALIDASI UPDATE (perlu validasi unique dengan pengecualian)
         $validator = Validator::make($request->all(), [
             'tefa_id' => 'required|exists:tefas,id',
@@ -187,11 +189,14 @@ class ProductController extends Controller
         }
 
         $data = $request->except(['_token', '_method', 'image', 'image_2', 'image_3', 'image_4']);
+        if (!isset($data['description']) || $data['description'] === null) {
+            $data['description'] = '';
+        }
         $data['slug'] = Str::slug($request->name);
-        
+
         // Handle image upload jika ada file baru (LOOPING)
         $imageFields = ['image', 'image_2', 'image_3', 'image_4'];
-        
+
         foreach ($imageFields as $field) {
             if ($request->hasFile($field)) {
                 // ... same logic ...
@@ -199,35 +204,34 @@ class ProductController extends Controller
                 $image = $request->file($field);
                 $allowedExtensions = ['jpeg', 'jpg', 'png', 'gif', 'webp'];
                 $extension = strtolower($image->getClientOriginalExtension());
-                
+
                 if (!in_array($extension, $allowedExtensions)) {
                     return redirect()->back()
                         ->withInput()
                         ->withErrors([$field => 'Format file tidak didukung. Gunakan: jpeg, png, jpg, gif, atau webp']);
                 }
-                
+
                 // Hapus gambar lama jika ada
                 $oldImage = $product->$field;
-                
+
                 // Pastikan folder uploads/products ada
                 $uploadPath = public_path('uploads/products');
                 if (!file_exists($uploadPath)) {
                     mkdir($uploadPath, 0777, true);
                 }
-                
+
                 // Generate nama file unik
                 $filename = 'product_' . $field . '_' . time() . '_' . uniqid() . '.' . $extension;
-                
+
                 try {
                     // Simpan gambar baru
                     $image->move($uploadPath, $filename);
                     $data[$field] = 'uploads/products/' . $filename;
-                    
+
                     // Hapus gambar lama setelah sukses upload baru
                     if ($oldImage && file_exists(public_path($oldImage))) {
                         @unlink(public_path($oldImage));
                     }
-                    
                 } catch (\Exception $e) {
                     return redirect()->back()
                         ->withInput()
@@ -235,32 +239,31 @@ class ProductController extends Controller
                 }
             }
         }
-        
+
         // Set default values jika kosong
         if (empty($data['order'])) {
             $data['order'] = 0;
         }
-        
+
         if (!isset($data['is_featured'])) {
             $data['is_featured'] = false;
         }
-        
+
         try {
             $product->update($data);
-            
+
             return redirect()->route('admin.products.index')
                 ->with('success', '✅ Produk berhasil diperbarui!');
-                
         } catch (\Exception $e) {
             \Log::error('Error updating product: ' . $e->getMessage());
-            
+
             // Jika gagal update, hapus gambar baru (jika ada)
             if (isset($data['image']) && $data['image'] !== $product->image) {
                 if (file_exists(public_path($data['image']))) {
                     @unlink(public_path($data['image']));
                 }
             }
-            
+
             return redirect()->back()
                 ->withInput()
                 ->withErrors(['error' => 'Gagal memperbarui produk. Error: ' . $e->getMessage()]);
@@ -271,7 +274,7 @@ class ProductController extends Controller
     {
         try {
             $product = Product::findOrFail($id);
-            
+
             // Simpan path gambar untuk dihapus
             $imageFields = ['image', 'image_2', 'image_3', 'image_4'];
             $imagesToDelete = [];
@@ -280,23 +283,22 @@ class ProductController extends Controller
                     $imagesToDelete[] = $product->$field;
                 }
             }
-            
+
             // Hapus dari database
             $product->delete();
-            
+
             // Hapus gambar dari storage
             foreach ($imagesToDelete as $path) {
                 if ($path && file_exists(public_path($path))) {
                     @unlink(public_path($path));
                 }
             }
-            
+
             return redirect()->route('admin.products.index')
                 ->with('success', '✅ Produk berhasil dihapus!');
-                
         } catch (\Exception $e) {
             \Log::error('Error deleting product: ' . $e->getMessage());
-            
+
             return redirect()->back()
                 ->withErrors(['error' => 'Gagal menghapus produk. Error: ' . $e->getMessage()]);
         }

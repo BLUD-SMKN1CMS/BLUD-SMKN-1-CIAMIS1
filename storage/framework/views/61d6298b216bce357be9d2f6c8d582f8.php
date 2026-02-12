@@ -53,6 +53,7 @@
                                 <th>Nama Produk</th>
                                 <th>TEFA</th>
                                 <th width="120">Harga</th>
+                                <th width="80">Stok</th>
                                 <th width="100">Status</th>
                                 <th width="90">Unggulan</th>
                                 <th width="100">Aksi</th>
@@ -101,6 +102,10 @@
                                     <td>
                                         <strong class="text-primary">Rp
                                             <?php echo e(number_format($product->price, 0, ',', '.')); ?></strong>
+                                    </td>
+                                    <td>
+                                        <?php echo e(number_format($product->stock, 0, ',', '.')); ?> <?php echo e($product->unit); ?>
+
                                     </td>
                                     <td>
                                         <span

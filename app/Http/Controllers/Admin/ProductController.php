@@ -39,12 +39,22 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // 2MB max, tambah webp
             'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'stock' => 'required|integer|min:0',
+            'category' => 'required|string|max:100',
+            'unit' => 'required|string|max:50', // Add unit validation
+            'status' => 'required|in:draft,active,inactive',
+            'is_featured' => 'boolean',
+            'order' => 'integer|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // 2MB max, tambah webp
+            'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ], [
             'name.required' => 'Nama produk wajib diisi',
             'name.unique' => 'Nama produk sudah ada',
             'price.min' => 'Harga tidak boleh minus',
             'stock.min' => 'Stok tidak boleh minus',
+            'unit.required' => 'Satuan wajib diisi', // Add unit message
             'image.image' => 'File harus berupa gambar',
             'image.mimes' => 'Format gambar harus: jpeg, png, jpg, gif, atau webp',
             'image.max' => 'Ukuran gambar maksimal 2MB',
@@ -60,6 +70,12 @@ class ProductController extends Controller
         }
 
         $data = $request->except(['_token']);
+        
+        // Fix: Description cannot be null in DB
+        if (empty($data['description'])) {
+            $data['description'] = '-';
+        }
+
         $data['slug'] = Str::slug($request->name);
         
         // Handle image uploads
@@ -171,6 +187,15 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'stock' => 'required|integer|min:0',
+            'category' => 'required|string|max:100',
+            'unit' => 'required|string|max:50', // Add unit validation
+            'status' => 'required|in:draft,active,inactive',
+            'is_featured' => 'boolean',
+            'order' => 'integer|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ], [
             'name.unique' => 'Nama produk sudah ada',
@@ -187,6 +212,12 @@ class ProductController extends Controller
         }
 
         $data = $request->except(['_token', '_method', 'image', 'image_2', 'image_3', 'image_4']);
+        
+        // Fix: Description cannot be null in DB
+        if (empty($data['description'])) {
+            $data['description'] = '-';
+        }
+
         $data['slug'] = Str::slug($request->name);
         
         // Handle image upload jika ada file baru (LOOPING)

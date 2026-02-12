@@ -31,6 +31,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Icon</th>
                                 <th>Nama Layanan</th>
                                 <th>Harga/Hari</th>
                                 <th>Unit</th>
@@ -42,6 +43,9 @@
                             @forelse($services as $service)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
+                                    <td class="text-center">
+                                        <i class="{{ $service->icon ?? 'fas fa-concierge-bell' }} fa-lg text-primary"></i>
+                                    </td>
                                     <td>{{ $service->name }}</td>
                                     <td>Rp {{ number_format($service->price_per_day, 0, ',', '.') }}</td>
                                     <td>{{ $service->unit }}</td>

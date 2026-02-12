@@ -85,7 +85,7 @@
                     <div class="stock-info">
                         @if($product->stock > 0)
                         <span class="in-stock">
-                            <i class="fas fa-check-circle"></i> Tersedia ({{ $product->stock }} unit)
+                            <i class="fas fa-check-circle"></i> Tersedia ({{ $product->stock }} {{ $product->unit }})
                         </span>
                         @else
                         <span class="out-of-stock">
@@ -189,7 +189,7 @@
 <style>
 /* Breadcrumb Section */
 .breadcrumb-section {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background: linear-gradient(135deg, #4A90E2 0%, #2a5298 100%);
     padding: 1.5rem 0;
     margin-bottom: 3rem;
 }
@@ -289,7 +289,7 @@
 }
 
 .thumbnail-item.active {
-    border-color: #1e3c72;
+    border-color: #4A90E2;
 }
 
 .thumbnail-item img {
@@ -766,6 +766,7 @@
 
     function submitOrder() {
         const productName = @json($product->name);
+        const productUnit = @json($product->unit ?? 'pcs');
         const tefaName = @json($product->tefa->name ?? 'SMKN 1 Ciamis');
         const buyerName = document.getElementById('buyerName').value;
         const buyerPhone = document.getElementById('buyerPhone').value;
@@ -782,7 +783,7 @@
         let message = `*Halo Admin TEFA ${tefaName}* 👋\n\n`;
         message += `Saya ingin memesan produk berikut:\n`;
         message += `🛍️ *Produk:* ${productName}\n`;
-        message += `📦 *Jumlah:* ${qty} pcs\n`;
+        message += `📦 *Jumlah:* ${qty} ${productUnit}\n`;
         message += `💰 *Total Estimasi:* ${totalPrice}\n\n`;
         message += `📋 *Data Pemesan:*\n`;
         message += `👤 Nama: ${buyerName}\n`;

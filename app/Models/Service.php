@@ -19,6 +19,7 @@ class Service extends Model
         'capacity',
         'unit',
         'image',
+        'icon',
         'status',
     ];
 

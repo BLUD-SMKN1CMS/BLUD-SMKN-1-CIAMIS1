@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             TefaSeeder::class,       // 2. TEFA jurusan
             SettingsSeeder::class,   // 3. Settings (butuh setelah TEFA)
             StatisticsSeeder::class, // 4. Statistics (butuh setelah TEFA & Settings)
-            ServiceSeeder::class,    // 5. Services
+            // ServiceSeeder::class,    // 5. Services
             // ProductSeeder::class,  // 6. Products (NONAKTIFKAN - siap ditambah via admin)
             // ContactSeeder::class,  // 7. Contacts (NONAKTIFKAN - auto dari form)
             // CarouselSeeder::class, // 8. Carousels (NONAKTIFKAN - siap ditambah via admin)

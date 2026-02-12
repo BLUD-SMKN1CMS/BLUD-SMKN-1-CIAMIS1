@@ -50,7 +50,7 @@
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
                         @if($product->image)
-                            <img src="{{ asset('storage/' . $product->image) }}" 
+                            <img src="{{ $product->image_url }}" 
                                  class="card-img-top" alt="{{ $product->name }}" style="height: 200px; object-fit: cover;">
                         @endif
                         <div class="card-body">

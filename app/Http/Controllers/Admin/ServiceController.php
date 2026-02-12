@@ -27,7 +27,8 @@ class ServiceController extends Controller
             'description' => 'nullable|string',
             'price_per_day' => 'required|numeric',
             'unit' => 'required|string|max:50',
-            'status' => 'required|in:available,unavailable'
+            'icon' => 'nullable|string|max:50',
+            'status' => 'required|in:available,unavailable',
         ]);
 
         $data = $request->all();
@@ -60,7 +61,8 @@ class ServiceController extends Controller
             'description' => 'nullable|string',
             'price_per_day' => 'required|numeric',
             'unit' => 'required|string|max:50',
-            'status' => 'required|in:available,unavailable'
+            'icon' => 'nullable|string|max:50',
+            'status' => 'required|in:available,unavailable',
         ]);
 
         $data = $request->all();

@@ -207,10 +207,19 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                                     
-                                    <!-- Image Preview -->
-                                    <div id="imagePreview" class="mt-3 text-center" style="display: none;">
-                                        <img id="preview" class="img-fluid rounded border" 
-                                             style="max-height: 200px;" alt="Preview">
+                                    <!-- Image Preview Container -->
+                                    <div class="text-center mt-4">
+                                        <div class="ratio ratio-16x9 border rounded bg-light overflow-hidden position-relative">
+                                            <!-- Default Placeholder Content -->
+                                            <div id="placeholderContent" class="d-flex flex-column justify-content-center align-items-center w-100 h-100">
+                                                <i class="fas fa-image fa-3x text-muted mb-3"></i>
+                                                <p class="text-muted mb-0">Preview akan muncul di sini</p>
+                                            </div>
+                                            
+                                            <!-- Image Preview -->
+                                            <img id="mainPreview" src="#" alt="Preview" class="w-100 h-100 position-absolute top-0 start-0" style="display: none; object-fit: cover;">
+                                        </div>
+                                        <small class="text-muted mt-2 d-block">Preview rasio 16:9</small>
                                     </div>
                                     
                                     <!-- Ratio Info -->
@@ -222,17 +231,6 @@ unset($__errorArgs, $__bag); ?>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Image Preview Placeholder -->
-                        <div class="text-center mt-4">
-                            <div class="ratio ratio-16x9 border rounded bg-light">
-                                <div class="d-flex flex-column justify-content-center align-items-center">
-                                    <i class="fas fa-image fa-3x text-muted mb-3"></i>
-                                    <p class="text-muted mb-0">Preview akan muncul di sini</p>
-                                </div>
-                            </div>
-                            <small class="text-muted mt-2 d-block">Preview rasio 16:9</small>
                         </div>
                     </div>
                 </div>
@@ -254,25 +252,27 @@ unset($__errorArgs, $__bag); ?>
 <?php $__env->startPush('scripts'); ?>
 <script>
     function previewImage(input) {
-        const preview = document.getElementById('preview');
-        const previewDiv = document.getElementById('imagePreview');
+        const preview = document.getElementById('mainPreview');
+        const placeholder = document.getElementById('placeholderContent');
         
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             
             reader.onload = function(e) {
                 preview.src = e.target.result;
-                previewDiv.style.display = 'block';
+                preview.style.display = 'block';
+                placeholder.classList.add('d-none');
                 
                 // Check image dimensions
                 const img = new Image();
                 img.onload = function() {
                     const ratio = img.width / img.height;
                     const targetRatio = 16/9;
-                    const tolerance = 0.1;
+                    const tolerance = 0.1; // Allow some flexibility
                     
                     if (Math.abs(ratio - targetRatio) > tolerance) {
-                        alert('⚠️ Peringatan: Rasio gambar bukan 16:9! Disarankan: 1920×1080px');
+                        // Optional: Show warning or just log it
+                        console.log('Ratio warning: ' + ratio);
                     }
                 };
                 img.src = e.target.result;
@@ -280,8 +280,9 @@ unset($__errorArgs, $__bag); ?>
             
             reader.readAsDataURL(input.files[0]);
         } else {
-            previewDiv.style.display = 'none';
-            preview.src = '';
+            preview.style.display = 'none';
+            preview.src = '#';
+            placeholder.classList.remove('d-none');
         }
     }
 

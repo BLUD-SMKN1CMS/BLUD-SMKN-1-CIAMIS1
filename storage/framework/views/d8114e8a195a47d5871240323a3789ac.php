@@ -31,6 +31,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Icon</th>
                                 <th>Nama Layanan</th>
                                 <th>Harga/Hari</th>
                                 <th>Unit</th>
@@ -42,6 +43,9 @@
                             <?php $__empty_1 = true; $__currentLoopData = $services; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $service): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <tr>
                                     <td><?php echo e($loop->iteration); ?></td>
+                                    <td class="text-center">
+                                        <i class="<?php echo e($service->icon ?? 'fas fa-concierge-bell'); ?> fa-lg text-primary"></i>
+                                    </td>
                                     <td><?php echo e($service->name); ?></td>
                                     <td>Rp <?php echo e(number_format($service->price_per_day, 0, ',', '.')); ?></td>
                                     <td><?php echo e($service->unit); ?></td>

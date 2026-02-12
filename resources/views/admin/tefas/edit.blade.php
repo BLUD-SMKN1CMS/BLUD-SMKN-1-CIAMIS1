@@ -58,7 +58,7 @@
                                 <input type="text" name="icon" class="form-control" id="iconInput"
                                     value="{{ old('icon', $tefa->icon ?? 'fas fa-school') }}" 
                                     placeholder="fas fa-school" required>
-                                <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#iconModal">
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#iconModal">
                                     <i class="fas fa-icons"></i> Pilih Icon
                                 </button>
                             </div>
@@ -156,9 +156,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="iconModalLabel">Pilih Icon FontAwesome</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -175,7 +173,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                 <button type="button" class="btn btn-primary" id="selectIconBtn">Pilih Icon</button>
             </div>
         </div>

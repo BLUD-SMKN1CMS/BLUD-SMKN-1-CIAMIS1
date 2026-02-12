@@ -11,6 +11,18 @@
         </a>
     </div>
 
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Terjadi Kesalahan!</h4>
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Form Tambah Produk</h6>
@@ -77,8 +89,14 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Kategori *</label>
-                            <input type="text" name="category" class="form-control @error('category') is-invalid @enderror"
-                                value="{{ old('category') }}" required placeholder="Contoh: Makanan">
+                            <select name="category" class="form-control @error('category') is-invalid @enderror" required>
+                                <option value="">Pilih Kategori</option>
+                                <option value="Makanan" {{ old('category') == 'Makanan' ? 'selected' : '' }}>Makanan</option>
+                                <option value="Minuman" {{ old('category') == 'Minuman' ? 'selected' : '' }}>Minuman</option>
+                                <option value="Jasa" {{ old('category') == 'Jasa' ? 'selected' : '' }}>Jasa</option>
+                                <option value="Barang" {{ old('category') == 'Barang' ? 'selected' : '' }}>Barang</option>
+                                <option value="Lainnya" {{ old('category') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                            </select>
                             @error('category')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -86,9 +104,14 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Urutan</label>
-                            <input type="number" name="order" class="form-control" value="{{ old('order', 0) }}">
+                            <label>Satuan *</label>
+                            <input type="text" name="unit" class="form-control @error('unit') is-invalid @enderror"
+                                value="{{ old('unit', 'pcs') }}" required placeholder="Contoh: pcs, box, kg">
+                            @error('unit')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
+                        <input type="hidden" name="order" value="{{ old('order', 0) }}">
                     </div>
                 </div>
 

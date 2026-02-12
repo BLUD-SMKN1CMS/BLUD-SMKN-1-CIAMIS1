@@ -17,6 +17,12 @@ class Product extends Model
         'description',
         'price',
         'category',
+        'name',
+        'slug',
+        'description',
+        'price',
+        'category',
+        'unit', // Add unit
         'image',
         'image_2',
         'image_3',

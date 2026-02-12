@@ -35,8 +35,7 @@ class ContactController extends Controller
             'phone' => $request->phone,
             'subject' => $request->subject,
             'message' => $request->message,
-            'type' => 'general',
-            'status' => 'pending'
+            'status' => 'new'
         ]);
 
         return response()->json([

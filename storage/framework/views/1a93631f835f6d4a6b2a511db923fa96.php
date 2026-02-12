@@ -353,12 +353,7 @@ $(document).ready(function() {
     // Inisialisasi icons
     loadIcons();
     
-    // Manual trigger untuk membuka modal (fix untuk issue tidak bisa diklik)
-    $('button[data-bs-target="#iconModal"]').on('click', function(e) {
-        e.preventDefault();
-        const iconModal = new bootstrap.Modal(document.getElementById('iconModal'));
-        iconModal.show();
-    });
+
     
     // Search icons
     $('#iconSearch').on('input', function() {

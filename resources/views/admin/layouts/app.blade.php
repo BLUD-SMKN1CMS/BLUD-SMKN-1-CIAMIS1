@@ -20,14 +20,23 @@
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
-    <!-- Custom Admin CSS -->
+    <!-- Custom Admin CSS - Filament Style -->
     <style>
         :root {
-            --primary-color: #4A90E2;
-            --secondary-color: #87CEEB;
-            --dark-color: #2c3e50;
-            --light-color: #f8f9fa;
-            --sidebar-width: 250px;
+            --primary-color: #0992C2;
+            --primary-hover: #077ba3;
+            --dark-color: #0f172a;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --sidebar-width: 260px;
         }
 
         * {
@@ -37,117 +46,119 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fb;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background-color: var(--gray-50);
             min-height: 100vh;
             display: flex;
+            color: var(--gray-700);
         }
 
-        /* ===== SIDEBAR ===== */
+        /* ===== FILAMENT SIDEBAR ===== */
         .sidebar {
             width: var(--sidebar-width);
-            background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
+            background: white;
+            color: var(--gray-700);
             position: fixed;
             left: 0;
             top: 0;
             height: 100vh;
             z-index: 1000;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            border-right: 1px solid var(--gray-200);
             overflow-y: auto;
             transition: all 0.3s ease;
         }
 
         .sidebar-header {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.1);
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--gray-200);
         }
 
         .sidebar-brand {
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 12px;
             text-decoration: none;
-            color: white;
+            color: var(--gray-900);
         }
 
         .sidebar-brand img {
-            width: 40px;
-            height: 40px;
-            margin-right: 10px;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
         }
 
         .sidebar-brand-text h4 {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             margin-bottom: 0;
-            font-weight: 600;
+            font-weight: 700;
+            color: var(--gray-900);
         }
 
         .sidebar-brand-text small {
-            font-size: 0.8rem;
-            opacity: 0.9;
-        }
-
-        .sidebar-menu {
-            padding: 20px 0;
-        }
-
-        .nav-item {
-            margin-bottom: 5px;
-        }
-
-        .nav-link {
-            color: rgba(255, 255, 255, 0.9);
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-link:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-left-color: white;
-        }
-
-        .nav-link.active {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-            border-left-color: white;
+            font-size: 0.75rem;
+            color: var(--gray-500);
             font-weight: 500;
         }
 
+        .sidebar-menu {
+            padding: 16px 12px;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            color: var(--gray-600);
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.2s;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .nav-link:hover {
+            background: var(--gray-100);
+            color: var(--primary-color);
+        }
+
+        .nav-link.active {
+            background: rgba(9, 146, 194, 0.1);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
         .nav-link i {
-            width: 24px;
+            width: 20px;
             margin-right: 12px;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .badge-counter {
-            background: #e74c3c;
+            background: var(--primary-color);
             color: white;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 2px 8px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             margin-left: auto;
+            font-weight: 600;
         }
 
         .sidebar-divider {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin: 20px;
+            border-top: 1px solid var(--gray-200);
+            margin: 16px 12px;
         }
 
         .sidebar-heading {
-            font-size: 0.85rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.6);
-            padding: 0 20px 10px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            color: var(--gray-400);
+            padding: 12px 12px 8px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
         }
 
         /* ===== MAIN CONTENT ===== */
@@ -159,11 +170,11 @@
             flex-direction: column;
         }
 
-        /* ===== TOPBAR ===== */
+        /* ===== FILAMENT TOPBAR ===== */
         .topbar {
             background: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 15px 30px;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 16px 24px;
             position: sticky;
             top: 0;
             z-index: 999;
@@ -174,20 +185,15 @@
 
         .topbar-left h1 {
             font-size: 1.5rem;
-            color: var(--dark-color);
-            margin-bottom: 5px;
-        }
-
-        .topbar-left p {
-            color: #6c757d;
-            font-size: 0.9rem;
+            color: var(--gray-900);
             margin-bottom: 0;
+            font-weight: 700;
         }
 
         .topbar-right {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
         }
 
         .user-dropdown {
@@ -199,13 +205,20 @@
             align-items: center;
             gap: 10px;
             text-decoration: none;
-            color: var(--dark-color);
+            color: var(--gray-700);
             cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .user-dropdown-toggle:hover {
+            background: var(--gray-100);
         }
 
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: var(--primary-color);
             color: white;
@@ -213,72 +226,76 @@
             align-items: center;
             justify-content: center;
             font-weight: 600;
+            font-size: 0.9rem;
         }
 
         .user-info {
-            line-height: 1.2;
+            line-height: 1.3;
         }
 
         .user-name {
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            color: var(--gray-900);
         }
 
         .user-role {
-            font-size: 0.8rem;
-            color: #6c757d;
+            font-size: 0.75rem;
+            color: var(--gray-500);
         }
 
         .dropdown-menu {
-            border: none;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--gray-200);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
-            padding: 10px 0;
+            padding: 6px;
             min-width: 200px;
         }
 
         .dropdown-item {
-            padding: 8px 20px;
-            color: #495057;
+            padding: 10px 12px;
+            color: var(--gray-700);
             display: flex;
             align-items: center;
             gap: 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
         }
 
         .dropdown-item:hover {
-            background: #f8f9fa;
+            background: var(--gray-100);
             color: var(--primary-color);
         }
 
         .dropdown-divider {
-            margin: 8px 0;
+            margin: 6px 0;
+            border-color: var(--gray-200);
         }
 
         /* ===== CONTENT AREA ===== */
         .content-area {
             flex: 1;
-            padding: 30px;
-            background: #f5f7fb;
+            padding: 24px;
+            background: var(--gray-50);
         }
 
-        /* ===== CARDS ===== */
+        /* ===== FILAMENT CARDS ===== */
         .admin-card {
             background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            border: none;
-            margin-bottom: 30px;
-            transition: transform 0.3s ease;
+            border: 1px solid var(--gray-200);
+            margin-bottom: 24px;
+            transition: all 0.2s;
         }
 
         .admin-card:hover {
-            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .card-header {
             background: white;
-            border-bottom: 1px solid #eaeaea;
-            padding: 20px 25px;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 16px 20px;
             border-radius: 12px 12px 0 0 !important;
             display: flex;
             justify-content: space-between;
@@ -286,86 +303,93 @@
         }
 
         .card-header h5 {
-            color: var(--dark-color);
-            font-weight: 600;
+            color: var(--gray-900);
+            font-weight: 700;
             margin-bottom: 0;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 1.1rem;
         }
 
         .card-body {
-            padding: 25px;
+            padding: 20px;
         }
 
-        /* ===== STATS CARDS ===== */
+        /* ===== FILAMENT STATS CARDS ===== */
         .stats-card {
             background: white;
             border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            border: 1px solid var(--gray-200);
             height: 100%;
+            transition: all 0.2s;
+        }
+
+        .stats-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .stats-icon {
-            width: 50px;
-            height: 50px;
+            width: 48px;
+            height: 48px;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 15px;
+            font-size: 1.4rem;
+            margin-bottom: 12px;
         }
 
         .stats-icon-primary {
-            background: rgba(74, 144, 226, 0.1);
+            background: rgba(9, 146, 194, 0.1);
             color: var(--primary-color);
         }
 
         .stats-icon-success {
-            background: rgba(40, 167, 69, 0.1);
-            color: #28a745;
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
         }
 
         .stats-icon-info {
-            background: rgba(23, 162, 184, 0.1);
-            color: #17a2b8;
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
         }
 
         .stats-icon-warning {
-            background: rgba(255, 193, 7, 0.1);
-            color: #ffc107;
+            background: rgba(251, 191, 36, 0.1);
+            color: #fbbf24;
         }
 
         .stats-value {
-            font-size: 2rem;
+            font-size: 1.875rem;
             font-weight: 700;
-            color: var(--dark-color);
+            color: var(--gray-900);
             line-height: 1;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
 
         .stats-label {
-            color: #6c757d;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
+            color: var(--gray-600);
+            font-size: 0.875rem;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
 
         .stats-desc {
-            font-size: 0.85rem;
-            color: #adb5bd;
-            margin-bottom: 15px;
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            margin-bottom: 12px;
         }
 
-        /* ===== BUTTONS ===== */
+        /* ===== FILAMENT BUTTONS ===== */
         .btn-admin {
-            padding: 8px 20px;
+            padding: 10px 16px;
             border-radius: 8px;
-            font-weight: 500;
+            font-weight: 600;
             border: none;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            font-size: 0.875rem;
         }
 
         .btn-admin-primary {
@@ -374,126 +398,174 @@
         }
 
         .btn-admin-primary:hover {
-            background: #357ae8;
+            background: var(--primary-hover);
             color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(9, 146, 194, 0.3);
         }
 
         .btn-admin-outline {
             background: transparent;
-            border: 1px solid #dee2e6;
-            color: #6c757d;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-700);
         }
 
         .btn-admin-outline:hover {
             border-color: var(--primary-color);
             color: var(--primary-color);
-            background: rgba(74, 144, 226, 0.05);
+            background: rgba(9, 146, 194, 0.05);
         }
 
-        /* ===== TABLES ===== */
+        /* ===== FILAMENT TABLES ===== */
         .table-admin {
             width: 100%;
             background: white;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .table-admin th {
-            background: #f8f9fa;
+            background: var(--gray-50);
             border: none;
-            font-weight: 600;
-            color: var(--dark-color);
-            padding: 15px;
-            border-bottom: 1px solid #dee2e6;
+            font-weight: 700;
+            color: var(--gray-700);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .table-admin td {
-            padding: 15px;
+            padding: 12px 16px;
             vertical-align: middle;
-            border-bottom: 1px solid #f1f1f1;
+            border-bottom: 1px solid var(--gray-100);
+            color: var(--gray-700);
+            font-size: 0.9rem;
         }
 
         .table-admin tr:hover {
-            background: #f8f9fa;
+            background: var(--gray-50);
         }
 
-        /* ===== FORMS ===== */
+        /* ===== FILAMENT FORMS ===== */
         .form-control-admin {
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--gray-300);
             border-radius: 8px;
-            padding: 10px 15px;
-            transition: all 0.3s;
+            padding: 10px 12px;
+            transition: all 0.2s;
+            font-size: 0.9rem;
         }
 
         .form-control-admin:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+            box-shadow: 0 0 0 3px rgba(9, 146, 194, 0.1);
+            outline: none;
         }
 
-        /* ===== ALERTS ===== */
+        /* ===== FILAMENT ALERTS ===== */
         .alert-admin {
             border-radius: 8px;
-            border: none;
-            padding: 15px 20px;
-            margin-bottom: 20px;
+            border: 1px solid;
+            padding: 12px 16px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 0.9rem;
         }
 
         .alert-success {
-            background: #d1e7dd;
-            color: #0f5132;
+            background: #f0fdf4;
+            border-color: #86efac;
+            color: #166534;
         }
 
         .alert-danger {
-            background: #f8d7da;
-            color: #842029;
+            background: #fef2f2;
+            border-color: #fca5a5;
+            color: #991b1b;
         }
 
         .alert-warning {
-            background: #fff3cd;
-            color: #664d03;
+            background: #fefce8;
+            border-color: #fde047;
+            color: #854d0e;
         }
 
         .alert-info {
-            background: #d1ecf1;
-            color: #0c5460;
+            background: #eff6ff;
+            border-color: #93c5fd;
+            color: #1e40af;
         }
 
-        /* ===== BADGES ===== */
+        /* ===== FILAMENT BADGES ===== */
         .badge-admin {
-            padding: 5px 12px;
-            border-radius: 20px;
+            padding: 4px 10px;
+            border-radius: 6px;
             font-size: 0.75rem;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .badge-success {
-            background: #d1e7dd;
-            color: #0f5132;
+            background: #d1fae5;
+            color: #065f46;
         }
 
         .badge-primary {
-            background: rgba(74, 144, 226, 0.1);
+            background: rgba(9, 146, 194, 0.1);
             color: var(--primary-color);
         }
 
         .badge-secondary {
-            background: #e9ecef;
-            color: #6c757d;
+            background: var(--gray-200);
+            color: var(--gray-700);
         }
 
-        /* ===== FOOTER ===== */
+        /* ===== FILAMENT DROPDOWN MENU ===== */
+        .nav-dropdown {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-dropdown-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .nav-dropdown-toggle .dropdown-arrow {
+            transition: transform 0.2s;
+            font-size: 0.8rem;
+        }
+
+        .nav-dropdown.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .nav-dropdown-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .nav-dropdown.active .nav-dropdown-menu {
+            max-height: 500px;
+        }
+
+        .nav-dropdown-menu .nav-link {
+            padding-left: 48px;
+            font-size: 0.875rem;
+        }
+
+        /* ===== FILAMENT FOOTER ===== */
         .admin-footer {
             background: white;
-            padding: 20px 30px;
-            border-top: 1px solid #eaeaea;
+            padding: 16px 24px;
+            border-top: 1px solid var(--gray-200);
             text-align: center;
-            color: #6c757d;
+            color: var(--gray-500);
             font-size: 0.85rem;
         }
 
@@ -658,7 +730,7 @@
                 <img src="{{ asset('assets/iconsmea.png') }}" alt="Logo">
                 <div class="sidebar-brand-text">
                     <h4>BLUD SMKN 1</h4>
-                    <small>Admin Panel</small>
+                    <small>Admin</small>
                 </div>
             </a>
         </div>
@@ -678,40 +750,39 @@
 
             <!-- Divider -->
             <div class="sidebar-divider"></div>
-            <div class="sidebar-heading">Kelola Konten</div>
 
-            <!-- Content Management -->
+            <!-- Content Management Dropdown -->
             <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a href="{{ route('admin.tefas.index') }}"
-                        class="nav-link {{ request()->is('admin/tefas*') ? 'active' : '' }}">
-                        <i class="fas fa-university"></i>
-                        <span>Jurusan TEFA</span>
+                <li class="nav-item nav-dropdown {{ request()->is('admin/tefas*', 'admin/products*', 'admin/services*', 'admin/carousels*') ? 'active' : '' }}">
+                    <a class="nav-link nav-dropdown-toggle">
+                        <div style="display: flex; align-items: center;">
+                            <i class="fas fa-folder-open"></i>
+                            <span>Kelola Konten</span>
+                        </div>
+                        <i class="fas fa-chevron-down dropdown-arrow"></i>
                     </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('admin.products.index') }}"
-                        class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}">
-                        <i class="fas fa-box-open"></i>
-                        <span>Produk</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('admin.services.index') }}"
-                        class="nav-link {{ request()->is('admin/services*') ? 'active' : '' }}">
-                        <i class="fas fa-handshake"></i>
-                        <span>Layanan Sewa</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('admin.carousels.index') }}"
-                        class="nav-link {{ request()->is('admin/carousels*') ? 'active' : '' }}">
-                        <i class="fas fa-images"></i>
-                        <span>Carousel</span>
-                    </a>
+                    <div class="nav-dropdown-menu">
+                        <a href="{{ route('admin.tefas.index') }}"
+                            class="nav-link {{ request()->is('admin/tefas*') ? 'active' : '' }}">
+                            <i class="fas fa-university"></i>
+                            <span>Jurusan TEFA</span>
+                        </a>
+                        <a href="{{ route('admin.products.index') }}"
+                            class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}">
+                            <i class="fas fa-box-open"></i>
+                            <span>Produk</span>
+                        </a>
+                        <a href="{{ route('admin.services.index') }}"
+                            class="nav-link {{ request()->is('admin/services*') ? 'active' : '' }}">
+                            <i class="fas fa-handshake"></i>
+                            <span>Layanan Sewa</span>
+                        </a>
+                        <a href="{{ route('admin.carousels.index') }}"
+                            class="nav-link {{ request()->is('admin/carousels*') ? 'active' : '' }}">
+                            <i class="fas fa-images"></i>
+                            <span>Carousel</span>
+                        </a>
+                    </div>
                 </li>
             </ul>
 
@@ -727,10 +798,10 @@
                         <i class="fas fa-envelope"></i>
                         <span>Pesan Masuk</span>
                         @php
-                            $unreadCount = \App\Models\Contact::where('status', 'new')->count();
+                        $unreadCount = \App\Models\Contact::where('status', 'new')->count();
                         @endphp
                         @if ($unreadCount > 0)
-                            <span class="badge-counter">{{ $unreadCount }}</span>
+                        <span class="badge-counter">{{ $unreadCount }}</span>
                         @endif
                     </a>
                 </li>
@@ -774,7 +845,6 @@
         <header class="topbar">
             <div class="topbar-left">
                 <h1>@yield('page-title', 'Dashboard')</h1>
-                <p>@yield('page-subtitle', 'Panel Admin BLUD SMKN 1 Ciamis')</p>
             </div>
 
             <div class="topbar-right">
@@ -815,35 +885,35 @@
         <main class="content-area">
             <!-- Session Messages -->
             @if (session('success'))
-                <div class="alert-admin alert-success">
-                    <i class="fas fa-check-circle"></i>
-                    {{ session('success') }}
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-                </div>
+            <div class="alert-admin alert-success">
+                <i class="fas fa-check-circle"></i>
+                {{ session('success') }}
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+            </div>
             @endif
 
             @if (session('error'))
-                <div class="alert-admin alert-danger">
-                    <i class="fas fa-exclamation-circle"></i>
-                    {{ session('error') }}
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-                </div>
+            <div class="alert-admin alert-danger">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ session('error') }}
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+            </div>
             @endif
 
             @if (session('warning'))
-                <div class="alert-admin alert-warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    {{ session('warning') }}
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-                </div>
+            <div class="alert-admin alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                {{ session('warning') }}
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+            </div>
             @endif
 
             @if (session('info'))
-                <div class="alert-admin alert-info">
-                    <i class="fas fa-info-circle"></i>
-                    {{ session('info') }}
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-                </div>
+            <div class="alert-admin alert-info">
+                <i class="fas fa-info-circle"></i>
+                {{ session('info') }}
+                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
+            </div>
             @endif
 
             <!-- Page Content -->
@@ -993,6 +1063,31 @@
                     !isClickOnMenuToggle &&
                     sidebar.classList.contains('show')) {
                     sidebar.classList.remove('show');
+                }
+            });
+
+            // Dropdown menu toggle
+            document.querySelectorAll('.nav-dropdown-toggle').forEach(function(toggle) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const parent = this.closest('.nav-dropdown');
+
+                    // Close other dropdowns
+                    document.querySelectorAll('.nav-dropdown').forEach(function(dropdown) {
+                        if (dropdown !== parent) {
+                            dropdown.classList.remove('active');
+                        }
+                    });
+
+                    // Toggle current dropdown
+                    parent.classList.toggle('active');
+                });
+            });
+
+            // Keep dropdown open if one of its items is active
+            document.querySelectorAll('.nav-dropdown').forEach(function(dropdown) {
+                if (dropdown.querySelector('.nav-dropdown-menu .nav-link.active')) {
+                    dropdown.classList.add('active');
                 }
             });
 

@@ -113,40 +113,7 @@
 
     <!-- Content Row -->
     <div class="row">
-        <div class="col-lg-6 mb-4">
-            <!-- Quick Actions Card -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
-                        <i class="fas fa-bolt me-2"></i>Menu Cepat
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="d-grid gap-2 d-md-block">
-                        <a href="{{ route('admin.tefas.index') }}" class="btn btn-primary m-1">
-                            <i class="fas fa-school me-1"></i> TEFA
-                        </a>
-                        <a href="{{ route('admin.products.index') }}" class="btn btn-success m-1">
-                            <i class="fas fa-box-open me-1"></i> Produk
-                        </a>
-                        <a href="{{ route('admin.services.index') }}" class="btn btn-info m-1">
-                            <i class="fas fa-handshake me-1"></i> Layanan
-                        </a>
-                        <a href="{{ route('admin.contacts.index') }}" class="btn btn-warning m-1">
-                            <i class="fas fa-envelope me-1"></i> Pesan
-                        </a>
-                        <a href="{{ route('admin.profile.edit') }}" class="btn btn-secondary m-1">
-                            <i class="fas fa-user me-1"></i> Profil
-                        </a>
-                        <a href="{{ route('admin.settings.index') }}" class="btn btn-dark m-1">
-                            <i class="fas fa-cog me-1"></i> Pengaturan
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-12 mb-4">
             <!-- System Info Card -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">

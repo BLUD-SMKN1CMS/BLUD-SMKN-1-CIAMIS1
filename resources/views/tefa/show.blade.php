@@ -109,7 +109,7 @@
                     <div class="product-image">
                         <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
                         @if($product->stock <= 0)
-                            <div class="product-badge out-of-stock">Habis
+                            <div class="product-badge out-of-stock">Tidak Tersedia
                     </div>
                     @elseif($product->is_featured)
                     <div class="product-badge featured">Unggulan</div>
@@ -128,7 +128,7 @@
                         </span>
                         @else
                         <span class="stock-unavailable">
-                            <i class="fas fa-times-circle"></i> Habis
+                            <i class="fas fa-times-circle"></i> Tidak Tersedia
                         </span>
                         @endif
                     </div>

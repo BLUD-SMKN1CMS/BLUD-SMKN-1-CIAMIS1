@@ -87,7 +87,7 @@
         </div>
         @else
         <!-- Fallback jika tidak ada carousel di database -->
-        <div class="text-center py-5" style="background: linear-gradient(135deg, #E3F2FD 0%, #87CEEB 100%); border-radius: 20px;">
+        <div class="text-center py-5" style="background: #E3F2FD; border-radius: 20px;">
             <img src="{{ asset('assets/teachingfactorysmea.png') }}"
                 alt="TEFA SMKN 1 Ciamis"
                 class="img-fluid mb-4"
@@ -627,7 +627,7 @@
         width: 70px;
         height: 70px;
         margin: 0 auto 1rem;
-        background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+        background: var(--primary-blue);
         border-radius: 50%;
         display: flex;
         align-items: center;

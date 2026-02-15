@@ -29,7 +29,7 @@
                     <div class="main-image-wrapper">
                         <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="main-product-image" id="mainImage">
                         @if($product->stock <= 0)
-                            <div class="out-of-stock-badge">Stok Habis
+                            <div class="out-of-stock-badge">Tidak Tersedia
                     </div>
                     @elseif($product->stock < 10)
                         <div class="low-stock-badge">Stok Terbatas
@@ -87,11 +87,11 @@
             <div class="stock-info">
                 @if($product->stock > 0)
                 <span class="in-stock">
-                    <i class="fas fa-check-circle"></i> Tersedia ({{ $product->stock }} {{ $product->unit }})
+                    <i class="fas fa-check-circle"></i> Tersedia
                 </span>
                 @else
                 <span class="out-of-stock">
-                    <i class="fas fa-times-circle"></i> Stok Habis
+                    <i class="fas fa-times-circle"></i> Tidak Tersedia
                 </span>
                 @endif
             </div>
@@ -118,7 +118,7 @@
                 @else
                 <button class="btn-add-to-cart disabled w-100" disabled>
                     <i class="fas fa-ban"></i>
-                    <span>Stok Habis</span>
+                    <span>Tidak Tersedia</span>
                 </button>
                 @endif
             </div>
@@ -160,7 +160,7 @@
                     <div class="product-card-image">
                         <img src="{{ $relatedProduct->image_url }}" alt="{{ $relatedProduct->name }}">
                         @if($relatedProduct->stock <= 0)
-                            <div class="product-badge out-of-stock">Habis
+                            <div class="product-badge out-of-stock">Tidak Tersedia
                     </div>
                     @elseif($relatedProduct->is_featured)
                     <div class="product-badge featured">Unggulan</div>
@@ -176,7 +176,7 @@
                         </span>
                         @else
                         <span class="stock-unavailable">
-                            <i class="fas fa-times-circle"></i> Habis
+                            <i class="fas fa-times-circle"></i> Tidak Tersedia
                         </span>
                         @endif
                     </div>
@@ -655,7 +655,7 @@
                     <div>
                         <h6 class="mb-1 fw-bold text-dark">{{ $product->name }}</h6>
                         <p class="mb-0 text-primary fw-bold" id="basePrice" data-price="{{ $product->price }}">{{ $product->formatted_price }}</p>
-                        <small class="text-muted">Stok: {{ $product->stock }}</small>
+                        <small class="text-muted">{{ $product->stock > 0 ? 'Tersedia' : 'Tidak Tersedia' }}</small>
                     </div>
                 </div>
 
@@ -763,9 +763,9 @@
     }
 
     function submitOrder() {
-        const productName = @json($product - > name);
-        const productUnit = @json($product - > unit ?? 'pcs');
-        const tefaName = @json($product - > tefa - > name ?? 'SMKN 1 Ciamis');
+        const productName = @json($product->name);
+        const productUnit = @json($product->unit ?? 'pcs');
+        const tefaName = @json($product->tefa->name ?? 'SMKN 1 Ciamis');
         const buyerName = document.getElementById('buyerName').value;
         const buyerPhone = document.getElementById('buyerPhone').value;
         const qty = document.getElementById('orderQty').value;

@@ -4,7 +4,7 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="faq-hero py-5 mb-5" style="background: linear-gradient(135deg, #4A90E2 0%, #2a5298 100%); color: white; position: relative; overflow: hidden;">
+<section class="faq-hero py-5 mb-5" style="background: #4A90E2; color: white; position: relative; overflow: hidden;">
     <div class="container position-relative z-1 text-center py-5">
         <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">Pertanyaan Umum (FAQ)</h1>
         <p class="lead mb-0" data-aos="fade-up" data-aos-delay="100">Temukan jawaban atas pertanyaan Anda seputar layanan dan produk kami.</p>
@@ -156,7 +156,7 @@
         border-color: rgba(0,0,0,.125);
     }
     .btn-whatsapp {
-        background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+        background: #25D366;
         color: white;
         transition: transform 0.3s;
     }

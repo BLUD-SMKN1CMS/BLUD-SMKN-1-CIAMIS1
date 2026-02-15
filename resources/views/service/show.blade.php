@@ -4,7 +4,7 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="service-hero" style="background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%); padding: 100px 0 60px; position: relative; overflow: hidden;">
+<section class="service-hero" style="background: #4A90E2; padding: 100px 0 60px; position: relative; overflow: hidden;">
     <div class="hero-pattern" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
     
     <div class="container" style="position: relative; z-index: 1;">
@@ -54,7 +54,7 @@
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="info-card" style="background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 50px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.1)';">
-                    <div class="icon mb-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                    <div class="icon mb-3" style="width: 60px; height: 60px; background: #4A90E2; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-clock" style="font-size: 1.5rem; color: white;"></i>
                     </div>
                     <h5 class="fw-bold mb-2">Harga Per Jam</h5>
@@ -64,7 +64,7 @@
             
             <div class="col-md-4">
                 <div class="info-card" style="background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 50px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.1)';">
-                    <div class="icon mb-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                    <div class="icon mb-3" style="width: 60px; height: 60px; background: #f5576c; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-calendar-day" style="font-size: 1.5rem; color: white;"></i>
                     </div>
                     <h5 class="fw-bold mb-2">Harga Per Hari</h5>
@@ -74,7 +74,7 @@
             
             <div class="col-md-4">
                 <div class="info-card" style="background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 50px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.1)';">
-                    <div class="icon mb-3" style="width: 60px; height: 60px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                    <div class="icon mb-3" style="width: 60px; height: 60px; background: #00f2fe; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-check-circle" style="font-size: 1.5rem; color: white;"></i>
                     </div>
                     <h5 class="fw-bold mb-2">Status</h5>
@@ -114,7 +114,7 @@
                         @foreach($features as $feature)
                         <div class="col-md-6">
                             <div class="feature-item d-flex align-items-start p-3" style="border-radius: 12px; transition: all 0.3s ease;" onmouseover="this.style.background='#f7fafc';" onmouseout="this.style.background='transparent';">
-                                <div class="feature-icon me-3" style="width: 50px; height: 50px; background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <div class="feature-icon me-3" style="width: 50px; height: 50px; background: #4A90E2; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                                     <i class="fas {{ $feature['icon'] }}" style="color: white; font-size: 1.2rem;"></i>
                                 </div>
                                 <div>
@@ -158,6 +158,14 @@
                             <label class="form-label fw-semibold" style="color: #4a5568;">No. Telepon</label>
                             <input type="tel" name="customer_phone" class="form-control" required style="border-radius: 10px; padding: 12px; border: 2px solid #e2e8f0;" placeholder="08xxxxxxxxxx">
                         </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" style="color: #4a5568;">Jenis Sewa</label>
+                            <select name="rental_type" id="rentalType" class="form-select" required style="border-radius: 10px; padding: 12px; border: 2px solid #e2e8f0;">
+                                <option value="Harian">Harian</option>
+                                <option value="Bulanan">Bulanan</option>
+                            </select>
+                        </div>
                         
                         <div class="mb-3">
                             <label class="form-label fw-semibold" style="color: #4a5568;">Tanggal Sewa</label>
@@ -183,7 +191,7 @@
                             <textarea name="notes" class="form-control" rows="3" style="border-radius: 10px; padding: 12px; border: 2px solid #e2e8f0;" placeholder="Tambahkan catatan jika ada"></textarea>
                         </div>
                         
-                        <button type="button" onclick="sendToWhatsapp(event)" class="btn btn-success w-100 py-3" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); border: none; border-radius: 12px; font-weight: 600; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);">
+                        <button type="button" onclick="sendToWhatsapp(event)" class="btn btn-success w-100 py-3" style="background: #25D366; border: none; border-radius: 12px; font-weight: 600; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);">
                              <i class="fab fa-whatsapp me-2"></i>Pesan via WhatsApp
                         </button>
                         
@@ -210,7 +218,7 @@
             @foreach($footerServices->where('id', '!=', $service->id)->take(3) as $relatedService)
             <div class="col-md-4">
                 <div class="service-card" style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.08); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 20px rgba(0,0,0,0.08)';">
-                    <div class="card-image" style="height: 200px; background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%); display: flex; align-items: center; justify-content: center;">
+                    <div class="card-image" style="height: 200px; background: #4A90E2; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-{{ $relatedService->unit == 'orang' ? 'users' : ($relatedService->unit == 'bus' ? 'bus' : ($relatedService->unit == 'lab' ? 'laptop' : 'box')) }}" style="font-size: 4rem; color: white; opacity: 0.9;"></i>
                     </div>
                     <div class="card-body p-4">
@@ -236,7 +244,7 @@
 @endif
 
 <!-- Contact CTA -->
-<section class="contact-cta py-5" style="background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);">
+<section class="contact-cta py-5" style="background: #4A90E2;">
     <div class="container text-center">
         <h2 class="text-white fw-bold mb-3">Ada Pertanyaan?</h2>
         <p class="text-white mb-4" style="opacity: 0.9; font-size: 1.1rem;">Tim kami siap membantu Anda dengan senang hati</p>
@@ -263,6 +271,7 @@ function sendToWhatsapp(e) {
     const name = document.querySelector('input[name="customer_name"]').value;
 
     const phone = document.querySelector('input[name="customer_phone"]').value;
+    const rentalType = document.getElementById('rentalType').value;
     const rentalDate = document.querySelector('input[name="rental_date"]').value;
     const returnDate = document.querySelector('input[name="return_date"]').value;
     const notes = document.querySelector('textarea[name="notes"]').value; // Opsional
@@ -281,6 +290,7 @@ function sendToWhatsapp(e) {
     message += `👤 Nama: ${name}\n`;
     message += `📱 No. HP: ${phone}\n\n`;
     message += `📅 *Detail Sewa:*\n`;
+    message += `Jenis: ${rentalType}\n`;
     message += `Mulai: ${formatDate(rentalDate)}\n`;
     message += `Selesai: ${formatDate(returnDate)}\n`;
     message += `💰 Metode Bayar: Tunai\n`;

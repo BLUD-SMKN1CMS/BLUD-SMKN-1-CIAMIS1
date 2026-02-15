@@ -3,7 +3,7 @@
 @section('title', 'Pemesanan Berhasil - BLUD SMKN 1 CIAMIS')
 
 @section('content')
-<section class="success-page" style="min-height: 80vh; display: flex; align-items: center; background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%); position: relative; overflow: hidden;">
+<section class="success-page" style="min-height: 80vh; display: flex; align-items: center; background: #4A90E2; position: relative; overflow: hidden;">
     <div class="pattern" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.1; background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
     
     <div class="container" style="position: relative; z-index: 1;">
@@ -13,7 +13,7 @@
                 <div class="success-card" style="background: white; border-radius: 30px; padding: 60px 40px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center;">
                     <!-- Success Icon Animation -->
                     <div class="success-icon mb-4" style="animation: scaleIn 0.5s ease-out;">
-                        <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(72, 187, 120, 0.4);">
+                        <div style="width: 120px; height: 120px; background: #48bb78; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(72, 187, 120, 0.4);">
                             <i class="fas fa-check" style="font-size: 4rem; color: white;"></i>
                         </div>
                     </div>
@@ -127,7 +127,7 @@
                         <a href="{{ route('home') }}" class="btn btn-outline-primary btn-lg px-5 py-3" style="border-radius: 50px; font-weight: 600; border-width: 2px;">
                             <i class="fas fa-home me-2"></i>Kembali ke Beranda
                         </a>
-                        <a href="{{ route('services.all') }}" class="btn btn-primary btn-lg px-5 py-3" style="background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%); border: none; border-radius: 50px; font-weight: 600; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+                        <a href="{{ route('services.all') }}" class="btn btn-primary btn-lg px-5 py-3" style="background: #4A90E2; border: none; border-radius: 50px; font-weight: 600; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
                             <i class="fas fa-list me-2"></i>Lihat Layanan Lain
                         </a>
                     </div>

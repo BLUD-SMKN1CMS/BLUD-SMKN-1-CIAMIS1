@@ -425,31 +425,17 @@
 
         /* ===== FOOTER OPTIMIZED WITH ANIMATIONS ===== */
         .footer {
-            background: linear-gradient(135deg, #0a192f, #0f2744, #1a365d);
+            background: #1a365d;
             color: white;
             padding: 60px 0 25px;
             /* Tambah padding atas bawah */
             position: relative;
             overflow: hidden;
-            animation: footerGradient 20s ease infinite;
-            background-size: 200% 200%;
             width: 100%;
             /* HAPUS: margin-top: auto; */
         }
 
-        @keyframes footerGradient {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
+        /* Footer Gradient Animation Removed */
 
 
         .footer::before {
@@ -459,25 +445,11 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg,
-                    #1877f2 0%,
-                    #E1306C 25%,
-                    #FF0000 50%,
-                    #000000 75%,
-                    #25D366 100%);
+            background: var(--primary-blue);
             z-index: 1;
-            animation: rainbow 5s linear infinite;
         }
 
-        @keyframes rainbow {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            100% {
-                background-position: 100% 50%;
-            }
-        }
+        /* Rainbow Animation Removed */
 
         .footer .footer-wave {
             position: absolute;
@@ -640,7 +612,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            background: rgba(255, 255, 255, 0.1);
             transition: 0.6s;
         }
 
@@ -654,7 +626,7 @@
         }
 
         .social-icon.instagram {
-            background: linear-gradient(45deg, #833AB4, #E1306C, #F77737);
+            background: #E1306C;
         }
 
         .social-icon.youtube {

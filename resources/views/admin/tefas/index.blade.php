@@ -41,7 +41,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $tefa->name }}</td>
-                                    <td><span class="badge badge-info">{{ $tefa->code }}</span></td>
+                                    <td><span class="badge badge-primary">{{ $tefa->code }}</span></td>
                                     <td>
                                         @if ($tefa->icon)
                                             <i class="{{ $tefa->icon }}"></i>

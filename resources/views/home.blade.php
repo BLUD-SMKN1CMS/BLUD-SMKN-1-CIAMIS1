@@ -176,7 +176,7 @@
                         <p class="text-muted small flex-grow-1 mb-3">{{ Str::limit($tefa->description, 80) }}</p>
                         <div class="mt-auto">
                             <span class="badge bg-primary">{{ $tefa->products_count ?? 0 }} Produk</span>
-                            <span class="badge bg-success ms-1">{{ $tefa->code }}</span>
+                            <span class="badge glass-effect glass-success ms-1">{{ $tefa->code }}</span>
                         </div>
                     </div>
                 </a>
@@ -217,7 +217,7 @@
                             style="height: 200px; object-fit: cover;"
                             onerror="this.src='https://via.placeholder.com/300x200/4A90E2/FFFFFF?text={{ urlencode(substr($product->name, 0, 20)) }}'">
 
-                        <span class="position-absolute top-0 end-0 m-2 badge bg-success">
+                        <span class="position-absolute top-0 end-0 m-2 badge glass-effect glass-success">
                             {{ $product->tefa->code ?? 'TEFA' }}
                         </span>
                         @if($product->is_featured)

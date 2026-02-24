@@ -14,15 +14,17 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         Admin::create([
-            'name' => 'Administrator',
-            'username' => 'admin',
+            'name' => 'SuperAdmin',
+            'username' => 'superadmin',
             'email' => 'admin@smkn1ciamis.sch.id',
             'password' => Hash::make('kita ini admin cuy'),
-            'role' => 'super_admin',
+            'role' => 'super-admin',
+            'tefa_id' => null, // Super admin tidak terikat TEFA tertentu
         ]);
 
-        $this->command->info('Admin berhasil dibuat!');
-        $this->command->info('Username: admin');
+        $this->command->info('✅ Super Admin berhasil dibuat!');
+        $this->command->info('Username: superadmin');
         $this->command->info('Password: kita ini admin cuy');
+        $this->command->info('Role: super-admin');
     }
 }

@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ContactController as AdminContactController;
 use App\Http\Controllers\Admin\CarouselController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\AdminManagementController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\BookingController;
 
@@ -40,46 +41,52 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Public Admin Routes (No auth required)
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-    
+
     // Protected Admin Routes (Auth required)
     Route::middleware(['auth:admin'])->group(function () {
         // Dashboard & Auth
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-        
+
         // CRUD Routes
-        Route::resource('tefas', TefaController::class);
+        // Tefas - Super Admin only
+        Route::middleware(\App\Http\Middleware\AdminSuper::class)->resource('tefas', TefaController::class);
         Route::resource('products', ProductController::class);
         Route::resource('services', ServiceController::class);
         Route::resource('payments', PaymentController::class);
-        
+
+        // Admin Management (Super Admin only)
+        Route::middleware(\App\Http\Middleware\AdminSuper::class)->resource('admin-management', AdminManagementController::class);
+
         // Payment Actions
         Route::post('/payments/{payment}/confirm', [PaymentController::class, 'confirm'])->name('payments.confirm');
         Route::post('/payments/{payment}/cancel', [PaymentController::class, 'cancel'])->name('payments.cancel');
-        
+
         // Contact Management
         Route::resource('contacts', AdminContactController::class)->except(['create', 'store']);
         Route::post('/contacts/{contact}/reply', [AdminContactController::class, 'reply'])->name('contacts.reply');
         Route::post('/contacts/{contact}/mark-as-read', [AdminContactController::class, 'markAsRead'])->name('contacts.markAsRead');
         Route::post('/contacts/bulk-delete', [AdminContactController::class, 'bulkDelete'])->name('contacts.bulkDelete');
-        
-        // Carousel Management
-        Route::resource('carousels', CarouselController::class);
-        Route::post('/carousels/{carousel}/set-active', [CarouselController::class, 'setActive'])->name('carousels.setActive');
-        Route::post('/carousels/{carousel}/toggle-status', [CarouselController::class, 'toggleStatus'])->name('carousels.toggle-status');
-        Route::post('/carousels/update-order', [CarouselController::class, 'updateOrder'])->name('carousels.update-order');
-        
+
+        // Carousel Management - Super Admin only
+        Route::middleware(\App\Http\Middleware\AdminSuper::class)->group(function () {
+            Route::resource('carousels', CarouselController::class);
+            Route::post('/carousels/{carousel}/set-active', [CarouselController::class, 'setActive'])->name('carousels.setActive');
+            Route::post('/carousels/{carousel}/toggle-status', [CarouselController::class, 'toggleStatus'])->name('carousels.toggle-status');
+            Route::post('/carousels/update-order', [CarouselController::class, 'updateOrder'])->name('carousels.update-order');
+        });
+
         // ============ PROFILE ROUTES (FIXED) ============
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password'); // Perbaikan: pakai dash
         Route::put('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
         // ============ END PROFILE ROUTES ============
-        
+
         // Settings Management
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
-        
+
         // Stats & Export
         Route::get('/stats', [DashboardController::class, 'getStats'])->name('stats');
         Route::get('/export/tefas', [TefaController::class, 'export'])->name('export.tefas');
@@ -98,7 +105,7 @@ Route::prefix('api')->name('api.')->group(function () {
     Route::get('/products/latest', [HomeController::class, 'getLatestProducts'])->name('products.latest');
     Route::get('/services/featured', [HomeController::class, 'getFeaturedServices'])->name('services.featured');
     Route::get('/search', [HomeController::class, 'search'])->name('search');
-    
+
     Route::prefix('admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/dashboard-stats', [DashboardController::class, 'getDashboardStats'])->name('dashboard.stats');
         Route::get('/recent-activities', [DashboardController::class, 'getRecentActivities'])->name('dashboard.activities');
@@ -111,10 +118,10 @@ Route::fallback(function () {
 });
 
 // ==================== REDIRECT FOR OLD LOGIN ====================
-Route::get('/login', function() {
+Route::get('/login', function () {
     return redirect()->route('admin.login');
 })->name('login');
 
-Route::post('/login', function() {
+Route::post('/login', function () {
     return redirect()->route('admin.login');
 });

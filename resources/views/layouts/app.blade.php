@@ -538,25 +538,11 @@
         .footer-links li {
             margin-bottom: 10px;
             position: relative;
-            padding-left: 18px;
             transition: all 0.3s ease;
         }
 
         .footer-links li:hover {
             transform: translateX(5px);
-        }
-
-        .footer-links li::before {
-            content: '›';
-            position: absolute;
-            left: 0;
-            color: var(--primary-blue);
-            font-size: 16px;
-            transition: transform 0.3s ease;
-        }
-
-        .footer-links li:hover::before {
-            transform: translateX(3px);
         }
 
         .footer-links a {
@@ -889,6 +875,9 @@
             }
         }
     </style>
+
+    <!-- Vite CSS -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
 </head>

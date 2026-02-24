@@ -730,7 +730,7 @@
                 <img src="{{ asset('assets/iconsmea.png') }}" alt="Logo">
                 <div class="sidebar-brand-text">
                     <h4>BLUD SMKN 1</h4>
-                    <small>Admin</small>
+                    <small>{{ Auth::guard('admin')->user()->name }}</small>
                 </div>
             </a>
         </div>
@@ -762,11 +762,13 @@
                         <i class="fas fa-chevron-down dropdown-arrow"></i>
                     </a>
                     <div class="nav-dropdown-menu">
+                        @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->isSuperAdmin())
                         <a href="{{ route('admin.tefas.index') }}"
                             class="nav-link {{ request()->is('admin/tefas*') ? 'active' : '' }}">
                             <i class="fas fa-university"></i>
                             <span>Jurusan TEFA</span>
                         </a>
+                        @endif
                         <a href="{{ route('admin.products.index') }}"
                             class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}">
                             <i class="fas fa-box-open"></i>
@@ -777,11 +779,13 @@
                             <i class="fas fa-handshake"></i>
                             <span>Layanan Sewa</span>
                         </a>
+                        @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->isSuperAdmin())
                         <a href="{{ route('admin.carousels.index') }}"
                             class="nav-link {{ request()->is('admin/carousels*') ? 'active' : '' }}">
                             <i class="fas fa-images"></i>
                             <span>Carousel</span>
                         </a>
+                        @endif
                     </div>
                 </li>
             </ul>
@@ -821,6 +825,16 @@
                     </a>
                 </li>
 
+                @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->isSuperAdmin())
+                <li class="nav-item">
+                    <a href="{{ route('admin.admin-management.index') }}"
+                        class="nav-link {{ request()->is('admin/admin-management*') ? 'active' : '' }}">
+                        <i class="fas fa-users-cog"></i>
+                        <span>Kelola Admin TEFA</span>
+                    </a>
+                </li>
+                @endif
+
                 <li class="nav-item">
                     <a href="{{ route('admin.profile.edit') }}"
                         class="nav-link {{ request()->is('admin/profile*') ? 'active' : '' }}">
@@ -856,19 +870,11 @@
                         </div>
                         <div class="user-info">
                             <div class="user-name">{{ Auth::guard('admin')->user()->name ?? 'Administrator' }}</div>
-                            <div class="user-role">Super Admin</div>
                         </div>
                         <i class="fas fa-chevron-down ms-2"></i>
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-end">
-                        <a class="dropdown-item" href="{{ route('admin.profile.edit') }}">
-                            <i class="fas fa-user me-2"></i> Profil
-                        </a>
-                        <a class="dropdown-item" href="{{ route('admin.profile.change-password') }}">
-                            <i class="fas fa-key me-2"></i> Ubah Password
-                        </a>
-                        <div class="dropdown-divider"></div>
                         <form method="POST" action="{{ route('admin.logout') }}" id="logoutForm">
                             @csrf
                             <a class="dropdown-item text-danger" href="#"

@@ -22,7 +22,13 @@ class DashboardController extends Controller
             'total_contacts' => Contact::where('status', 'new')->count(),
         ];
         
+        // Pesan terbaru
+        $recentContacts = Contact::latest()->take(5)->get();
+
+        // TEFA terbaru
+        $recentTefas = Tefa::latest()->take(5)->get();
+
         // Return view DENGAN LAYOUT ADMIN
-        return view('admin.dashboard.index', compact('stats'));
+        return view('admin.dashboard.index', compact('stats', 'recentContacts', 'recentTefas'));
     }
 }

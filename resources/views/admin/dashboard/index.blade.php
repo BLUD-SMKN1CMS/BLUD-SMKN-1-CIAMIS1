@@ -112,36 +112,38 @@
         </div>
     </div>
 
-    <!-- Content Row -->
-    <div class="row">
+    <!-- Row Bawah: Pesan Terbaru -->
+    <div class="row mt-2">
+        <!-- Pesan Masuk Terbaru -->
         <div class="col-lg-12 mb-4">
-            <!-- System Info Card -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
                     <h6 class="m-0 font-weight-bold text-primary">
-                        <i class="fas fa-info-circle me-2"></i>Informasi Sistem
+                        <i class="fas fa-envelope me-2"></i>Pesan Masuk Terbaru
                     </h6>
+                    <a href="{{ route('admin.contacts.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Aplikasi:</strong> BLUD SMKN 1 CIAMIS</p>
-                            <p><strong>Versi:</strong> 1.0.0</p>
+                <div class="card-body p-0">
+                    @if($recentContacts->isEmpty())
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                            <p class="mb-0">Belum ada pesan masuk</p>
                         </div>
-                        <div class="col-md-6">
-                            <p><strong>Framework:</strong> Laravel {{ app()->version() }}</p>
-                            <p><strong>PHP:</strong> {{ phpversion() }}</p>
+                    @else
+                        <div class="list-group list-group-flush">
+                            @foreach($recentContacts as $contact)
+                            <div class="list-group-item list-group-item-action px-3 py-2">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="fw-semibold">{{ $contact->name }}</div>
+                                        <small class="text-muted">{{ Str::limit($contact->message, 60) }}</small>
+                                    </div>
+                                    <small class="text-muted text-nowrap ms-2">{{ $contact->created_at->diffForHumans() }}</small>
+                                </div>
+                            </div>
+                            @endforeach
                         </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Status:</strong> <span class="badge bg-success">Aktif</span></p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Waktu:</strong> {{ now()->format('d F Y H:i:s') }}</p>
-                        </div>
-                    </div>
+                    @endif
                 </div>
             </div>
         </div>

@@ -62,7 +62,7 @@
                         <img src="{{ asset('storage/' . $service->image) }}" alt="{{ $service->name }}" class="w-100 h-100 object-fit-cover">
                         @else
                         <div class="text-center text-primary opacity-75">
-                            <i class="fas fa-{{ $service->unit == 'orang' ? 'users' : ($service->unit == 'bus' ? 'bus' : ($service->unit == 'lab' ? 'laptop' : 'box')) }} fa-4x mb-3"></i>
+                            <i class="{{ $service->icon ?? 'fas fa-concierge-bell' }} fa-4x mb-3 text-white"></i>
                         </div>
                         @endif
 

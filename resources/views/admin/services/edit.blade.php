@@ -19,13 +19,13 @@
             <form action="{{ route('admin.services.update', $service->id) }}" method="POST">
                 @csrf
                 @method('PUT')
-                
+
                 <div class="form-group">
                     <label>Nama Layanan *</label>
-                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" 
+                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
                         value="{{ old('name', $service->name) }}" required>
                     @error('name')
-                        <div class="invalid-feedback">{{ $message }}</div>
+                    <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
@@ -37,6 +37,22 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
+                            <label>Harga per Jam</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Rp</span>
+                                </div>
+                                <input type="number" name="price_per_hour" class="form-control @error('price_per_hour') is-invalid @enderror"
+                                    value="{{ old('price_per_hour', $service->price_per_hour ?? 0) }}" placeholder="Opsional">
+                                @error('price_per_hour')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <small class="text-muted">Kosongkan jika tidak dikenakan biaya per jam</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
                             <label>Harga per Hari *</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -45,19 +61,9 @@
                                 <input type="number" name="price_per_day" class="form-control @error('price_per_day') is-invalid @enderror"
                                     value="{{ old('price_per_day', $service->price_per_day) }}" required>
                                 @error('price_per_day')
-                                    <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Unit *</label>
-                            <input type="text" name="unit" class="form-control @error('unit') is-invalid @enderror"
-                                value="{{ old('unit', $service->unit) }}" required placeholder="Contoh: jam, hari, unit">
-                            @error('unit')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
                         </div>
                     </div>
                 </div>
@@ -103,7 +109,7 @@
         </div>
     </div>
 </div>
-    </div>
+</div>
 </div>
 
 <!-- Modal untuk Pilih Icon -->
@@ -127,14 +133,14 @@
                                 <input type="text" class="form-control" id="iconSearch" placeholder="Cari icon...">
                             </div>
                         </div>
-                        
+
                         <div class="icon-grid" id="iconGrid" style="max-height: 400px; overflow-y: auto;">
                             <!-- Icon akan diisi oleh JavaScript -->
                         </div>
-                        
+
                         <div class="mt-3 alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
-                            Klik icon untuk memilih. Icon yang dipilih: 
+                            Klik icon untuk memilih. Icon yang dipilih:
                             <strong id="currentSelectedIcon">{{ old('icon', $service->icon ?? 'fas fa-concierge-bell') }}</strong>
                         </div>
                     </div>
@@ -161,7 +167,7 @@
         gap: 12px;
         padding: 10px;
     }
-    
+
     .icon-item {
         padding: 15px;
         text-align: center;
@@ -171,33 +177,33 @@
         transition: all 0.3s;
         background: white;
     }
-    
+
     .icon-item:hover {
         background-color: #f8f9fa;
         border-color: #4A90E2;
         transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
-    
+
     .icon-item.selected {
         background-color: #e3f2fd;
         border-color: #4A90E2;
         border-width: 3px;
     }
-    
+
     .icon-item i {
         font-size: 28px;
         margin-bottom: 8px;
         color: #4A90E2;
     }
-    
+
     .icon-name {
         font-size: 11px;
         word-break: break-word;
         color: #495057;
         font-weight: 500;
     }
-    
+
     #iconInput[readonly] {
         background-color: #f8f9fa;
         cursor: pointer;
@@ -207,83 +213,83 @@
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    const popularIcons = [
-        'fas fa-concierge-bell', 'fas fa-utensils', 'fas fa-bed', 
-        'fas fa-wifi', 'fas fa-tv', 'fas fa-shower',
-        'fas fa-swimming-pool', 'fas fa-dumbbell', 'fas fa-spa',
-        'fas fa-parking', 'fas fa-bus', 'fas fa-taxi',
-        'fas fa-coffee', 'fas fa-cocktail', 'fas fa-birthday-cake',
-        'fas fa-camera', 'fas fa-music', 'fas fa-gamepad',
-        'fas fa-store', 'fas fa-shopping-cart', 'fas fa-credit-card',
-        'fas fa-money-bill', 'fas fa-clock', 'fas fa-calendar-alt',
-        'fas fa-map-marker-alt', 'fas fa-phone', 'fas fa-envelope',
-        'fas fa-user', 'fas fa-users', 'fas fa-child',
-        'fas fa-wheelchair', 'fas fa-paw', 'fas fa-smoking-ban',
-        // Room and Building Icons
-        'fas fa-building', 'fas fa-home', 'fas fa-door-open',
-        'fas fa-warehouse', 'fas fa-store-alt', 'fas fa-hotel',
-        'fas fa-archway', 'fas fa-dungeon', 'fas fa-place-of-worship',
-        'fas fa-restroom', 'fas fa-person-booth', 'fas fa-hospital',
-        'fas fa-school', 'fas fa-city', 'fas fa-landmark',
-        'fas fa-campground', 'fas fa-industry'
-    ];
-    
-    let selectedIcon = $('#iconInput').val();
-    
-    function loadIcons(search = '') {
-        $('#iconGrid').empty();
-        
-        const filteredIcons = popularIcons.filter(icon => 
-            icon.toLowerCase().includes(search.toLowerCase())
-        );
-        
-        filteredIcons.forEach(icon => {
-            const iconName = icon.replace('fas fa-', '');
-            const isSelected = icon === selectedIcon;
-            
-            $('#iconGrid').append(`
+    $(document).ready(function() {
+        const popularIcons = [
+            'fas fa-concierge-bell', 'fas fa-utensils', 'fas fa-bed',
+            'fas fa-wifi', 'fas fa-tv', 'fas fa-shower',
+            'fas fa-swimming-pool', 'fas fa-dumbbell', 'fas fa-spa',
+            'fas fa-parking', 'fas fa-bus', 'fas fa-taxi',
+            'fas fa-coffee', 'fas fa-cocktail', 'fas fa-birthday-cake',
+            'fas fa-camera', 'fas fa-music', 'fas fa-gamepad',
+            'fas fa-store', 'fas fa-shopping-cart', 'fas fa-credit-card',
+            'fas fa-money-bill', 'fas fa-clock', 'fas fa-calendar-alt',
+            'fas fa-map-marker-alt', 'fas fa-phone', 'fas fa-envelope',
+            'fas fa-user', 'fas fa-users', 'fas fa-child',
+            'fas fa-wheelchair', 'fas fa-paw', 'fas fa-smoking-ban',
+            // Room and Building Icons
+            'fas fa-building', 'fas fa-home', 'fas fa-door-open',
+            'fas fa-warehouse', 'fas fa-store-alt', 'fas fa-hotel',
+            'fas fa-archway', 'fas fa-dungeon', 'fas fa-place-of-worship',
+            'fas fa-restroom', 'fas fa-person-booth', 'fas fa-hospital',
+            'fas fa-school', 'fas fa-city', 'fas fa-landmark',
+            'fas fa-campground', 'fas fa-industry'
+        ];
+
+        let selectedIcon = $('#iconInput').val();
+
+        function loadIcons(search = '') {
+            $('#iconGrid').empty();
+
+            const filteredIcons = popularIcons.filter(icon =>
+                icon.toLowerCase().includes(search.toLowerCase())
+            );
+
+            filteredIcons.forEach(icon => {
+                const iconName = icon.replace('fas fa-', '');
+                const isSelected = icon === selectedIcon;
+
+                $('#iconGrid').append(`
                 <div class="icon-item ${isSelected ? 'selected' : ''}" data-icon="${icon}">
                     <i class="${icon}"></i>
                     <div class="icon-name">${iconName}</div>
                 </div>
             `);
-        });
-        
-        $('#currentSelectedIcon').text(selectedIcon);
-    }
-    
-    loadIcons();
-    
-    $('#iconSearch').on('input', function() {
-        loadIcons($(this).val());
-    });
-    
-    $(document).on('click', '.icon-item', function() {
-        $('.icon-item').removeClass('selected');
-        $(this).addClass('selected');
-        selectedIcon = $(this).data('icon');
-        $('#currentSelectedIcon').text(selectedIcon);
-    });
-    
-    $('#selectIconBtn').click(function() {
-        if (selectedIcon) {
-            $('#iconInput').val(selectedIcon);
-            $('#iconPreview i').attr('class', selectedIcon + ' fa-2x mb-2 text-primary');
-            $('#iconName').text(selectedIcon);
-            
-            const iconModal = bootstrap.Modal.getInstance(document.getElementById('iconModal'));
-            if (iconModal) {
-                iconModal.hide();
-            }
-        }
-    });
+            });
 
-    // Make readonly input clickable to open modal
-    $('#iconInput').click(function() {
-        const iconModal = new bootstrap.Modal(document.getElementById('iconModal'));
-        iconModal.show();
+            $('#currentSelectedIcon').text(selectedIcon);
+        }
+
+        loadIcons();
+
+        $('#iconSearch').on('input', function() {
+            loadIcons($(this).val());
+        });
+
+        $(document).on('click', '.icon-item', function() {
+            $('.icon-item').removeClass('selected');
+            $(this).addClass('selected');
+            selectedIcon = $(this).data('icon');
+            $('#currentSelectedIcon').text(selectedIcon);
+        });
+
+        $('#selectIconBtn').click(function() {
+            if (selectedIcon) {
+                $('#iconInput').val(selectedIcon);
+                $('#iconPreview i').attr('class', selectedIcon + ' fa-2x mb-2 text-primary');
+                $('#iconName').text(selectedIcon);
+
+                const iconModal = bootstrap.Modal.getInstance(document.getElementById('iconModal'));
+                if (iconModal) {
+                    iconModal.hide();
+                }
+            }
+        });
+
+        // Make readonly input clickable to open modal
+        $('#iconInput').click(function() {
+            const iconModal = new bootstrap.Modal(document.getElementById('iconModal'));
+            iconModal.show();
+        });
     });
-});
 </script>
 @endpush

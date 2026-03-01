@@ -22,10 +22,16 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Daftar Admin TEFA</h6>
+                <span class="badge badge-success">
+                    Total: {{ $admins->count() }}
+                </span>
+            </div>
             <div class="card-body">
                 @if($admins->count() > 0)
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -34,7 +40,7 @@
                                 <th>Email</th>
                                 <th>TEFA</th>
                                 <th>Dibuat</th>
-                                <th width="15%" class="text-center">Aksi</th>
+                                <th width="100" class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,12 +48,7 @@
                             <tr>
                                 <td>{{ $admins->firstItem() + $index }}</td>
                                 <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-circle me-2">
-                                            {{ substr($admin->name, 0, 1) }}
-                                        </div>
-                                        <strong>{{ $admin->name }}</strong>
-                                    </div>
+                                    <strong>{{ $admin->name }}</strong>
                                 </td>
                                 <td>
                                     <span class="badge bg-secondary">
@@ -66,21 +67,34 @@
                                 </td>
                                 <td>{{ $admin->created_at->diffForHumans() }}</td>
                                 <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="{{ route('admin.admin-management.edit', $admin->id) }}"
-                                            class="btn btn-sm btn-warning" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="{{ route('admin.admin-management.destroy', $admin->id) }}"
-                                            method="POST"
-                                            class="d-inline"
-                                            onsubmit="return confirm('Yakin ingin menghapus admin ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('admin.admin-management.edit', $admin->id) }}">
+                                                    <i class="fas fa-edit me-2 text-warning"></i> Edit
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li>
+                                                <form action="{{ route('admin.admin-management.destroy', $admin->id) }}"
+                                                    method="POST" id="delete-admin-{{ $admin->id }}"
+                                                    onsubmit="return confirm('Yakin ingin menghapus admin ini?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+                                                <button type="submit" form="delete-admin-{{ $admin->id }}"
+                                                    class="dropdown-item text-danger text-decoration-none w-100 text-start">
+                                                    <i class="fas fa-trash me-2"></i> Hapus
+                                                </button>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </td>
                             </tr>
@@ -91,6 +105,21 @@
 
                 <div class="mt-3">
                     {{ $admins->links() }}
+                </div>
+                <div class="mt-3">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <small class="text-muted">
+                                Menampilkan {{ $admins->count() }} admin
+                            </small>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Klik 3 titik untuk menu aksi
+                            </small>
+                        </div>
+                    </div>
                 </div>
                 @else
                 <div class="text-center py-5">
@@ -106,18 +135,36 @@
     </div>
 </div>
 
+@endsection
+
+@push('styles')
 <style>
-    .avatar-circle {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 18px;
+    .dropdown-toggle::after {
+        display: none !important;
+    }
+
+    .dropdown-menu {
+        min-width: 180px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        border: 1px solid #eee;
+    }
+
+    .dropdown-item {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+        transform: translateX(3px);
+    }
+
+    .dropdown-item i {
+        width: 20px;
+        text-align: center;
     }
 </style>
-@endsection
+@endpush

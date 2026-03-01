@@ -46,9 +46,9 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Total Produk</div>
+                                Total Layanan</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['total_products'] ?? 0 }}</div>
-                            <div class="text-xs text-muted mt-1">Produk dari 7 TEFA</div>
+                            <div class="text-xs text-muted mt-1">Layanan dari 7 TEFA</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-box-open fa-2x text-gray-300"></i>
@@ -125,24 +125,24 @@
                 </div>
                 <div class="card-body p-0">
                     @if($recentContacts->isEmpty())
-                        <div class="text-center text-muted py-4">
-                            <i class="fas fa-inbox fa-2x mb-2"></i>
-                            <p class="mb-0">Belum ada pesan masuk</p>
-                        </div>
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-inbox fa-2x mb-2"></i>
+                        <p class="mb-0">Belum ada pesan masuk</p>
+                    </div>
                     @else
-                        <div class="list-group list-group-flush">
-                            @foreach($recentContacts as $contact)
-                            <div class="list-group-item list-group-item-action px-3 py-2">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div>
-                                        <div class="fw-semibold">{{ $contact->name }}</div>
-                                        <small class="text-muted">{{ Str::limit($contact->message, 60) }}</small>
-                                    </div>
-                                    <small class="text-muted text-nowrap ms-2">{{ $contact->created_at->diffForHumans() }}</small>
+                    <div class="list-group list-group-flush">
+                        @foreach($recentContacts as $contact)
+                        <div class="list-group-item list-group-item-action px-3 py-2">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="fw-semibold">{{ $contact->name }}</div>
+                                    <small class="text-muted">{{ Str::limit($contact->message, 60) }}</small>
                                 </div>
+                                <small class="text-muted text-nowrap ms-2">{{ $contact->created_at->diffForHumans() }}</small>
                             </div>
-                            @endforeach
                         </div>
+                        @endforeach
+                    </div>
                     @endif
                 </div>
             </div>

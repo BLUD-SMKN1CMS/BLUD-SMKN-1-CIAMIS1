@@ -25,15 +25,15 @@ class ServiceController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'price_per_day' => 'required|numeric',
-            'unit' => 'required|string|max:50',
+            'price_per_hour' => 'nullable|numeric|min:0',
+            'price_per_day' => 'required|numeric|min:0',
             'icon' => 'nullable|string|max:50',
             'status' => 'required|in:available,unavailable',
         ]);
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
-        
+
         Service::create($data);
 
         return redirect()->route('admin.services.index')
@@ -55,19 +55,19 @@ class ServiceController extends Controller
     public function update(Request $request, $id)
     {
         $service = Service::findOrFail($id);
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'price_per_day' => 'required|numeric',
-            'unit' => 'required|string|max:50',
+            'price_per_hour' => 'nullable|numeric|min:0',
+            'price_per_day' => 'required|numeric|min:0',
             'icon' => 'nullable|string|max:50',
             'status' => 'required|in:available,unavailable',
         ]);
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
-        
+
         $service->update($data);
 
         return redirect()->route('admin.services.index')
@@ -78,7 +78,7 @@ class ServiceController extends Controller
     {
         $service = Service::findOrFail($id);
         $service->delete();
-        
+
         return redirect()->route('admin.services.index')
             ->with('success', 'Layanan berhasil dihapus');
     }

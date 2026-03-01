@@ -91,12 +91,9 @@
         <div class="section-header text-center">
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <div>
-                    <h2>Produk Kami</h2>
-                    <p class="mb-0">Produk berkualitas dari {{ $tefa->name }}</p>
+                    <h2>Layanan Kami</h2>
+                    <p class="mb-0">Layanan berkualitas dari {{ $tefa->name }}</p>
                 </div>
-                <a href="{{ route('products.all', ['tefa' => $tefa->slug]) }}" class="btn btn-outline-primary">
-                    <i class="fas fa-search"></i> Cari & Filter
-                </a>
             </div>
             <div class="header-divider mb-5"></div>
         </div>
@@ -105,34 +102,36 @@
         <div class="row g-4">
             @foreach($products as $product)
             <div class="col-md-6 col-lg-3">
-                <div class="product-card" onclick="window.location.href='{{ route('products.show', $product->slug) }}'">
-                    <div class="product-image">
-                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
-                        @if($product->stock <= 0)
-                            <div class="product-badge out-of-stock">Tidak Tersedia
-                    </div>
-                    @elseif($product->is_featured)
-                    <div class="product-badge featured">Unggulan</div>
-                    @endif
-                </div>
-                <div class="product-content">
-                    <h3 class="product-title">{{ $product->name }}</h3>
-                    @if($product->category)
-                    <p class="product-category">{{ ucfirst($product->category) }}</p>
-                    @endif
-                    <p class="product-price">{{ $product->formatted_price }}</p>
-                    <div class="product-footer">
-                        @if($product->stock > 0)
-                        <span class="stock-available">
-                            <i class="fas fa-check-circle"></i> Tersedia
-                        </span>
-                        @else
-                        <span class="stock-unavailable">
-                            <i class="fas fa-times-circle"></i> Tidak Tersedia
-                        </span>
+                <a href="{{ route('products.show', $product->slug) }}" class="product-card-link">
+                    <div class="product-card" style="cursor: pointer;">
+                        <div class="product-image">
+                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
+                            @if($product->stock <= 0)
+                                <div class="product-badge out-of-stock">Tidak Tersedia
+                        </div>
+                        @elseif($product->is_featured)
+                        <div class="product-badge featured">Unggulan</div>
                         @endif
                     </div>
-                </div>
+                    <div class="product-content">
+                        <h3 class="product-title">{{ $product->name }}</h3>
+                        @if($product->category)
+                        <p class="product-category">{{ ucfirst($product->category) }}</p>
+                        @endif
+                        <p class="product-price">{{ $product->formatted_price }}</p>
+                        <div class="product-footer">
+                            @if($product->stock > 0)
+                            <span class="stock-available">
+                                <i class="fas fa-check-circle"></i> Tersedia
+                            </span>
+                            @else
+                            <span class="stock-unavailable">
+                                <i class="fas fa-times-circle"></i> Tidak Tersedia
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
         @endforeach
@@ -147,8 +146,8 @@
     @else
     <div class="empty-state">
         <i class="fas fa-box-open"></i>
-        <h3>Belum Ada Produk</h3>
-        <p>Produk dari {{ $tefa->name }} akan segera hadir</p>
+        <h3>Belum Ada Layanan</h3>
+        <p>Layanan dari {{ $tefa->name }} akan segera hadir</p>
     </div>
     @endif
 </div>
@@ -480,6 +479,7 @@
         line-height: 1.4;
         display: -webkit-box;
         -webkit-line-clamp: 2;
+        line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }

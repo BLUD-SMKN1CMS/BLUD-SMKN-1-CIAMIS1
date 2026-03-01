@@ -772,7 +772,7 @@
                         <a href="{{ route('admin.products.index') }}"
                             class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}">
                             <i class="fas fa-box-open"></i>
-                            <span>Produk</span>
+                            <span>Layanan</span>
                         </a>
                         <a href="{{ route('admin.services.index') }}"
                             class="nav-link {{ request()->is('admin/services*') ? 'active' : '' }}">

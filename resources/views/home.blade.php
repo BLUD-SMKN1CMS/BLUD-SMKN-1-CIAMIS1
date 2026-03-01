@@ -58,7 +58,7 @@
                         </a>
                         @else
                         <a href="#produk-section" class="btn btn-primary btn-sm px-3 py-2">
-                            <i class="fas fa-shopping-bag me-2"></i> Lihat Produk
+                            <i class="fas fa-shopping-bag me-2"></i> Lihat Layanan
                         </a>
                         @endif
                     </div>
@@ -103,7 +103,7 @@
         <!-- Hero Stats - DINAMIS DARI DATABASE! -->
         <div class="row mt-5 pt-3 justify-content-center" data-aos="fade-up" data-aos-delay="300">
             <div class="col-md-10">
-                <div class="row text-center">
+                <div class="row text-center justify-content-center">
                     <!-- TEFA Jurusan -->
                     <div class="col-md-3 mb-4">
                         <div class="stat-card p-3 bg-white rounded-3 shadow-sm">
@@ -137,16 +137,6 @@
                         </div>
                     </div>
 
-                    <!-- Siswa -->
-                    <div class="col-md-3 mb-4">
-                        <div class="stat-card p-3 bg-white rounded-3 shadow-sm">
-                            <div class="stat-icon mb-2">
-                                <i class="fas fa-users fa-2x text-primary"></i>
-                            </div>
-                            <h3 class="fw-bold mb-1">{{ $stats['total_students'] ?? 0 }}+</h3>
-                            <p class="text-muted mb-0">Siswa</p>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -159,7 +149,7 @@
         <div class="row mb-5">
             <div class="col-12 text-center">
                 <h2 class="display-5 fw-bold text-primary mb-3">Teaching Factory (TEFA)</h2>
-                <p class="lead text-muted">7 Jurusan Unggulan SMKN 1 Ciamis</p>
+                <p class="lead text-muted">7 Program Keahlian SMKN 1 Ciamis</p>
                 <div class="section-title"></div>
             </div>
         </div>
@@ -184,11 +174,6 @@
             @endforeach
         </div>
 
-        <div class="col-12 text-center mt-5" data-aos="fade-up" data-aos-delay="300">
-            <a href="{{ route('tefa.all') }}" class="btn btn-primary btn-lg px-5 py-3">
-                <i class="fas fa-eye me-2"></i> Lihat Semua TEFA
-            </a>
-        </div>
     </div>
 </section>
 
@@ -197,7 +182,7 @@
     <div class="container">
         <div class="row mb-5">
             <div class="col-12 text-center">
-                <h2 class="display-5 fw-bold text-primary mb-3">Produk Unggulan</h2>
+                <h2 class="display-5 fw-bold text-primary mb-3">Layanan</h2>
                 <p class="lead text-muted">Hasil karya siswa yang kreatif dan inovatif</p>
                 <div class="section-title"></div>
             </div>
@@ -282,17 +267,10 @@
                         <h4 class="card-title fw-bold">{{ $service->name }}</h4>
                         <p class="card-text text-muted">{{ $service->description ?? 'Layanan penyewaan ' . $service->name }}</p>
 
-                        @if($service->unit == 'galon')
-                        <h5 class="text-success fw-bold mb-3">
-                            Rp {{ number_format($service->price_per_day, 0, ',', '.') }}
-                            <small class="text-muted">/{{ $service->unit }}</small>
-                        </h5>
-                        @else
                         <h5 class="text-success fw-bold mb-3">
                             Rp {{ number_format($service->price_per_day, 0, ',', '.') }}
                             <small class="text-muted">/hari</small>
                         </h5>
-                        @endif
 
                         <div class="mt-3">
                             <a href="{{ route('service.show', $service->slug) }}"
@@ -315,13 +293,6 @@
             @endif
         </div>
 
-        <div class="row mt-5">
-            <div class="col-12 text-center" data-aos="fade-up">
-                <a href="{{ route('services.all') }}" class="btn btn-outline-primary btn-lg px-5 py-3">
-                    <i class="fas fa-list me-2"></i> Semua Layanan
-                </a>
-            </div>
-        </div>
     </div>
 </section>
 

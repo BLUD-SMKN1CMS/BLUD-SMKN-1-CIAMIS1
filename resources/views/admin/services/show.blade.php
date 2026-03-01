@@ -33,12 +33,12 @@
                             <td><code>/layanan/{{ $service->slug }}</code></td>
                         </tr>
                         <tr>
-                            <th>Harga per Hari</th>
-                            <td>Rp {{ number_format($service->price_per_day, 0, ',', '.') }}</td>
+                            <th>Harga per Jam</th>
+                            <td>{{ $service->price_per_hour ? 'Rp ' . number_format($service->price_per_hour, 0, ',', '.') : 'Tidak dikenakan biaya per jam' }}</td>
                         </tr>
                         <tr>
-                            <th>Unit</th>
-                            <td>{{ $service->unit }}</td>
+                            <th>Harga per Hari</th>
+                            <td>Rp {{ number_format($service->price_per_day, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <th>Status</th>
@@ -53,7 +53,7 @@
                             <td>{{ $service->created_at->format('d M Y H:i') }}</td>
                         </tr>
                     </table>
-                    
+
                     <div class="mt-4">
                         <h5>Deskripsi Layanan</h5>
                         <div class="border p-3 rounded bg-light">
@@ -63,7 +63,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-4">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
@@ -72,16 +72,16 @@
                 <div class="card-body">
                     <form action="{{ route('admin.services.destroy', $service->id) }}" method="POST" class="mb-3">
                         @csrf @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-block" 
+                        <button type="submit" class="btn btn-danger btn-block"
                             onclick="return confirm('Hapus layanan ini?')">
                             <i class="fas fa-trash"></i> Hapus Layanan
                         </button>
                     </form>
-                    
+
                     <a href="{{ route('admin.services.edit', $service->id) }}" class="btn btn-warning btn-block mb-3">
                         <i class="fas fa-edit"></i> Edit Layanan
                     </a>
-                    
+
                     @if($service->status == 'available')
                     <form action="{{ route('admin.services.update', $service->id) }}" method="POST" class="mb-3">
                         @csrf @method('PUT')
@@ -101,15 +101,15 @@
                     @endif
                 </div>
             </div>
-            
+
             <div class="card shadow">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Informasi Harga</h6>
                 </div>
                 <div class="card-body">
                     <p><strong>Harga per Hari:</strong><br>
-                    Rp {{ number_format($service->price_per_day, 0, ',', '.') }}</p>
-                    
+                        Rp {{ number_format($service->price_per_day, 0, ',', '.') }}</p>
+
                     <p><strong>Perhitungan:</strong></p>
                     <ul class="list-unstyled">
                         <li>1 hari: Rp {{ number_format($service->price_per_day, 0, ',', '.') }}</li>

@@ -17,7 +17,6 @@ class Service extends Model
         'price_per_hour',
         'price_per_day',
         'capacity',
-        'unit',
         'image',
         'icon',
         'status',

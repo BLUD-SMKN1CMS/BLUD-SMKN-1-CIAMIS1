@@ -12,15 +12,15 @@
     </div>
 
     @if ($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Terjadi Kesalahan!</h4>
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Terjadi Kesalahan!</h4>
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     @endif
 
     <div class="card shadow mb-4">
@@ -31,15 +31,15 @@
             <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Nama Produk *</label>
-                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" 
+                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
                                 value="{{ old('name', $product->name) }}" required>
                             @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
@@ -49,46 +49,21 @@
                             <select name="tefa_id" class="form-control @error('tefa_id') is-invalid @enderror" required>
                                 <option value="">Pilih TEFA</option>
                                 @foreach($tefas as $tefa)
-                                    <option value="{{ $tefa->id }}" 
-                                        {{ old('tefa_id', $product->tefa_id) == $tefa->id ? 'selected' : '' }}>
-                                        {{ $tefa->name }} ({{ $tefa->code }})
-                                    </option>
+                                <option value="{{ $tefa->id }}"
+                                    {{ old('tefa_id', $product->tefa_id) == $tefa->id ? 'selected' : '' }}>
+                                    {{ $tefa->name }} ({{ $tefa->code }})
+                                </option>
                                 @endforeach
                             </select>
                             @error('tefa_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Harga *</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Rp</span>
-                                </div>
-                                <input type="number" name="price" class="form-control @error('price') is-invalid @enderror"
-                                    value="{{ old('price', $product->price) }}" required>
-                                @error('price')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label>Stok *</label>
-                            <input type="number" name="stock" class="form-control @error('stock') is-invalid @enderror"
-                                value="{{ old('stock', $product->stock) }}" required min="0">
-                            @error('stock')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="col-md-4">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label>Kategori *</label>
                             <select name="category" class="form-control @error('category') is-invalid @enderror" required>
@@ -100,11 +75,17 @@
                                 <option value="Lainnya" {{ old('category', $product->category) == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                             </select>
                             @error('category')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
                 </div>
+
+                <input type="hidden" name="stock" value="{{ old('stock', $product->stock) }}">
+                <input type="hidden" name="price" value="{{ old('price', $product->price) }}">
+                <input type="hidden" name="status" value="{{ old('status', $product->status ?? 'active') }}">
+                <input type="hidden" name="unit" value="{{ old('unit', $product->unit ?? 'layanan') }}">
+                <input type="hidden" name="order" value="{{ old('order', $product->order) }}">
 
                 <div class="form-group">
                     <label>Deskripsi</label>
@@ -121,18 +102,18 @@
                                     <label class="small font-weight-bold">Gambar Utama</label>
                                     <div id="preview-container-1" class="mb-2 text-center" style="min-height: 120px;">
                                         @if($product->image)
-                                            <img src="{{ Str::startsWith($product->image, 'http') ? $product->image : asset($product->image) }}" 
-                                                alt="Main Image" class="img-fluid img-thumbnail" style="height: 120px; object-fit: cover;">
+                                        <img src="{{ Str::startsWith($product->image, 'http') ? $product->image : asset($product->image) }}"
+                                            alt="Main Image" class="img-fluid img-thumbnail" style="height: 120px; object-fit: cover;">
                                         @else
-                                            <div class="d-flex align-items-center justify-content-center bg-light" style="height: 120px; width: 100%;">
-                                                <span class="text-muted small">Tidak ada gambar</span>
-                                            </div>
+                                        <div class="d-flex align-items-center justify-content-center bg-light" style="height: 120px; width: 100%;">
+                                            <span class="text-muted small">Tidak ada gambar</span>
+                                        </div>
                                         @endif
                                     </div>
                                     <input type="file" name="image" class="form-control-file small" accept="image/*" onchange="previewProductImage(this, 'preview-container-1')">
                                 </div>
                             </div>
-                            
+
                             <!-- Image 2 -->
                             <!-- Image 2 -->
                             <div class="col-md-3">
@@ -140,12 +121,12 @@
                                     <label class="small font-weight-bold">Gambar 2</label>
                                     <div id="preview-container-2" class="mb-2 text-center" style="min-height: 120px;">
                                         @if($product->image_2)
-                                            <img src="{{ Str::startsWith($product->image_2, 'http') ? $product->image_2 : asset($product->image_2) }}" 
-                                                alt="Image 2" class="img-fluid img-thumbnail" style="height: 120px; object-fit: cover;">
+                                        <img src="{{ Str::startsWith($product->image_2, 'http') ? $product->image_2 : asset($product->image_2) }}"
+                                            alt="Image 2" class="img-fluid img-thumbnail" style="height: 120px; object-fit: cover;">
                                         @else
-                                            <div class="d-flex align-items-center justify-content-center bg-light" style="height: 120px; width: 100%;">
-                                                <span class="text-muted small">Tidak ada gambar</span>
-                                            </div>
+                                        <div class="d-flex align-items-center justify-content-center bg-light" style="height: 120px; width: 100%;">
+                                            <span class="text-muted small">Tidak ada gambar</span>
+                                        </div>
                                         @endif
                                     </div>
                                     <input type="file" name="image_2" class="form-control-file small" accept="image/*" onchange="previewProductImage(this, 'preview-container-2')">
@@ -159,12 +140,12 @@
                                     <label class="small font-weight-bold">Gambar 3</label>
                                     <div id="preview-container-3" class="mb-2 text-center" style="min-height: 120px;">
                                         @if($product->image_3)
-                                            <img src="{{ Str::startsWith($product->image_3, 'http') ? $product->image_3 : asset($product->image_3) }}" 
-                                                alt="Image 3" class="img-fluid img-thumbnail" style="height: 120px; object-fit: cover;">
+                                        <img src="{{ Str::startsWith($product->image_3, 'http') ? $product->image_3 : asset($product->image_3) }}"
+                                            alt="Image 3" class="img-fluid img-thumbnail" style="height: 120px; object-fit: cover;">
                                         @else
-                                            <div class="d-flex align-items-center justify-content-center bg-light" style="height: 120px; width: 100%;">
-                                                <span class="text-muted small">Tidak ada gambar</span>
-                                            </div>
+                                        <div class="d-flex align-items-center justify-content-center bg-light" style="height: 120px; width: 100%;">
+                                            <span class="text-muted small">Tidak ada gambar</span>
+                                        </div>
                                         @endif
                                     </div>
                                     <input type="file" name="image_3" class="form-control-file small" accept="image/*" onchange="previewProductImage(this, 'preview-container-3')">
@@ -178,44 +159,18 @@
                                     <label class="small font-weight-bold">Gambar 4</label>
                                     <div id="preview-container-4" class="mb-2 text-center" style="min-height: 120px;">
                                         @if($product->image_4)
-                                            <img src="{{ Str::startsWith($product->image_4, 'http') ? $product->image_4 : asset($product->image_4) }}" 
-                                                alt="Image 4" class="img-fluid img-thumbnail" style="height: 120px; object-fit: cover;">
+                                        <img src="{{ Str::startsWith($product->image_4, 'http') ? $product->image_4 : asset($product->image_4) }}"
+                                            alt="Image 4" class="img-fluid img-thumbnail" style="height: 120px; object-fit: cover;">
                                         @else
-                                            <div class="d-flex align-items-center justify-content-center bg-light" style="height: 120px; width: 100%;">
-                                                <span class="text-muted small">Tidak ada gambar</span>
-                                            </div>
+                                        <div class="d-flex align-items-center justify-content-center bg-light" style="height: 120px; width: 100%;">
+                                            <span class="text-muted small">Tidak ada gambar</span>
+                                        </div>
                                         @endif
                                     </div>
                                     <input type="file" name="image_4" class="form-control-file small" accept="image/*" onchange="previewProductImage(this, 'preview-container-4')">
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Status</label>
-                            <select name="status" class="form-control" required>
-                                <option value="draft" {{ $product->status == 'draft' ? 'selected' : '' }}>Draft</option>
-                                <option value="active" {{ $product->status == 'active' ? 'selected' : '' }}>Aktif</option>
-                                <option value="inactive" {{ $product->status == 'inactive' ? 'selected' : '' }}>Nonaktif</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Satuan *</label>
-                            <input type="text" name="unit" class="form-control @error('unit') is-invalid @enderror"
-                                value="{{ old('unit', $product->unit ?? 'pcs') }}" required placeholder="Contoh: pcs, box, kg">
-                            @error('unit')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <input type="hidden" name="order" value="{{ old('order', $product->order) }}">
-                    </div>
                     </div>
                 </div>
 
@@ -253,7 +208,7 @@
             reader.onload = function(e) {
                 // Check if there is already an img tag
                 let img = container.querySelector('img');
-                
+
                 if (img) {
                     img.src = e.target.result;
                     img.style.display = 'block';

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,34 +8,64 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
-        .navbar { background: linear-gradient(135deg, #4A90E2, #1A365D); }
-        .stat-card { 
-            background: white; 
-            border-radius: 12px; 
-            padding: 25px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #4A90E2, #1A365D);
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
             height: 100%;
         }
-        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-        .stat-icon { font-size: 2.5rem; margin-bottom: 15px; color: #4A90E2; }
-        .stat-number { font-size: 2.2rem; font-weight: 700; color: #1A365D; }
-        .sidebar { min-height: calc(100vh - 56px); background: #343a40; padding-top: 20px; }
-        .sidebar a { 
-            color: #adb5bd; 
-            text-decoration: none; 
-            padding: 12px 20px; 
-            display: block; 
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #4A90E2;
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1A365D;
+        }
+
+        .sidebar {
+            min-height: calc(100vh - 56px);
+            background: #343a40;
+            padding-top: 20px;
+        }
+
+        .sidebar a {
+            color: #adb5bd;
+            text-decoration: none;
+            padding: 12px 20px;
+            display: block;
             margin: 5px 10px;
             border-radius: 8px;
             transition: all 0.3s ease;
         }
-        .sidebar a:hover, .sidebar a.active { 
-            background: rgba(74, 144, 226, 0.2); 
-            color: white; 
-            padding-left: 25px; 
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: rgba(74, 144, 226, 0.2);
+            color: white;
+            padding-left: 25px;
         }
+
         .welcome-card {
             background: linear-gradient(135deg, #4A90E2, #1A365D);
             color: white;
@@ -44,6 +75,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-dark navbar-expand-lg">
@@ -54,7 +86,7 @@
             </a>
             <div class="navbar-nav ms-auto">
                 <span class="navbar-text me-3">
-                    <i class="fas fa-user me-1"></i> 
+                    <i class="fas fa-user me-1"></i>
                     {{ auth()->guard('admin')->user()->name ?? 'Administrator' }}
                 </span>
                 <form method="POST" action="{{ route('admin.logout') }}" class="d-inline">
@@ -66,7 +98,7 @@
             </div>
         </div>
     </nav>
-    
+
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
@@ -79,7 +111,7 @@
                         <i class="fas fa-school"></i> TEFA Jurusan
                     </a>
                     <a href="{{ route('admin.products.index') }}">
-                        <i class="fas fa-box-open"></i> Produk
+                        <i class="fas fa-box-open"></i> Layanan
                     </a>
                     <a href="{{ route('admin.services.index') }}">
                         <i class="fas fa-handshake"></i> Layanan Sewa
@@ -88,7 +120,7 @@
                         <i class="fas fa-envelope"></i> Pesan Masuk
                         <span class="badge bg-danger float-end">{{ $stats['contact_count'] ?? 0 }}</span>
                     </a>
-                   <a href="#">
+                    <a href="#">
                         <i class="fas fa-user"></i> Profil
                     </a>
                     <a href="{{ route('admin.settings.index') }}">
@@ -99,7 +131,7 @@
                     </a>
                 </div>
             </div>
-            
+
             <!-- Main Content -->
             <div class="col-md-9 col-lg-10 p-4">
                 <!-- Welcome Card -->
@@ -115,7 +147,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Statistics Cards -->
                 <div class="row mb-4">
                     <div class="col-md-3 col-sm-6 mb-4">
@@ -127,17 +159,17 @@
                             <div class="stat-label">TEFA Jurusan</div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-3 col-sm-6 mb-4">
                         <div class="stat-card text-center">
                             <div class="stat-icon">
                                 <i class="fas fa-box-open"></i>
                             </div>
                             <div class="stat-number">{{ $stats['product_count'] ?? 0 }}</div>
-                            <div class="stat-label">Total Produk</div>
+                            <div class="stat-label">Total Layanan</div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-3 col-sm-6 mb-4">
                         <div class="stat-card text-center">
                             <div class="stat-icon">
@@ -147,7 +179,7 @@
                             <div class="stat-label">Layanan Sewa</div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-3 col-sm-6 mb-4">
                         <div class="stat-card text-center">
                             <div class="stat-icon">
@@ -158,7 +190,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Quick Actions -->
                 <div class="row">
                     <div class="col-md-6 mb-4">
@@ -172,7 +204,7 @@
                                 </div>
                                 <div class="col-6">
                                     <a href="{{ route('admin.products.index') }}" class="btn btn-success w-100 mb-2">
-                                        <i class="fas fa-plus me-1"></i> Tambah Produk
+                                        <i class="fas fa-plus me-1"></i> Tambah Layanan
                                     </a>
                                 </div>
                                 <div class="col-6">
@@ -188,7 +220,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6 mb-4">
                         <div class="stat-card">
                             <h5 class="mb-3"><i class="fas fa-chart-line me-2 text-success"></i> Informasi</h5>
@@ -199,7 +231,7 @@
                                 </li>
                                 <li class="mb-2">
                                     <i class="fas fa-circle text-success me-2"></i>
-                                    Total Produk: <strong>{{ $stats['product_count'] ?? 0 }}</strong>
+                                    Total Layanan: <strong>{{ $stats['product_count'] ?? 0 }}</strong>
                                 </li>
                                 <li class="mb-2">
                                     <i class="fas fa-circle text-warning me-2"></i>
@@ -213,7 +245,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Footer Note -->
                 <div class="text-center text-muted mt-4">
                     <small>
@@ -224,25 +256,26 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function updateTime() {
             const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
                 day: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit'
             };
-            document.querySelector('.fa-clock').parentNode.innerHTML = 
+            document.querySelector('.fa-clock').parentNode.innerHTML =
                 '<i class="fas fa-clock me-1"></i> ' + now.toLocaleDateString('id-ID', options);
         }
         setInterval(updateTime, 60000);
         document.addEventListener('DOMContentLoaded', updateTime);
     </script>
 </body>
+
 </html>

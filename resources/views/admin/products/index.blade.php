@@ -147,6 +147,35 @@
                                             </a>
                                         </li>
                                         <li>
+                                            <button type="button" class="dropdown-item" onclick="window.print()">
+                                                <i class="fas fa-print me-2 text-primary"></i> Cetak
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        @if($product->status == 'active')
+                                        <li>
+                                            <form action="{{ route('admin.products.update', $product->id) }}" method="POST" id="toggle-status-inactive-{{ $product->id }}">
+                                                @csrf @method('PUT')
+                                                <input type="hidden" name="status" value="inactive">
+                                            </form>
+                                            <button type="submit" form="toggle-status-inactive-{{ $product->id }}" class="dropdown-item text-warning">
+                                                <i class="fas fa-ban me-2"></i> Nonaktifkan
+                                            </button>
+                                        </li>
+                                        @else
+                                        <li>
+                                            <form action="{{ route('admin.products.update', $product->id) }}" method="POST" id="toggle-status-active-{{ $product->id }}">
+                                                @csrf @method('PUT')
+                                                <input type="hidden" name="status" value="active">
+                                            </form>
+                                            <button type="submit" form="toggle-status-active-{{ $product->id }}" class="dropdown-item text-success">
+                                                <i class="fas fa-check me-2"></i> Aktifkan
+                                            </button>
+                                        </li>
+                                        @endif
+                                        <li>
                                             <hr class="dropdown-divider">
                                         </li>
                                         <li>
@@ -183,23 +212,7 @@
                 </table>
             </div>
 
-            @if ($products->count() > 0)
-            <div class="mt-3">
-                <div class="row">
-                    <div class="col-md-6">
-                        <small class="text-muted">
-                            Menampilkan {{ $products->count() }} produk
-                        </small>
-                    </div>
-                    <div class="col-md-6 text-right">
-                        <small class="text-muted">
-                            <i class="fas fa-info-circle mr-1"></i>
-                            Klik 3 titik untuk menu aksi
-                        </small>
-                    </div>
-                </div>
-            </div>
-            @endif
+
         </div>
     </div>
 </div>

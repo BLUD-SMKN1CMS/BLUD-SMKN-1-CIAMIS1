@@ -98,8 +98,8 @@
 
             <!-- Description -->
             <div class="product-description">
-                <h3>Deskripsi Produk</h3>
-                <p>{{ $product->description ?? 'Produk berkualitas dari ' . ($product->tefa->name ?? 'BLUD SMKN 1 CIAMIS') }}</p>
+                <h3>Deskripsi Layanan</h3>
+                <p>{{ $product->description ?? 'Layanan berkualitas dari ' . ($product->tefa->name ?? 'BLUD SMKN 1 CIAMIS') }}</p>
             </div>
 
             <!-- Quantity & Add to Cart -->
@@ -149,38 +149,40 @@
 <div class="related-products-section">
     <div class="container">
         <div class="section-header">
-            <h2>Produk Terkait</h2>
+            <h2>Layanan Terkait</h2>
             <p>Produk lainnya dari {{ $product->tefa->name ?? 'kategori yang sama' }}</p>
         </div>
 
         <div class="row g-4">
             @foreach($relatedProducts as $relatedProduct)
             <div class="col-md-6 col-lg-3">
-                <div class="product-card" onclick="window.location.href='{{ route('products.show', $relatedProduct->slug) }}'">
-                    <div class="product-card-image">
-                        <img src="{{ $relatedProduct->image_url }}" alt="{{ $relatedProduct->name }}">
-                        @if($relatedProduct->stock <= 0)
-                            <div class="product-badge out-of-stock">Tidak Tersedia
-                    </div>
-                    @elseif($relatedProduct->is_featured)
-                    <div class="product-badge featured">Unggulan</div>
-                    @endif
-                </div>
-                <div class="product-card-content">
-                    <h3 class="product-card-title">{{ $relatedProduct->name }}</h3>
-                    <p class="product-card-price">{{ $relatedProduct->formatted_price }}</p>
-                    <div class="product-card-footer">
-                        @if($relatedProduct->stock > 0)
-                        <span class="stock-available">
-                            <i class="fas fa-check-circle"></i> Tersedia
-                        </span>
-                        @else
-                        <span class="stock-unavailable">
-                            <i class="fas fa-times-circle"></i> Tidak Tersedia
-                        </span>
+                <a href="{{ route('products.show', $relatedProduct->slug) }}" class="product-card-link">
+                    <div class="product-card">
+                        <div class="product-card-image">
+                            <img src="{{ $relatedProduct->image_url }}" alt="{{ $relatedProduct->name }}">
+                            @if($relatedProduct->stock <= 0)
+                                <div class="product-badge out-of-stock">Tidak Tersedia
+                        </div>
+                        @elseif($relatedProduct->is_featured)
+                        <div class="product-badge featured">Unggulan</div>
                         @endif
                     </div>
-                </div>
+                    <div class="product-card-content">
+                        <h3 class="product-card-title">{{ $relatedProduct->name }}</h3>
+                        <p class="product-card-price">{{ $relatedProduct->formatted_price }}</p>
+                        <div class="product-card-footer">
+                            @if($relatedProduct->stock > 0)
+                            <span class="stock-available">
+                                <i class="fas fa-check-circle"></i> Tersedia
+                            </span>
+                            @else
+                            <span class="stock-unavailable">
+                                <i class="fas fa-times-circle"></i> Tidak Tersedia
+                            </span>
+                            @endif
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
         @endforeach
@@ -568,6 +570,7 @@
         line-height: 1.4;
         display: -webkit-box;
         -webkit-line-clamp: 2;
+        line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
@@ -763,9 +766,9 @@
     }
 
     function submitOrder() {
-        const productName = @json($product->name);
-        const productUnit = @json($product->unit ?? 'pcs');
-        const tefaName = @json($product->tefa->name ?? 'SMKN 1 Ciamis');
+        const productName = "{{ addslashes($product->name) }}";
+        const productUnit = "{{ addslashes($product->unit ?? 'layanan') }}";
+        const tefaName = "{{ addslashes($product->tefa->name ?? 'SMKN 1 Ciamis') }}";
         const buyerName = document.getElementById('buyerName').value;
         const buyerPhone = document.getElementById('buyerPhone').value;
         const qty = document.getElementById('orderQty').value;

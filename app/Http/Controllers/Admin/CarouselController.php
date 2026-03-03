@@ -81,7 +81,7 @@ class CarouselController extends Controller
 
         Carousel::create($validated);
 
-        return redirect()->route('admin.carousels.index')
+        return redirect()->route('superadmin.carousels.index')
             ->with('success', 'Carousel berhasil ditambahkan!');
     }
 
@@ -156,7 +156,7 @@ class CarouselController extends Controller
 
         $carousel->update($validated);
 
-        return redirect()->route('admin.carousels.index')
+        return redirect()->route('superadmin.carousels.index')
             ->with('success', 'Carousel berhasil diperbarui!');
     }
 
@@ -174,7 +174,7 @@ class CarouselController extends Controller
 
         $carousel->delete();
 
-        return redirect()->route('admin.carousels.index')
+        return redirect()->route('superadmin.carousels.index')
             ->with('success', 'Carousel berhasil dihapus!');
     }
 
@@ -186,7 +186,7 @@ class CarouselController extends Controller
         $carousel->status = $carousel->status === 'active' ? 'inactive' : 'active';
         $carousel->save();
 
-        return redirect()->route('admin.carousels.index')
+        return redirect()->route('superadmin.carousels.index')
             ->with('success', 'Status carousel berhasil diubah!');
     }
 
@@ -198,7 +198,7 @@ class CarouselController extends Controller
         $carousel->status = 'active';
         $carousel->save();
 
-        return redirect()->route('admin.carousels.index')
+        return redirect()->route('superadmin.carousels.index')
             ->with('success', 'Carousel berhasil diaktifkan!');
     }
 

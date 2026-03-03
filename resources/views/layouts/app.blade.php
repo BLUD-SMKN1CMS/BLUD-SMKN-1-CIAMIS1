@@ -479,6 +479,7 @@
             margin-bottom: 20px;
             display: inline-block;
             font-size: 18px;
+            color: white;
         }
 
         .footer-title::after {
@@ -527,6 +528,17 @@
             background: var(--primary-blue);
             color: white;
             transform: rotate(10deg);
+        }
+
+        .footer-contact .contact-item p,
+        .footer-contact .contact-item .small {
+            color: white !important;
+        }
+
+        .operating-hours h6,
+        .operating-hours li,
+        .operating-hours .small {
+            color: white !important;
         }
 
         /* Link TEFA dengan hover animation */

@@ -7,10 +7,10 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Detail Carousel</h1>
         <div>
-            <a href="{{ route('admin.carousels.edit', $carousel->id) }}" class="btn btn-warning">
+            <a href="{{ route($routePrefix . '.carousels.edit', $carousel->id) }}" class="btn btn-warning">
                 <i class="fas fa-edit me-2"></i>Edit
             </a>
-            <a href="{{ route('admin.carousels.index') }}" class="btn btn-secondary">
+            <a href="{{ route($routePrefix . '.carousels.index') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left me-2"></i>Kembali
             </a>
         </div>
@@ -124,12 +124,12 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('admin.carousels.edit', $carousel->id) }}" 
+                        <a href="{{ route($routePrefix . '.carousels.edit', $carousel->id) }}" 
                            class="btn btn-warning">
                             <i class="fas fa-edit me-2"></i>Edit Carousel
                         </a>
                         
-                        <form action="{{ route('admin.carousels.toggle-status', $carousel->id) }}" method="POST">
+                        <form action="{{ route($routePrefix . '.carousels.toggle-status', $carousel->id) }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-{{ $carousel->status === 'active' ? 'secondary' : 'success' }} w-100">
                                 <i class="fas fa-{{ $carousel->status === 'active' ? 'eye-slash' : 'eye' }} me-2"></i>
@@ -137,7 +137,7 @@
                             </button>
                         </form>
                         
-                        <form action="{{ route('admin.carousels.destroy', $carousel->id) }}" method="POST"
+                        <form action="{{ route($routePrefix . '.carousels.destroy', $carousel->id) }}" method="POST"
                               onsubmit="return confirm('Hapus carousel ini? Tindakan ini tidak dapat dibatalkan.')">
                             @csrf
                             @method('DELETE')

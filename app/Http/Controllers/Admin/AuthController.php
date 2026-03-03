@@ -11,14 +11,18 @@ class AuthController extends Controller
     // Tampilkan form login
     public function showLoginForm()
     {
-        // Jika sudah login, redirect ke dashboard
+        // Jika sudah login, redirect ke dashboard sesuai role
         if (Auth::guard('admin')->check()) {
+            $admin = Auth::guard('admin')->user();
+            if ($admin->isSuperAdmin()) {
+                return redirect()->route('superadmin.dashboard');
+            }
             return redirect()->route('admin.dashboard');
         }
-        
+
         return view('admin.auth.login');
     }
-    
+
     // Proses login
     public function login(Request $request)
     {
@@ -27,32 +31,37 @@ class AuthController extends Controller
             'username' => 'required|string',
             'password' => 'required|string',
         ]);
-        
+
         // Coba login dengan guard 'admin'
         $credentials = [
             'username' => $request->username,
             'password' => $request->password,
         ];
-        
+
         if (Auth::guard('admin')->attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
+            $admin = Auth::guard('admin')->user();
+            if ($admin->isSuperAdmin()) {
+                return redirect()->route('superadmin.dashboard')
+                    ->with('success', 'Login berhasil! Selamat datang di Super Admin Panel.');
+            }
             return redirect()->route('admin.dashboard')
                 ->with('success', 'Login berhasil! Selamat datang di Admin Panel.');
         }
-        
+
         // Jika login gagal
         return back()->withErrors([
             'error' => 'Username atau password salah!',
         ])->withInput($request->except('password'));
     }
-    
+
     // Logout
     public function logout(Request $request)
     {
         Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
         return redirect()->route('admin.login')
             ->with('success', 'Anda telah logout dari sistem.');
     }

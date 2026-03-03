@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Kelola TEFA</h1>
-            <a href="{{ route('admin.tefas.create') }}" class="btn btn-primary">
+            <a href="{{ route($routePrefix . '.tefas.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Tambah TEFA
             </a>
         </div>
@@ -62,13 +62,13 @@
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 <li>
                                                     <a class="dropdown-item"
-                                                        href="{{ route('admin.tefas.edit', $tefa->id) }}">
+                                                        href="{{ route($routePrefix . '.tefas.edit', $tefa->id) }}">
                                                         <i class="fas fa-edit me-2 text-warning"></i> Edit
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item"
-                                                        href="{{ route('admin.tefas.show', $tefa->id) }}">
+                                                        href="{{ route($routePrefix . '.tefas.show', $tefa->id) }}">
                                                         <i class="fas fa-eye me-2 text-info"></i> Lihat
                                                     </a>
                                                 </li>
@@ -76,7 +76,7 @@
                                                     <hr class="dropdown-divider">
                                                 </li>
                                                 <li>
-                                                    <form action="{{ route('admin.tefas.destroy', $tefa->id) }}"
+                                                    <form action="{{ route($routePrefix . '.tefas.destroy', $tefa->id) }}"
                                                         method="POST" class="dropdown-item p-0">
                                                         @csrf @method('DELETE')
                                                         <button type="submit"

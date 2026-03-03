@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Edit Profil</h1>
-        <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
+        <a href="{{ route($routePrefix . '.dashboard') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
         </a>
     </div>
@@ -39,7 +39,7 @@
                     </h6>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.profile.update') }}" method="POST">
+                    <form action="{{ route($routePrefix . '.profile.update') }}" method="POST">
                         @csrf
                         @method('PUT')
 
@@ -71,14 +71,14 @@
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center mt-4">
-                            <a href="{{ route('admin.profile.change-password') }}" class="btn btn-outline-primary">
+                            <a href="{{ route($routePrefix . '.profile.change-password') }}" class="btn btn-outline-primary">
                                 <i class="fas fa-key me-2"></i> Ubah Password
                             </a>
                             <div>
                                 <button type="submit" class="btn btn-primary px-4">
                                     <i class="fas fa-save me-2"></i> Simpan Perubahan
                                 </button>
-                                <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
+                                <a href="{{ route($routePrefix . '.dashboard') }}" class="btn btn-secondary">
                                     Batal
                                 </a>
                             </div>

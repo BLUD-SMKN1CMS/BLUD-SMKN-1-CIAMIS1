@@ -12,13 +12,16 @@ class AdminSuper
     public function handle(Request $request, Closure $next): Response
     {
         // Check if admin is authenticated
-        if (!Auth::guard("admin")->check()) {
+        /** @var \App\Models\Admin|null $user */
+        $user = Auth::guard("admin")->user();
+
+        if (!$user) {
             return redirect()->route("admin.login")
                 ->withErrors(["message" => "Silakan login sebagai admin terlebih dahulu."]);
         }
 
         // Check if admin is super admin
-        if (!Auth::guard("admin")->user()->isSuperAdmin()) {
+        if (!$user->isSuperAdmin()) {
             return redirect()->route("admin.dashboard")
                 ->withErrors(["message" => "Akses ditolak. Hanya Super Admin yang dapat mengakses halaman ini."]);
         }

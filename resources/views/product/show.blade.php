@@ -78,11 +78,6 @@
             <!-- Product Name -->
             <h1 class="product-title">{{ $product->name }}</h1>
 
-            <!-- Price -->
-            <div class="product-price">
-                <span class="current-price">{{ $product->formatted_price }}</span>
-            </div>
-
             <!-- Stock Info -->
             <div class="stock-info">
                 @if($product->stock > 0)
@@ -121,22 +116,6 @@
                     <span>Tidak Tersedia</span>
                 </button>
                 @endif
-            </div>
-
-            <!-- Product Features -->
-            <div class="product-features">
-                <div class="feature-item">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Produk Original</span>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-truck"></i>
-                    <span>Pengiriman Cepat</span>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-headset"></i>
-                    <span>Customer Support</span>
-                </div>
             </div>
         </div>
     </div>

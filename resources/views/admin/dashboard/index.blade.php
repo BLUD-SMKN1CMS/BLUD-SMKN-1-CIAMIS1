@@ -6,6 +6,17 @@
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                Dashboard
+                @if(Auth::guard('admin')->user()->isSuperAdmin())
+                <span class="badge bg-danger ms-2" style="font-size: 0.7em; vertical-align: middle;">Super Admin</span>
+                @endif
+            </h1>
+            <p class="mb-0 text-muted small">
+                Selamat datang, {{ Auth::guard('admin')->user()->name }}!
+            </p>
+        </div>
         <a href="{{ route('home') }}" target="_blank" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">
             <i class="fas fa-external-link-alt fa-sm text-white-50"></i> Lihat Website
         </a>
@@ -30,7 +41,7 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <a href="{{ route('admin.tefas.index') }}" class="btn btn-sm btn-outline-primary">
+                        <a href="{{ route($routePrefix . '.tefas.index') }}" class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-cog me-1"></i> Kelola
                         </a>
                     </div>
@@ -55,7 +66,7 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <a href="{{ route('admin.products.index') }}" class="btn btn-sm btn-outline-success">
+                        <a href="{{ route($routePrefix . '.products.index') }}" class="btn btn-sm btn-outline-success">
                             <i class="fas fa-cog me-1"></i> Kelola
                         </a>
                     </div>
@@ -79,7 +90,7 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <a href="{{ route('admin.services.index') }}" class="btn btn-sm btn-outline-info">
+                        <a href="{{ route($routePrefix . '.services.index') }}" class="btn btn-sm btn-outline-info">
                             <i class="fas fa-cog me-1"></i> Kelola
                         </a>
                     </div>
@@ -103,7 +114,7 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <a href="{{ route('admin.contacts.index') }}" class="btn btn-sm btn-outline-warning">
+                        <a href="{{ route($routePrefix . '.contacts.index') }}" class="btn btn-sm btn-outline-warning">
                             <i class="fas fa-cog me-1"></i> Kelola
                         </a>
                     </div>
@@ -121,7 +132,7 @@
                     <h6 class="m-0 font-weight-bold text-primary">
                         <i class="fas fa-envelope me-2"></i>Pesan Masuk Terbaru
                     </h6>
-                    <a href="{{ route('admin.contacts.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
+                    <a href="{{ route($routePrefix . '.contacts.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
                 </div>
                 <div class="card-body p-0">
                     @if($recentContacts->isEmpty())

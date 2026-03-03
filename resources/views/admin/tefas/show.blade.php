@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Detail TEFA</h1>
-        <a href="{{ route('admin.tefas.index') }}" class="btn btn-secondary">
+        <a href="{{ route($routePrefix . '.tefas.index') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Kembali
         </a>
     </div>
@@ -72,10 +72,10 @@
                             <h6 class="m-0 font-weight-bold">Aksi</h6>
                         </div>
                         <div class="card-body">
-                            <a href="{{ route('admin.tefas.edit', $tefa->id) }}" class="btn btn-warning btn-block mb-2">
+                            <a href="{{ route($routePrefix . '.tefas.edit', $tefa->id) }}" class="btn btn-warning btn-block mb-2">
                                 <i class="fas fa-edit"></i> Edit TEFA
                             </a>
-                            <form action="{{ route('admin.tefas.destroy', $tefa->id) }}" method="POST">
+                            <form action="{{ route($routePrefix . '.tefas.destroy', $tefa->id) }}" method="POST">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-block" 
                                     onclick="return confirm('Hapus TEFA ini? Semua produk di dalamnya juga akan dihapus!')">

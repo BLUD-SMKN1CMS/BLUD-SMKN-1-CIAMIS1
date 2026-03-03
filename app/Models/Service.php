@@ -20,6 +20,7 @@ class Service extends Model
         'image',
         'icon',
         'status',
+        'tefa_id',
     ];
 
     protected $casts = [
@@ -39,6 +40,14 @@ class Service extends Model
         static::updating(function ($service) {
             $service->slug = Str::slug($service->name);
         });
+    }
+
+    /**
+     * Relasi ke TEFA
+     */
+    public function tefa()
+    {
+        return $this->belongsTo(Tefa::class);
     }
 
     // Scope untuk layanan tersedia

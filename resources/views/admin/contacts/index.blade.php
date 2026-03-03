@@ -33,7 +33,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <form id="bulkDeleteForm" action="{{ route('admin.contacts.bulkDelete') }}" method="POST">
+                <form id="bulkDeleteForm" action="{{ route($routePrefix . '.contacts.bulkDelete') }}" method="POST">
                     @csrf
                     <input type="hidden" name="ids" id="bulkDeleteIds">
                     
@@ -82,18 +82,18 @@
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
-                                                <a class="dropdown-item" href="{{ route('admin.contacts.show', $contact->id) }}">
+                                                <a class="dropdown-item" href="{{ route($routePrefix . '.contacts.show', $contact->id) }}">
                                                     <i class="fas fa-eye me-2 text-info"></i> Lihat
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" href="{{ route('admin.contacts.edit', $contact->id) }}">
+                                                <a class="dropdown-item" href="{{ route($routePrefix . '.contacts.edit', $contact->id) }}">
                                                     <i class="fas fa-edit me-2 text-warning"></i> Edit
                                                 </a>
                                             </li>
                                             <li><hr class="dropdown-divider"></li>
                                             <li>
-                                                <form action="{{ route('admin.contacts.destroy', $contact->id) }}" method="POST" class="dropdown-item p-0">
+                                                <form action="{{ route($routePrefix . '.contacts.destroy', $contact->id) }}" method="POST" class="dropdown-item p-0">
                                                     @csrf @method('DELETE')
                                                     <button type="submit" class="dropdown-item text-danger text-decoration-none w-100 text-start" 
                                                             onclick="return confirm('Hapus pesan ini?')">

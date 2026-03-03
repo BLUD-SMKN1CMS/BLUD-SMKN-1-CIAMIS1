@@ -24,7 +24,7 @@ class SettingsController extends Controller
             Setting::where('key', $key)->update(['value' => $value]);
         }
         
-        return redirect()->route('admin.settings.index')
+        return redirect()->route('superadmin.settings.index')
             ->with('success', 'Pengaturan berhasil diperbarui!');
     }
 }

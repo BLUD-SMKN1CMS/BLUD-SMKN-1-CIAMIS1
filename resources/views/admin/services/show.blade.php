@@ -7,10 +7,10 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Detail Layanan</h1>
         <div>
-            <a href="{{ route('admin.services.index') }}" class="btn btn-secondary">
+            <a href="{{ route($routePrefix . '.services.index') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Kembali
             </a>
-            <a href="{{ route('admin.services.edit', $service->id) }}" class="btn btn-warning">
+            <a href="{{ route($routePrefix . '.services.edit', $service->id) }}" class="btn btn-warning">
                 <i class="fas fa-edit"></i> Edit
             </a>
         </div>
@@ -70,7 +70,7 @@
                     <h6 class="m-0 font-weight-bold text-primary">Aksi Cepat</h6>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.services.destroy', $service->id) }}" method="POST" class="mb-3">
+                    <form action="{{ route($routePrefix . '.services.destroy', $service->id) }}" method="POST" class="mb-3">
                         @csrf @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-block"
                             onclick="return confirm('Hapus layanan ini?')">
@@ -78,12 +78,12 @@
                         </button>
                     </form>
 
-                    <a href="{{ route('admin.services.edit', $service->id) }}" class="btn btn-warning btn-block mb-3">
+                    <a href="{{ route($routePrefix . '.services.edit', $service->id) }}" class="btn btn-warning btn-block mb-3">
                         <i class="fas fa-edit"></i> Edit Layanan
                     </a>
 
                     @if($service->status == 'available')
-                    <form action="{{ route('admin.services.update', $service->id) }}" method="POST" class="mb-3">
+                    <form action="{{ route($routePrefix . '.services.update', $service->id) }}" method="POST" class="mb-3">
                         @csrf @method('PUT')
                         <input type="hidden" name="status" value="unavailable">
                         <button type="submit" class="btn btn-secondary btn-block">
@@ -91,7 +91,7 @@
                         </button>
                     </form>
                     @else
-                    <form action="{{ route('admin.services.update', $service->id) }}" method="POST" class="mb-3">
+                    <form action="{{ route($routePrefix . '.services.update', $service->id) }}" method="POST" class="mb-3">
                         @csrf @method('PUT')
                         <input type="hidden" name="status" value="available">
                         <button type="submit" class="btn btn-success btn-block">

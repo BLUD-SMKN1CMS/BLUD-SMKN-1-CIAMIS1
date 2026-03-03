@@ -17,7 +17,7 @@
         </div>
     @endif
     
-    <form action="{{ route('admin.settings.update') }}" method="POST">
+    <form action="{{ route($routePrefix . '.settings.update') }}" method="POST">
         @csrf
         @method('PUT')
         
@@ -66,7 +66,7 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i> Simpan Semua Perubahan
                             </button>
-                            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
+                            <a href="{{ route($routePrefix . '.dashboard') }}" class="btn btn-secondary">
                                 <i class="fas fa-times"></i> Batal
                             </a>
                         </div>

@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Tambah Produk Baru</h1>
-        <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">
+        <a href="{{ route($routePrefix . '.products.index') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Kembali
         </a>
     </div>
@@ -28,7 +28,7 @@
             <h6 class="m-0 font-weight-bold text-primary">Form Tambah Produk</h6>
         </div>
         <div class="card-body">
-            <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route($routePrefix . '.products.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="row">

@@ -7,7 +7,7 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Detail Produk</h1>
         <div class="btn-group" role="group">
-            <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">
+            <a href="{{ route($routePrefix . '.products.index') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left mr-1"></i> Kembali
             </a>
         </div>
@@ -115,7 +115,7 @@
                                                 {{ $product->tefa->code }}
                                             </span>
                                             {{ $product->tefa->name }}
-                                            <a href="{{ route('admin.tefas.show', $product->tefa->id) }}"
+                                            <a href="{{ route($routePrefix . '.tefas.show', $product->tefa->id) }}"
                                                 class="btn btn-sm btn-outline-primary ml-2">
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
@@ -262,11 +262,11 @@
                     </table>
 
                     <div class="mt-3 text-center">
-                        <a href="{{ route('admin.tefas.show', $product->tefa->id) }}"
+                        <a href="{{ route($routePrefix . '.tefas.show', $product->tefa->id) }}"
                             class="btn btn-outline-primary btn-sm">
                             <i class="fas fa-external-link-alt mr-1"></i> Detail TEFA
                         </a>
-                        <a href="{{ route('admin.tefas.edit', $product->tefa->id) }}"
+                        <a href="{{ route($routePrefix . '.tefas.edit', $product->tefa->id) }}"
                             class="btn btn-outline-warning btn-sm ml-2">
                             <i class="fas fa-edit mr-1"></i> Edit TEFA
                         </a>
@@ -277,7 +277,7 @@
                         <p class="text-muted mb-0">Produk ini belum memiliki TEFA</p>
                         <small class="text-muted">Tambahkan TEFA di halaman edit produk</small>
                         <div class="mt-3">
-                            <a href="{{ route('admin.tefas.create') }}"
+                            <a href="{{ route($routePrefix . '.tefas.create') }}"
                                 class="btn btn-sm btn-outline-primary">
                                 <i class="fas fa-plus mr-1"></i> Buat TEFA Baru
                             </a>

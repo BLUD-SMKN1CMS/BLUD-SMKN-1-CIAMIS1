@@ -19,8 +19,7 @@
                     <h5 class="card-title">{{ $tefa->name }}</h5>
                     <p class="card-text">{{ Str::limit($tefa->description, 150) }}</p>
                     <div class="mb-2">
-                        <span class="badge bg-primary">{{ $tefa->code }}</span>
-                        <span class="badge glass-effect glass-success">{{ $tefa->products_count }} Produk</span>
+                        <span class="badge bg-primary">Layanan</span>
                     </div>
                 </div>
                 <div class="card-footer">

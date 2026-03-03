@@ -4,13 +4,26 @@
 
 @section('content')
 <div class="container-fluid">
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+    @if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    @endif
+
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Detail Pesan</h1>
         <div>
-            <a href="{{ route('admin.contacts.index') }}" class="btn btn-secondary">
+            <a href="{{ route($routePrefix . '.contacts.index') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Kembali
             </a>
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#replyModal">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#replyModal">
                 <i class="fas fa-reply"></i> Balas
             </button>
         </div>
@@ -40,19 +53,19 @@
                             <a href="tel:{{ $contact->phone }}">{{ $contact->phone }}</a>
                         </div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <strong>Subjek:</strong><br>
                         {{ $contact->subject }}
                     </div>
-                    
+
                     <div class="mb-3">
                         <strong>Pesan:</strong><br>
                         <div class="border p-3 rounded bg-light">
                             {{ $contact->message }}
                         </div>
                     </div>
-                    
+
                     <div class="row">
                         <div class="col-md-6">
                             <strong>Dikirim pada:</strong><br>
@@ -68,14 +81,14 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-4">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Aksi</h6>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.contacts.update', $contact->id) }}" method="POST" class="mb-3">
+                    <form action="{{ route($routePrefix . '.contacts.update', $contact->id) }}" method="POST" class="mb-3">
                         @csrf @method('PUT')
                         <div class="form-group">
                             <label>Ubah Status</label>
@@ -87,21 +100,21 @@
                             </select>
                         </div>
                     </form>
-                    
-                    <form action="{{ route('admin.contacts.destroy', $contact->id) }}" method="POST" class="mb-3">
+
+                    <form action="{{ route($routePrefix . '.contacts.destroy', $contact->id) }}" method="POST" class="mb-3">
                         @csrf @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-block" 
+                        <button type="submit" class="btn btn-danger btn-block"
                             onclick="return confirm('Hapus pesan ini?')">
                             <i class="fas fa-trash"></i> Hapus Pesan
                         </button>
                     </form>
-                    
-                    <a href="{{ route('admin.contacts.edit', $contact->id) }}" class="btn btn-warning btn-block">
+
+                    <a href="{{ route($routePrefix . '.contacts.edit', $contact->id) }}" class="btn btn-warning btn-block">
                         <i class="fas fa-edit"></i> Edit Status
                     </a>
                 </div>
             </div>
-            
+
             <div class="card shadow">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Info Pengirim</h6>
@@ -124,11 +137,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="replyModalLabel">Balas ke {{ $contact->name }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('admin.contacts.reply', $contact->id) }}" method="POST">
+            <form action="{{ route($routePrefix . '.contacts.reply', $contact->id) }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
@@ -141,12 +152,12 @@
                     </div>
                     <div class="form-group">
                         <label>Pesan Balasan *</label>
-                        <textarea name="reply_message" class="form-control" rows="5" required 
+                        <textarea name="reply_message" class="form-control" rows="5" required
                             placeholder="Tulis balasan Anda..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary">Kirim Balasan</button>
                 </div>
             </form>

@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Kelola Carousel</h1>
-            <a href="{{ route('admin.carousels.create') }}" class="btn btn-primary">
+            <a href="{{ route($routePrefix . '.carousels.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus me-2"></i>Tambah Carousel Baru
             </a>
         </div>
@@ -95,13 +95,13 @@
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     <li>
                                                         <a class="dropdown-item"
-                                                            href="{{ route('admin.carousels.edit', $carousel->id) }}">
+                                                            href="{{ route($routePrefix . '.carousels.edit', $carousel->id) }}">
                                                             <i class="fas fa-edit me-2 text-warning"></i> Edit
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <form
-                                                            action="{{ route('admin.carousels.toggle-status', $carousel->id) }}"
+                                                            action="{{ route($routePrefix . '.carousels.toggle-status', $carousel->id) }}"
                                                             method="POST" class="dropdown-item p-0">
                                                             @csrf
                                                             <button type="submit"
@@ -117,7 +117,7 @@
                                                     </li>
                                                     <li>
                                                         <form
-                                                            action="{{ route('admin.carousels.destroy', $carousel->id) }}"
+                                                            action="{{ route($routePrefix . '.carousels.destroy', $carousel->id) }}"
                                                             method="POST" class="dropdown-item p-0">
                                                             @csrf @method('DELETE')
                                                             <button type="submit"
@@ -264,7 +264,7 @@
                 });
 
                 $.ajax({
-                    url: '{{ route('admin.carousels.update-order') }}',
+                    url: '{{ route($routePrefix . '.carousels.update-order') }}',
                     method: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',

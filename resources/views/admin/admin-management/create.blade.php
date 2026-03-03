@@ -12,7 +12,7 @@
                 <h5 class="mb-0"><i class="fas fa-user-plus me-2"></i>Form Tambah Admin TEFA</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('admin.admin-management.store') }}" method="POST">
+                <form action="{{ route($routePrefix . '.admin-management.store') }}" method="POST">
                     @csrf
 
                     <div class="mb-3">
@@ -100,7 +100,7 @@
                     </div>
 
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ route('admin.admin-management.index') }}" class="btn btn-secondary">
+                        <a href="{{ route($routePrefix . '.admin-management.index') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-2"></i>Kembali
                         </a>
                         <button type="submit" class="btn btn-primary">

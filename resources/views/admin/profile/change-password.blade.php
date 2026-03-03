@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Ubah Password</h1>
-            <a href="{{ route('admin.profile.edit') }}" class="btn btn-secondary">
+            <a href="{{ route($routePrefix . '.profile.edit') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Kembali ke Profil
             </a>
         </div>
@@ -39,7 +39,7 @@
                         </h6>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.profile.update-password') }}" method="POST">
+                        <form action="{{ route($routePrefix . '.profile.update-password') }}" method="POST">
                             @csrf
                             @method('PUT')
 
@@ -77,7 +77,7 @@
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center mt-4">
-                                <a href="{{ route('admin.profile.edit') }}" class="btn btn-outline-secondary">
+                                <a href="{{ route($routePrefix . '.profile.edit') }}" class="btn btn-outline-secondary">
                                     <i class="fas fa-user me-2"></i> Kembali ke Profil
                                 </a>
                                 <div>

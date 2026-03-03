@@ -26,7 +26,7 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $admin = Auth::guard('admin')->user();
-        
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:admins,email,' . $admin->id,
@@ -43,7 +43,7 @@ class ProfileController extends Controller
             'email' => $request->email,
         ]);
 
-        return redirect()->route('admin.profile.edit')
+        return redirect()->route($this->getRoutePrefix() . '.profile.edit')
             ->with('success', 'Profil berhasil diperbarui!');
     }
 
@@ -80,7 +80,7 @@ class ProfileController extends Controller
             'password' => Hash::make($request->new_password),
         ]);
 
-        return redirect()->route('admin.profile.change-password')
+        return redirect()->route($this->getRoutePrefix() . '.profile.change-password')
             ->with('success', 'Password berhasil diubah!');
     }
 }

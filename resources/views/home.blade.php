@@ -104,36 +104,25 @@
         <div class="row mt-5 pt-3 justify-content-center" data-aos="fade-up" data-aos-delay="300">
             <div class="col-md-10">
                 <div class="row text-center justify-content-center">
-                    <!-- TEFA Jurusan -->
-                    <div class="col-md-3 mb-4">
+                    <!-- TEFA Program Keahlian -->
+                    <div class="col-md-4 mb-4">
                         <div class="stat-card p-3 bg-white rounded-3 shadow-sm">
                             <div class="stat-icon mb-2">
                                 <i class="fas fa-graduation-cap fa-2x text-primary"></i>
                             </div>
                             <h3 class="fw-bold mb-1">{{ $stats['total_tefas'] ?? 0 }}</h3>
-                            <p class="text-muted mb-0">TEFA Jurusan</p>
+                            <p class="text-muted mb-0">TEFA Program Keahlian</p>
                         </div>
                     </div>
 
-                    <!-- Total Produk -->
-                    <div class="col-md-3 mb-4">
-                        <div class="stat-card p-3 bg-white rounded-3 shadow-sm">
-                            <div class="stat-icon mb-2">
-                                <i class="fas fa-box-open fa-2x text-primary"></i>
-                            </div>
-                            <h3 class="fw-bold mb-1">{{ $stats['total_products'] ?? 0 }}+</h3>
-                            <p class="text-muted mb-0">Produk</p>
-                        </div>
-                    </div>
-
-                    <!-- Layanan Sewa -->
-                    <div class="col-md-3 mb-4">
+                    <!-- Layanan -->
+                    <div class="col-md-4 mb-4">
                         <div class="stat-card p-3 bg-white rounded-3 shadow-sm">
                             <div class="stat-icon mb-2">
                                 <i class="fas fa-handshake fa-2x text-primary"></i>
                             </div>
-                            <h3 class="fw-bold mb-1">{{ $stats['total_services'] ?? 0 }}</h3>
-                            <p class="text-muted mb-0">Layanan Sewa</p>
+                            <h3 class="fw-bold mb-1">{{ $stats['total_services'] ?? 0 }}+</h3>
+                            <p class="text-muted mb-0">Layanan</p>
                         </div>
                     </div>
 
@@ -165,8 +154,7 @@
                         <h4 class="fw-bold mb-2 flex-grow-0">{{ $tefa->name }}</h4>
                         <p class="text-muted small flex-grow-1 mb-3">{{ Str::limit($tefa->description, 80) }}</p>
                         <div class="mt-auto">
-                            <span class="badge bg-primary">{{ $tefa->products_count ?? 0 }} Produk</span>
-                            <span class="badge glass-effect glass-success ms-1">{{ $tefa->code }}</span>
+                            <span class="badge bg-primary">Layanan</span>
                         </div>
                     </div>
                 </a>
@@ -216,10 +204,7 @@
                         <p class="card-text flex-grow-1 small text-muted">
                             {{ Str::limit($product->description, 60) }}
                         </p>
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                            <span class="fw-bold text-primary">
-                                Rp {{ number_format($product->price, 0, ',', '.') }}
-                            </span>
+                        <div class="d-flex justify-content-end align-items-center mt-auto">
                             <a href="{{ route('products.show', $product->slug) }}"
                                 class="btn btn-sm btn-outline-primary">
                                 Detail <i class="fas fa-arrow-right ms-1"></i>
@@ -238,7 +223,7 @@
     <div class="container">
         <div class="row mb-5">
             <div class="col-12 text-center">
-                <h2 class="display-5 fw-bold text-primary mb-3">Layanan Penyewaan</h2>
+                <h2 class="display-5 fw-bold text-primary mb-3">Layanan Lainnya</h2>
                 <p class="lead text-muted">Fasilitas yang dapat disewa oleh masyarakat umum</p>
                 <div class="section-title"></div>
             </div>
@@ -251,26 +236,10 @@
                 <div class="card border-0 shadow-sm h-100 service-card">
                     <div class="card-body text-center p-4">
                         <div class="service-icon-wrapper mb-3">
-                            @php
-                            $icon = 'concierge-bell';
-                            $name = strtolower($service->name);
-                            if(str_contains($name, 'gedung') || str_contains($name, 'ruang')) $icon = 'building';
-                            elseif(str_contains($name, 'transport') || str_contains($name, 'bus') || str_contains($name, 'mobil')) $icon = 'bus';
-                            elseif(str_contains($name, 'komputer') || str_contains($name, 'laptop') || str_contains($name, 'lab')) $icon = 'desktop';
-                            elseif(str_contains($name, 'alat') || str_contains($name, 'peralatan')) $icon = 'tools';
-                            elseif(str_contains($name, 'musik') || str_contains($name, 'sound')) $icon = 'music';
-                            elseif(str_contains($name, 'minum') || str_contains($name, 'galon')) $icon = 'tint';
-                            elseif(str_contains($name, 'foto') || str_contains($name, 'studio')) $icon = 'camera';
-                            @endphp
-                            <i class="fas fa-{{ $icon }} fa-3x service-icon"></i>
+                            <i class="{{ $service->icon ?? 'fas fa-concierge-bell' }} fa-3x service-icon"></i>
                         </div>
                         <h4 class="card-title fw-bold">{{ $service->name }}</h4>
-                        <p class="card-text text-muted">{{ $service->description ?? 'Layanan penyewaan ' . $service->name }}</p>
-
-                        <h5 class="text-success fw-bold mb-3">
-                            Rp {{ number_format($service->price_per_day, 0, ',', '.') }}
-                            <small class="text-muted">/hari</small>
-                        </h5>
+                        <p class="card-text text-muted">{{ $service->description ?? 'Layanan lainnya ' . $service->name }}</p>
 
                         <div class="mt-3">
                             <a href="{{ route('service.show', $service->slug) }}"

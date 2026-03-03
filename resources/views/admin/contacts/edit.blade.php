@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Edit Pesan Kontak</h1>
-        <a href="{{ route('admin.contacts.index') }}" class="btn btn-secondary">
+        <a href="{{ route($routePrefix . '.contacts.index') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Kembali
         </a>
     </div>
@@ -16,7 +16,7 @@
             <h6 class="m-0 font-weight-bold text-primary">Pesan dari: {{ $contact->name }}</h6>
         </div>
         <div class="card-body">
-            <form action="{{ route('admin.contacts.update', $contact->id) }}" method="POST">
+            <form action="{{ route($routePrefix . '.contacts.update', $contact->id) }}" method="POST">
                 @csrf
                 @method('PUT')
                 
@@ -89,7 +89,7 @@
                         <i class="fas fa-save"></i> Update Status
                     </button>
                     
-                    <a href="{{ route('admin.contacts.show', $contact->id) }}" class="btn btn-info">
+                    <a href="{{ route($routePrefix . '.contacts.show', $contact->id) }}" class="btn btn-info">
                         <i class="fas fa-eye"></i> Lihat Detail
                     </a>
                     
@@ -112,7 +112,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('admin.contacts.reply', $contact->id) }}" method="POST">
+            <form action="{{ route($routePrefix . '.contacts.reply', $contact->id) }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">

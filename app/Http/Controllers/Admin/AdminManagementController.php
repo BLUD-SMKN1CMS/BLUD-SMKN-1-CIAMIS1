@@ -63,7 +63,7 @@ class AdminManagementController extends Controller
         Admin::create($validated);
 
         return redirect()
-            ->route('admin.admin-management.index')
+            ->route('superadmin.admin-management.index')
             ->with('success', 'Admin TEFA berhasil ditambahkan!');
     }
 
@@ -118,7 +118,7 @@ class AdminManagementController extends Controller
         $adminManagement->update($validated);
 
         return redirect()
-            ->route('admin.admin-management.index')
+            ->route('superadmin.admin-management.index')
             ->with('success', 'Admin TEFA berhasil diperbarui!');
     }
 
@@ -130,14 +130,14 @@ class AdminManagementController extends Controller
         // Pastikan tidak menghapus super admin
         if ($adminManagement->isSuperAdmin()) {
             return redirect()
-                ->route('admin.admin-management.index')
+                ->route('superadmin.admin-management.index')
                 ->with('error', 'Super Admin tidak dapat dihapus!');
         }
 
         $adminManagement->delete();
 
         return redirect()
-            ->route('admin.admin-management.index')
+            ->route('superadmin.admin-management.index')
             ->with('success', 'Admin TEFA berhasil dihapus!');
     }
 }

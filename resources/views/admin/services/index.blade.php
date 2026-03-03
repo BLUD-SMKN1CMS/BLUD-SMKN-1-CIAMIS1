@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+﻿@extends('admin.layouts.app')
 
 @section('title', 'Kelola Layanan')
 
@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Kelola Layanan</h1>
-        <a href="{{ route('admin.services.create') }}" class="btn btn-primary">
+        <a href="{{ route($routePrefix . '.services.create') }}" class="btn btn-primary">
             <i class="fas fa-plus"></i> Tambah Layanan
         </a>
     </div>
@@ -33,6 +33,7 @@
                             <th>#</th>
                             <th>Icon</th>
                             <th>Nama Layanan</th>
+                            <th>Jurusan TEFA</th>
                             <th>Harga/Jam</th>
                             <th>Harga/Hari</th>
                             <th>Status</th>
@@ -47,6 +48,7 @@
                                 <i class="{{ $service->icon ?? 'fas fa-concierge-bell' }} fa-lg text-primary"></i>
                             </td>
                             <td>{{ $service->name }}</td>
+                            <td>{{ $service->tefa->name ?? '-' }}</td>
                             <td>{{ $service->price_per_hour ? 'Rp ' . number_format($service->price_per_hour, 0, ',', '.') : '-' }}</td>
                             <td>Rp {{ number_format($service->price_per_day, 0, ',', '.') }}</td>
                             <td>
@@ -89,7 +91,7 @@
                                             <hr class="dropdown-divider">
                                         </li>
                                         <li>
-                                            <form action="{{ route('admin.services.destroy', $service->id) }}"
+                                            <form action="{{ route($routePrefix . '.services.destroy', $service->id) }}"
                                                 method="POST" class="dropdown-item p-0">
                                                 @csrf @method('DELETE')
                                                 <button type="submit"
@@ -105,11 +107,11 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center py-5">
+                            <td colspan="8" class="text-center py-5">
                                 <div class="text-muted">
                                     <i class="fas fa-handshake fa-3x mb-4" style="opacity: 0.5;"></i>
                                     <p class="mb-4">Belum ada data layanan</p>
-                                    <a href="{{ route('admin.services.create') }}" class="btn btn-primary rounded-circle" style="width: 60px; height: 60px; display: inline-flex; align-items: center; justify-content: center; font-size: 24px;">
+                                    <a href="{{ route($routePrefix . '.services.create') }}" class="btn btn-primary rounded-circle" style="width: 60px; height: 60px; display: inline-flex; align-items: center; justify-content: center; font-size: 24px;">
                                         <i class="fas fa-plus"></i>
                                     </a>
                                 </div>

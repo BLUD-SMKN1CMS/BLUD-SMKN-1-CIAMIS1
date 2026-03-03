@@ -7,24 +7,55 @@ use App\Models\Product;
 use App\Models\Tefa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('tefa')->orderBy('created_at', 'desc')->get();
-        return view('admin.products.index', compact('products'));
+        $admin = Auth::guard('admin')->user();
+        $query = Product::with('tefa')->orderBy('created_at', 'desc');
+
+        // Jika admin-tefa, filter hanya product untuk TEFA miliknya
+        if ($admin->isAdminTefa()) {
+            $query->where('tefa_id', $admin->tefa_id);
+        } elseif ($request->has('tefa_id') && $request->tefa_id != '') {
+            // Superadmin bisa filter by TEFA jika disediakan
+            $query->where('tefa_id', $request->tefa_id);
+        }
+
+        $products = $query->get();
+
+        // Untuk dropdown filter: superadmin lihat semua TEFA, admin-tefa hanya miliknya
+        $tefas = $admin->isAdminTefa()
+            ? Tefa::where('id', $admin->tefa_id)->where('is_active', true)->orderBy('name', 'asc')->get()
+            : Tefa::where('is_active', true)->orderBy('name', 'asc')->get();
+
+        return view('admin.products.index', compact('products', 'tefas'));
     }
 
     public function create()
     {
-        $tefas = Tefa::where('is_active', true)->get();
+        $admin = Auth::guard('admin')->user();
+
+        // Untuk dropdown: superadmin lihat semua TEFA, admin-tefa hanya miliknya
+        $tefas = $admin->isAdminTefa()
+            ? Tefa::where('id', $admin->tefa_id)->get()
+            : Tefa::where('is_active', true)->get();
+
         return view('admin.products.create', compact('tefas'));
     }
 
     public function store(Request $request)
     {
+        $admin = Auth::guard('admin')->user();
+
+        // Jika admin-tefa, pastikan hanya bisa create product untuk TEFA miliknya
+        if ($admin->isAdminTefa()) {
+            $request->merge(['tefa_id' => $admin->tefa_id]);
+        }
+
         // VALIDASI YANG LEBIH DETAIL
         $validator = Validator::make($request->all(), [
             'tefa_id' => 'required|exists:tefas,id',
@@ -137,7 +168,7 @@ class ProductController extends Controller
         try {
             Product::create($data);
 
-            return redirect()->route('admin.products.index')
+            return redirect()->route($this->getRoutePrefix() . '.products.index')
                 ->with('success', '✅ Produk berhasil ditambahkan!');
         } catch (\Exception $e) {
             \Log::error('Error creating product: ' . $e->getMessage());
@@ -155,20 +186,49 @@ class ProductController extends Controller
 
     public function show($id)
     {
+        $admin = Auth::guard('admin')->user();
         $product = Product::with('tefa')->findOrFail($id);
+
+        // Admin-tefa hanya bisa lihat product untuk TEFA miliknya
+        if ($admin->isAdminTefa() && $product->tefa_id !== $admin->tefa_id) {
+            abort(403, 'Anda tidak memiliki akses ke produk ini');
+        }
+
         return view('admin.products.show', compact('product'));
     }
 
     public function edit($id)
     {
+        $admin = Auth::guard('admin')->user();
         $product = Product::findOrFail($id);
-        $tefas = Tefa::where('is_active', true)->get();
+
+        // Admin-tefa hanya bisa edit product untuk TEFA miliknya
+        if ($admin->isAdminTefa() && $product->tefa_id !== $admin->tefa_id) {
+            abort(403, 'Anda tidak memiliki akses ke produk ini');
+        }
+
+        // Dropdown TEFA: superadmin lihat semua, admin-tefa hanya miliknya
+        $tefas = $admin->isAdminTefa()
+            ? Tefa::where('id', $admin->tefa_id)->get()
+            : Tefa::where('is_active', true)->get();
+
         return view('admin.products.edit', compact('product', 'tefas'));
     }
 
     public function update(Request $request, $id)
     {
+        $admin = Auth::guard('admin')->user();
         $product = Product::findOrFail($id);
+
+        // Admin-tefa hanya bisa update product untuk TEFA miliknya
+        if ($admin->isAdminTefa() && $product->tefa_id !== $admin->tefa_id) {
+            abort(403, 'Anda tidak memiliki akses ke produk ini');
+        }
+
+        // Jika admin-tefa, force tefa_id sesuai miliknya
+        if ($admin->isAdminTefa()) {
+            $request->merge(['tefa_id' => $admin->tefa_id]);
+        }
 
         // VALIDASI UPDATE (perlu validasi unique dengan pengecualian)
         $validator = Validator::make($request->all(), [
@@ -209,7 +269,7 @@ class ProductController extends Controller
         }
 
         $data = $request->except(['_token', '_method', 'image', 'image_2', 'image_3', 'image_4']);
-        
+
         // Fix: Description cannot be null in DB
         if (empty($data['description'])) {
             $data['description'] = '-';
@@ -274,7 +334,7 @@ class ProductController extends Controller
         try {
             $product->update($data);
 
-            return redirect()->route('admin.products.index')
+            return redirect()->route($this->getRoutePrefix() . '.products.index')
                 ->with('success', '✅ Produk berhasil diperbarui!');
         } catch (\Exception $e) {
             \Log::error('Error updating product: ' . $e->getMessage());
@@ -295,7 +355,13 @@ class ProductController extends Controller
     public function destroy($id)
     {
         try {
+            $admin = Auth::guard('admin')->user();
             $product = Product::findOrFail($id);
+
+            // Admin-tefa hanya bisa delete product untuk TEFA miliknya
+            if ($admin->isAdminTefa() && $product->tefa_id !== $admin->tefa_id) {
+                abort(403, 'Anda tidak memiliki akses ke produk ini');
+            }
 
             // Simpan path gambar untuk dihapus
             $imageFields = ['image', 'image_2', 'image_3', 'image_4'];
@@ -316,7 +382,7 @@ class ProductController extends Controller
                 }
             }
 
-            return redirect()->route('admin.products.index')
+            return redirect()->route($this->getRoutePrefix() . '.products.index')
                 ->with('success', '✅ Produk berhasil dihapus!');
         } catch (\Exception $e) {
             \Log::error('Error deleting product: ' . $e->getMessage());

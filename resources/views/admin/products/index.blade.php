@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Kelola Produk</h1>
-        <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
+        <a href="{{ route($routePrefix . '.products.create') }}" class="btn btn-primary">
             <i class="fas fa-plus"></i> Tambah Produk
         </a>
     </div>
@@ -136,13 +136,13 @@
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li>
                                             <a class="dropdown-item"
-                                                href="{{ route('admin.products.show', $product->id) }}">
+                                                href="{{ route($routePrefix . '.products.show', $product->id) }}">
                                                 <i class="fas fa-eye me-2 text-info"></i> Lihat Detail
                                             </a>
                                         </li>
                                         <li>
                                             <a class="dropdown-item"
-                                                href="{{ route('admin.products.edit', $product->id) }}">
+                                                href="{{ route($routePrefix . '.products.edit', $product->id) }}">
                                                 <i class="fas fa-edit me-2 text-warning"></i> Edit
                                             </a>
                                         </li>
@@ -156,7 +156,7 @@
                                         </li>
                                         @if($product->status == 'active')
                                         <li>
-                                            <form action="{{ route('admin.products.update', $product->id) }}" method="POST" id="toggle-status-inactive-{{ $product->id }}">
+                                            <form action="{{ route($routePrefix . '.products.update', $product->id) }}" method="POST" id="toggle-status-inactive-{{ $product->id }}">
                                                 @csrf @method('PUT')
                                                 <input type="hidden" name="status" value="inactive">
                                             </form>
@@ -166,7 +166,7 @@
                                         </li>
                                         @else
                                         <li>
-                                            <form action="{{ route('admin.products.update', $product->id) }}" method="POST" id="toggle-status-active-{{ $product->id }}">
+                                            <form action="{{ route($routePrefix . '.products.update', $product->id) }}" method="POST" id="toggle-status-active-{{ $product->id }}">
                                                 @csrf @method('PUT')
                                                 <input type="hidden" name="status" value="active">
                                             </form>
@@ -180,7 +180,7 @@
                                         </li>
                                         <li>
                                             <!-- FIXED: Form Delete yang benar -->
-                                            <form action="{{ route('admin.products.destroy', $product->id) }}"
+                                            <form action="{{ route($routePrefix . '.products.destroy', $product->id) }}"
                                                 method="POST" id="delete-form-{{ $product->id }}"
                                                 onsubmit="return confirm('Hapus produk {{ $product->name }}?')">
                                                 @csrf
@@ -201,7 +201,7 @@
                                 <div class="text-muted">
                                     <i class="fas fa-box-open fa-3x mb-4" style="opacity: 0.5;"></i>
                                     <p class="mb-4">Belum ada data produk</p>
-                                    <a href="{{ route('admin.products.create') }}" class="btn btn-primary rounded-circle" style="width: 60px; height: 60px; display: inline-flex; align-items: center; justify-content: center; font-size: 24px;">
+                                    <a href="{{ route($routePrefix . '.products.create') }}" class="btn btn-primary rounded-circle" style="width: 60px; height: 60px; display: inline-flex; align-items: center; justify-content: center; font-size: 24px;">
                                         <i class="fas fa-plus"></i>
                                     </a>
                                 </div>

@@ -9,7 +9,7 @@
         <div class="card-body">
             <p class="text-muted">Halaman untuk menambah kontak manual (jarang digunakan).</p>
             <p>Kontak biasanya datang dari form publik di website.</p>
-            <a href="{{ route('admin.contacts.index') }}" class="btn btn-primary">
+            <a href="{{ route($routePrefix . '.contacts.index') }}" class="btn btn-primary">
                 <i class="fas fa-list"></i> Lihat Daftar Kontak
             </a>
         </div>

@@ -42,50 +42,97 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
-    // Protected Admin Routes (Auth required)
+    // Shared logout
     Route::middleware(['auth:admin'])->group(function () {
-        // Dashboard & Auth
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    });
 
-        // CRUD Routes
-        // Tefas - Super Admin only
-        Route::middleware(\App\Http\Middleware\AdminSuper::class)->resource('tefas', TefaController::class);
+    // Protected Admin-TEFA Routes (Auth required + AdminTefaOnly)
+    Route::middleware(['auth:admin', \App\Http\Middleware\AdminTefaOnly::class])->group(function () {
+        // Dashboard
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Products
         Route::resource('products', ProductController::class);
+
+        // Services
         Route::resource('services', ServiceController::class);
-        Route::resource('payments', PaymentController::class);
 
-        // Admin Management (Super Admin only)
-        Route::middleware(\App\Http\Middleware\AdminSuper::class)->resource('admin-management', AdminManagementController::class);
-
-        // Payment Actions
-        Route::post('/payments/{payment}/confirm', [PaymentController::class, 'confirm'])->name('payments.confirm');
-        Route::post('/payments/{payment}/cancel', [PaymentController::class, 'cancel'])->name('payments.cancel');
-
-        // Contact Management
+        // Contacts
         Route::resource('contacts', AdminContactController::class)->except(['create', 'store']);
         Route::post('/contacts/{contact}/reply', [AdminContactController::class, 'reply'])->name('contacts.reply');
         Route::post('/contacts/{contact}/mark-as-read', [AdminContactController::class, 'markAsRead'])->name('contacts.markAsRead');
         Route::post('/contacts/bulk-delete', [AdminContactController::class, 'bulkDelete'])->name('contacts.bulkDelete');
 
-        // Carousel Management - Super Admin only
-        Route::middleware(\App\Http\Middleware\AdminSuper::class)->group(function () {
-            Route::resource('carousels', CarouselController::class);
-            Route::post('/carousels/{carousel}/set-active', [CarouselController::class, 'setActive'])->name('carousels.setActive');
-            Route::post('/carousels/{carousel}/toggle-status', [CarouselController::class, 'toggleStatus'])->name('carousels.toggle-status');
-            Route::post('/carousels/update-order', [CarouselController::class, 'updateOrder'])->name('carousels.update-order');
-        });
-
-        // ============ PROFILE ROUTES (FIXED) ============
+        // Profile
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::get('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password'); // Perbaikan: pakai dash
+        Route::get('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
         Route::put('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
-        // ============ END PROFILE ROUTES ============
 
-        // Settings Management
+        // Payments
+        Route::resource('payments', PaymentController::class);
+        Route::post('/payments/{payment}/confirm', [PaymentController::class, 'confirm'])->name('payments.confirm');
+        Route::post('/payments/{payment}/cancel', [PaymentController::class, 'cancel'])->name('payments.cancel');
+
+        // Stats
+        Route::get('/stats', [DashboardController::class, 'getStats'])->name('stats');
+
+        // Export/Import
+        Route::get('/export/products', [ProductController::class, 'export'])->name('export.products');
+        Route::get('/export/services', [ServiceController::class, 'export'])->name('export.services');
+        Route::post('/import/products', [ProductController::class, 'import'])->name('import.products');
+    });
+});
+
+// ==================== SUPER ADMIN ROUTES ====================
+Route::prefix('super-admin')->name('superadmin.')->group(function () {
+    // Protected Super Admin Routes (Auth required + AdminSuper)
+    Route::middleware(['auth:admin', \App\Http\Middleware\AdminSuper::class])->group(function () {
+        // Dashboard
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Logout (superadmin also needs this)
+        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+        // Products
+        Route::resource('products', ProductController::class);
+
+        // Services
+        Route::resource('services', ServiceController::class);
+
+        // TEFAs
+        Route::resource('tefas', TefaController::class);
+
+        // Contacts
+        Route::resource('contacts', AdminContactController::class)->except(['create', 'store']);
+        Route::post('/contacts/{contact}/reply', [AdminContactController::class, 'reply'])->name('contacts.reply');
+        Route::post('/contacts/{contact}/mark-as-read', [AdminContactController::class, 'markAsRead'])->name('contacts.markAsRead');
+        Route::post('/contacts/bulk-delete', [AdminContactController::class, 'bulkDelete'])->name('contacts.bulkDelete');
+
+        // Carousels
+        Route::resource('carousels', CarouselController::class);
+        Route::post('/carousels/{carousel}/set-active', [CarouselController::class, 'setActive'])->name('carousels.setActive');
+        Route::post('/carousels/{carousel}/toggle-status', [CarouselController::class, 'toggleStatus'])->name('carousels.toggle-status');
+        Route::post('/carousels/update-order', [CarouselController::class, 'updateOrder'])->name('carousels.update-order');
+
+        // Admin Management
+        Route::resource('admin-management', AdminManagementController::class);
+
+        // Profile
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
+        Route::put('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
+
+        // Settings
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+
+        // Payments
+        Route::resource('payments', PaymentController::class);
+        Route::post('/payments/{payment}/confirm', [PaymentController::class, 'confirm'])->name('payments.confirm');
+        Route::post('/payments/{payment}/cancel', [PaymentController::class, 'cancel'])->name('payments.cancel');
 
         // Stats & Export
         Route::get('/stats', [DashboardController::class, 'getStats'])->name('stats');

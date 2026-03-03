@@ -9,26 +9,60 @@ use App\Models\Service;
 use App\Models\Contact;
 use App\Models\Carousel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        $admin = Auth::guard('admin')->user();
+
+        // Jika admin-tefa, filter hanya untuk TEFA miliknya
+        if ($admin->isAdminTefa()) {
+            $activeTefahQuery = Tefa::where('is_active', true)->where('id', $admin->tefa_id);
+        } else {
+            // Superadmin: ambil semua
+            $activeTefahQuery = Tefa::where('is_active', true);
+        }
+
         // Ambil data untuk dashboard
         $stats = [
-            'total_tefas' => Tefa::where('is_active', true)->count(),
-            'total_products' => Product::where('status', 'active')->count(),
-            'total_services' => Service::where('status', 'available')->count(),
+            'total_tefas' => $activeTefahQuery->count(),
+            'total_products' => Product::when($admin->isAdminTefa(), function ($q) use ($admin) {
+                return $q->whereHas('tefa', function ($q) use ($admin) {
+                    $q->where('id', $admin->tefa_id);
+                });
+            })->where('status', 'active')->count(),
+            'total_services' => $admin->isAdminTefa()
+                ? Service::where('tefa_id', $admin->tefa_id)->where('status', 'available')->count()
+                : Service::where('status', 'available')->count(),
             'total_contacts' => Contact::where('status', 'new')->count(),
         ];
-        
+
         // Pesan terbaru
         $recentContacts = Contact::latest()->take(5)->get();
 
-        // TEFA terbaru
-        $recentTefas = Tefa::latest()->take(5)->get();
+        // TEFA terbaru - sesuai dengan role admin
+        $recentTefas = $admin->isAdminTefa()
+            ? Tefa::where('id', $admin->tefa_id)->latest()->take(5)->get()
+            : Tefa::latest()->take(5)->get();
 
-        // Return view DENGAN LAYOUT ADMIN
+        // Data tambahan untuk admin-tefa: produk & layanan terbaru milik TEFA-nya
+        $recentProducts = $admin->isAdminTefa()
+            ? Product::where('tefa_id', $admin->tefa_id)->latest()->take(5)->get()
+            : collect();
+
+        $recentServices = $admin->isAdminTefa()
+            ? Service::where('tefa_id', $admin->tefa_id)->latest()->take(5)->get()
+            : collect();
+
+        // Return view sesuai role
+        if ($admin->isAdminTefa()) {
+            $myTefa = Tefa::find($admin->tefa_id);
+            return view('admin.dashboard.admin-tefa', compact('stats', 'recentContacts', 'myTefa', 'recentProducts', 'recentServices'));
+        }
+
+        // Return view DENGAN LAYOUT ADMIN (superadmin)
         return view('admin.dashboard.index', compact('stats', 'recentContacts', 'recentTefas'));
     }
 }

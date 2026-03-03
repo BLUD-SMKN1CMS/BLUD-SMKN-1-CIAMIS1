@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('message');
             $table->enum('status', ['new', 'replied', 'read', 'spam'])->default('new');
             $table->text('reply')->nullable();
+            $table->timestamp('replied_at')->nullable();
             $table->timestamps();
         });
     }

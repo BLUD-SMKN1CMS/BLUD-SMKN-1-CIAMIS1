@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Edit Carousel</h1>
-        <a href="{{ route('admin.carousels.index') }}" class="btn btn-secondary">
+        <a href="{{ route($routePrefix . '.carousels.index') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left me-2"></i>Kembali
         </a>
     </div>
@@ -16,7 +16,7 @@
             <h6 class="m-0 font-weight-bold text-primary">Edit Data Carousel</h6>
         </div>
         <div class="card-body">
-            <form action="{{ route('admin.carousels.update', $carousel->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route($routePrefix . '.carousels.update', $carousel->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 
@@ -158,7 +158,7 @@
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-save me-2"></i>Perbarui Carousel
                     </button>
-                    <a href="{{ route('admin.carousels.index') }}" class="btn btn-secondary">
+                    <a href="{{ route($routePrefix . '.carousels.index') }}" class="btn btn-secondary">
                         <i class="fas fa-times me-2"></i>Batal
                     </a>
                 </div>

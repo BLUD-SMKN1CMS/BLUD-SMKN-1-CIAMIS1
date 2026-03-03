@@ -17,5 +17,6 @@ class Contact extends Model
         'message',
         'status',
         'reply',
+        'replied_at',
     ];
 }

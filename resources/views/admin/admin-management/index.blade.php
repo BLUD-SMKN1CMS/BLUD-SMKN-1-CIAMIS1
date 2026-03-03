@@ -12,7 +12,7 @@
                 <h4 class="mb-0">Daftar Admin TEFA</h4>
                 <p class="text-muted small mb-0">Kelola admin untuk setiap jurusan TEFA</p>
             </div>
-            <a href="{{ route('admin.admin-management.create') }}" class="btn btn-primary">
+            <a href="{{ route($routePrefix . '.admin-management.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus me-2"></i> Tambah Admin
             </a>
         </div>
@@ -75,7 +75,7 @@
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
                                                 <a class="dropdown-item"
-                                                    href="{{ route('admin.admin-management.edit', $admin->id) }}">
+                                                    href="{{ route($routePrefix . '.admin-management.edit', $admin->id) }}">
                                                     <i class="fas fa-edit me-2 text-warning"></i> Edit
                                                 </a>
                                             </li>
@@ -83,7 +83,7 @@
                                                 <hr class="dropdown-divider">
                                             </li>
                                             <li>
-                                                <form action="{{ route('admin.admin-management.destroy', $admin->id) }}"
+                                                <form action="{{ route($routePrefix . '.admin-management.destroy', $admin->id) }}"
                                                     method="POST" id="delete-admin-{{ $admin->id }}"
                                                     onsubmit="return confirm('Yakin ingin menghapus admin ini?')">
                                                     @csrf
@@ -125,7 +125,7 @@
                 <div class="text-center py-5">
                     <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
                     <p class="text-muted">Belum ada admin TEFA yang terdaftar</p>
-                    <a href="{{ route('admin.admin-management.create') }}" class="btn btn-primary">
+                    <a href="{{ route($routePrefix . '.admin-management.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus me-2"></i> Tambah Admin TEFA
                     </a>
                 </div>

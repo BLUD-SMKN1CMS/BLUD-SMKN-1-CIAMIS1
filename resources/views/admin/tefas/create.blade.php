@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Tambah TEFA Baru</h1>
-        <a href="{{ route('admin.tefas.index') }}" class="btn btn-secondary">
+        <a href="{{ route($routePrefix . '.tefas.index') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Kembali
         </a>
     </div>
@@ -16,7 +16,7 @@
             <h6 class="m-0 font-weight-bold text-primary">Form Tambah TEFA</h6>
         </div>
         <div class="card-body">
-            <form action="{{ route('admin.tefas.store') }}" method="POST" id="tefaForm">
+            <form action="{{ route($routePrefix . '.tefas.store') }}" method="POST" id="tefaForm">
                 @csrf
                 
                 <div class="row">
@@ -129,7 +129,7 @@
                     <button type="submit" class="btn btn-primary btn-lg">
                         <i class="fas fa-save"></i> Simpan TEFA
                     </button>
-                    <a href="{{ route('admin.tefas.index') }}" class="btn btn-secondary btn-lg">
+                    <a href="{{ route($routePrefix . '.tefas.index') }}" class="btn btn-secondary btn-lg">
                         <i class="fas fa-times"></i> Batal
                     </a>
                 </div>

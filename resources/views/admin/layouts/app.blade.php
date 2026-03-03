@@ -726,7 +726,7 @@
     <nav class="sidebar" id="sidebar">
         <!-- Sidebar Header -->
         <div class="sidebar-header">
-            <a href="{{ route('admin.dashboard') }}" class="sidebar-brand">
+            <a href="{{ route($routePrefix . '.dashboard') }}" class="sidebar-brand">
                 <img src="{{ asset('assets/iconsmea.png') }}" alt="Logo">
                 <div class="sidebar-brand-text">
                     <h4>BLUD SMKN 1</h4>
@@ -740,8 +740,8 @@
             <!-- Dashboard -->
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a href="{{ route('admin.dashboard') }}"
-                        class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                    <a href="{{ route($routePrefix . '.dashboard') }}"
+                        class="nav-link {{ request()->routeIs($routePrefix . '.dashboard') ? 'active' : '' }}">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
@@ -753,7 +753,7 @@
 
             <!-- Content Management Dropdown -->
             <ul class="nav flex-column">
-                <li class="nav-item nav-dropdown {{ request()->is('admin/tefas*', 'admin/products*', 'admin/services*', 'admin/carousels*') ? 'active' : '' }}">
+                <li class="nav-item nav-dropdown {{ request()->routeIs($routePrefix . '.tefas*', $routePrefix . '.products*', $routePrefix . '.services*', $routePrefix . '.carousels*') ? 'active' : '' }}">
                     <a class="nav-link nav-dropdown-toggle">
                         <div style="display: flex; align-items: center;">
                             <i class="fas fa-folder-open"></i>
@@ -763,25 +763,25 @@
                     </a>
                     <div class="nav-dropdown-menu">
                         @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->isSuperAdmin())
-                        <a href="{{ route('admin.tefas.index') }}"
-                            class="nav-link {{ request()->is('admin/tefas*') ? 'active' : '' }}">
+                        <a href="{{ route('superadmin.tefas.index') }}"
+                            class="nav-link {{ request()->routeIs('superadmin.tefas*') ? 'active' : '' }}">
                             <i class="fas fa-university"></i>
                             <span>Jurusan TEFA</span>
                         </a>
                         @endif
-                        <a href="{{ route('admin.products.index') }}"
-                            class="nav-link {{ request()->is('admin/products*') ? 'active' : '' }}">
+                        <a href="{{ route($routePrefix . '.products.index') }}"
+                            class="nav-link {{ request()->routeIs($routePrefix . '.products*') ? 'active' : '' }}">
                             <i class="fas fa-box-open"></i>
                             <span>Layanan</span>
                         </a>
-                        <a href="{{ route('admin.services.index') }}"
-                            class="nav-link {{ request()->is('admin/services*') ? 'active' : '' }}">
+                        <a href="{{ route($routePrefix . '.services.index') }}"
+                            class="nav-link {{ request()->routeIs($routePrefix . '.services*') ? 'active' : '' }}">
                             <i class="fas fa-handshake"></i>
                             <span>Layanan Sewa</span>
                         </a>
                         @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->isSuperAdmin())
-                        <a href="{{ route('admin.carousels.index') }}"
-                            class="nav-link {{ request()->is('admin/carousels*') ? 'active' : '' }}">
+                        <a href="{{ route('superadmin.carousels.index') }}"
+                            class="nav-link {{ request()->routeIs('superadmin.carousels*') ? 'active' : '' }}">
                             <i class="fas fa-images"></i>
                             <span>Carousel</span>
                         </a>
@@ -797,8 +797,8 @@
             <!-- Communication -->
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a href="{{ route('admin.contacts.index') }}"
-                        class="nav-link {{ request()->is('admin/contacts*') ? 'active' : '' }}">
+                    <a href="{{ route($routePrefix . '.contacts.index') }}"
+                        class="nav-link {{ request()->routeIs($routePrefix . '.contacts*') ? 'active' : '' }}">
                         <i class="fas fa-envelope"></i>
                         <span>Pesan Masuk</span>
                         @php
@@ -817,18 +817,17 @@
 
             <!-- Settings -->
             <ul class="nav flex-column">
+                @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->isSuperAdmin())
                 <li class="nav-item">
-                    <a href="{{ route('admin.settings.index') }}"
-                        class="nav-link {{ request()->is('admin/settings*') ? 'active' : '' }}">
+                    <a href="{{ route('superadmin.settings.index') }}"
+                        class="nav-link {{ request()->routeIs('superadmin.settings*') ? 'active' : '' }}">
                         <i class="fas fa-cog"></i>
                         <span>Pengaturan Website</span>
                     </a>
                 </li>
-
-                @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->isSuperAdmin())
                 <li class="nav-item">
-                    <a href="{{ route('admin.admin-management.index') }}"
-                        class="nav-link {{ request()->is('admin/admin-management*') ? 'active' : '' }}">
+                    <a href="{{ route('superadmin.admin-management.index') }}"
+                        class="nav-link {{ request()->routeIs('superadmin.admin-management*') ? 'active' : '' }}">
                         <i class="fas fa-users-cog"></i>
                         <span>Kelola Admin TEFA</span>
                     </a>
@@ -836,8 +835,8 @@
                 @endif
 
                 <li class="nav-item">
-                    <a href="{{ route('admin.profile.edit') }}"
-                        class="nav-link {{ request()->is('admin/profile*') ? 'active' : '' }}">
+                    <a href="{{ route($routePrefix . '.profile.edit') }}"
+                        class="nav-link {{ request()->routeIs($routePrefix . '.profile*') ? 'active' : '' }}">
                         <i class="fas fa-user"></i>
                         <span>Profil Admin</span>
                     </a>
@@ -875,7 +874,7 @@
                     </a>
 
                     <div class="dropdown-menu dropdown-menu-end">
-                        <form method="POST" action="{{ route('admin.logout') }}" id="logoutForm">
+                        <form method="POST" action="{{ route($routePrefix . '.logout') }}" id="logoutForm">
                             @csrf
                             <a class="dropdown-item text-danger" href="#"
                                 onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">

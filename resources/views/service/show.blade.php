@@ -27,7 +27,7 @@
 
                 <div class="d-flex gap-3 flex-wrap">
                     <a href="#booking-form" class="btn btn-light btn-lg px-4 py-3" style="border-radius: 50px; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                        <i class="fas fa-calendar-check me-2"></i>Pesan Sekarang
+                        <i class="fab fa-whatsapp me-2"></i>Tanya via WhatsApp
                     </a>
                     <a href="#service-details" class="btn btn-outline-light btn-lg px-4 py-3" style="border-radius: 50px; font-weight: 600; border-width: 2px;">
                         <i class="fas fa-info-circle me-2"></i>Detail Layanan
@@ -142,9 +142,9 @@
             <!-- Booking Form Sidebar -->
             <div class="col-lg-4">
                 <div id="booking-form" class="booking-sidebar" style="background: white; border-radius: 20px; padding: 30px; box-shadow: 0 5px 30px rgba(0,0,0,0.08); position: sticky; top: 100px;">
-                    <h4 class="fw-bold mb-4" style="color: #2d3748;">Formulir Pemesanan</h4>
+                    <h4 class="fw-bold mb-4" style="color: #2d3748;">Formulir Pertanyaan</h4>
 
-                    <form id="bookingForm">
+                    <form id="inquiryForm">
                         <input type="hidden" id="serviceName" value="{{ $service->name }}">
 
                         <div class="mb-3">
@@ -159,44 +159,17 @@
                             <input type="tel" name="customer_phone" class="form-control" required style="border-radius: 10px; padding: 12px; border: 2px solid #e2e8f0;" placeholder="08xxxxxxxxxx">
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold" style="color: #4a5568;">Jenis Sewa</label>
-                            <select name="rental_type" id="rentalType" class="form-select" required style="border-radius: 10px; padding: 12px; border: 2px solid #e2e8f0;">
-                                <option value="Harian">Harian</option>
-                                <option value="Bulanan">Bulanan</option>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold" style="color: #4a5568;">Tanggal Sewa</label>
-                            <input type="date" name="rental_date" class="form-control" required style="border-radius: 10px; padding: 12px; border: 2px solid #e2e8f0;" min="{{ date('Y-m-d', strtotime('+3 days')) }}">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold" style="color: #4a5568;">Tanggal Kembali</label>
-                            <input type="date" name="return_date" class="form-control" required style="border-radius: 10px; padding: 12px; border: 2px solid #e2e8f0;" min="{{ date('Y-m-d', strtotime('+4 days')) }}">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold" style="color: #4a5568;">Metode Pembayaran</label>
-                            <select name="payment_method" id="paymentMethod" class="form-select" required style="border-radius: 10px; padding: 12px; border: 2px solid #e2e8f0;">
-                                <option value="cash" selected>💵 Tunai</option>
-                            </select>
-                        </div>
-
-
-
                         <div class="mb-4">
-                            <label class="form-label fw-semibold" style="color: #4a5568;">Catatan (Opsional)</label>
-                            <textarea name="notes" class="form-control" rows="3" style="border-radius: 10px; padding: 12px; border: 2px solid #e2e8f0;" placeholder="Tambahkan catatan jika ada"></textarea>
+                            <label class="form-label fw-semibold" style="color: #4a5568;">Pertanyaan (Opsional)</label>
+                            <textarea name="question" class="form-control" rows="3" style="border-radius: 10px; padding: 12px; border: 2px solid #e2e8f0;" placeholder="Tulis pertanyaan Anda terkait layanan ini"></textarea>
                         </div>
 
                         <button type="button" onclick="sendToWhatsapp(event)" class="btn btn-success w-100 py-3" style="background: #25D366; border: none; border-radius: 12px; font-weight: 600; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);">
-                            <i class="fab fa-whatsapp me-2"></i>Pesan via WhatsApp
+                            <i class="fab fa-whatsapp me-2"></i>Kirim Pertanyaan via WhatsApp
                         </button>
 
                         <p class="text-center mt-3 mb-0" style="font-size: 0.85rem; color: #a0aec0;">
-                            <i class="fas fa-check-circle me-1"></i> Anda akan diarahkan ke WhatsApp Admin
+                            <i class="fas fa-check-circle me-1"></i> WhatsApp digunakan untuk konsultasi/pertanyaan
                         </p>
                     </form>
                 </div>
@@ -266,52 +239,26 @@
     function sendToWhatsapp(e) {
         e.preventDefault();
 
-        // Ambil data dari form
         const serviceName = document.getElementById('serviceName').value;
         const name = document.querySelector('input[name="customer_name"]').value;
-
         const phone = document.querySelector('input[name="customer_phone"]').value;
-        const rentalType = document.getElementById('rentalType').value;
-        const rentalDate = document.querySelector('input[name="rental_date"]').value;
-        const returnDate = document.querySelector('input[name="return_date"]').value;
-        const notes = document.querySelector('textarea[name="notes"]').value; // Opsional
+        const question = document.querySelector('textarea[name="question"]').value;
 
-        // Format tanggal agar lebih mudah dibaca (DD-MM-YYYY)
-        const formatDate = (dateStr) => {
-            const date = new Date(dateStr);
-            return date.toLocaleDateString('id-ID', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            });
-        };
-
-        // Buat pesan WhatsApp
         let message = `*Halo Admin BLUD SMKN 1 Ciamis* 👋\n\n`;
-        message += `Saya ingin memesan layanan berikut:\n`;
+        message += `Saya ingin bertanya terkait layanan berikut:\n`;
         message += `🏫 *Layanan:* ${serviceName}\n\n`;
-        message += `📋 *Data Pemesan:*\n`;
+        message += `📋 *Data Penanya:*\n`;
         message += `👤 Nama: ${name}\n`;
-        message += `📱 No. HP: ${phone}\n\n`;
-        message += `📅 *Detail Sewa:*\n`;
-        message += `Jenis: ${rentalType}\n`;
-        message += `Mulai: ${formatDate(rentalDate)}\n`;
-        message += `Selesai: ${formatDate(returnDate)}\n`;
-        message += `💰 Metode Bayar: Tunai\n`;
+        message += `📱 No. HP: ${phone}\n`;
 
-        if (notes) {
-            message += `📝 Catatan: ${notes}\n`;
+        if (question) {
+            message += `\n❓ *Pertanyaan:*\n${question}\n`;
         }
 
-        message += `\nMohon informasi ketersediaan dan total biayanya. Terima kasih!`;
+        message += `\nMohon informasinya. Terima kasih!`;
 
-        // Encode pesan untuk URL
         const encodedMessage = encodeURIComponent(message);
-
-        // Nomor WhatsApp Admin (Sesuai Request: 0877-9098-4032)
         const adminPhone = "6287790984032";
-
-        // Buka WhatsApp di tab baru
         window.open(`https://wa.me/${adminPhone}?text=${encodedMessage}`, '_blank');
     }
 

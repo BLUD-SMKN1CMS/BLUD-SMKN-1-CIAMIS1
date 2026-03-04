@@ -51,19 +51,19 @@
                     </div>
                 </div>
 
-                <!-- Kategori: Pemesanan & Pembayaran -->
+                <!-- Kategori: Konsultasi & Informasi -->
                 <div class="faq-category mb-4" data-aos="fade-up" data-aos-delay="100">
-                    <h3 class="fw-bold text-primary mb-3"><i class="fas fa-shopping-cart me-2"></i>Pemesanan & Pembayaran</h3>
+                    <h3 class="fw-bold text-primary mb-3"><i class="fas fa-comments me-2"></i>Konsultasi & Informasi</h3>
                     
                     <div class="accordion-item shadow-sm border-0 mb-3 rounded overflow-hidden">
                         <h2 class="accordion-header" id="headingThree">
                             <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                Bagaimana cara memesan produk atau layanan?
+                                Bagaimana cara bertanya tentang produk atau layanan?
                             </button>
                         </h2>
                         <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
                             <div class="accordion-body text-muted">
-                                Anda dapat memesan melalui website ini dengan memilih produk/layanan yang diinginkan, kemudian klik tombol "Pesan via WhatsApp". Anda akan diarahkan langsung ke admin kami untuk konfirmasi detail pesanan.
+                                Anda dapat memilih produk/layanan yang diinginkan, lalu klik tombol WhatsApp untuk tanya-tanya langsung ke admin. Saat ini WhatsApp digunakan untuk konsultasi dan informasi, bukan proses pembelian langsung di website.
                             </div>
                         </div>
                     </div>
@@ -71,12 +71,12 @@
                     <div class="accordion-item shadow-sm border-0 mb-3 rounded overflow-hidden">
                         <h2 class="accordion-header" id="headingFour">
                             <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                Metode pembayaran apa saja yang tersedia?
+                                Apakah bisa langsung beli lewat WhatsApp?
                             </button>
                         </h2>
                         <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
                             <div class="accordion-body text-muted">
-                                Saat ini kami menerima pembayaran melalui Transfer Bank (BCA, BRI, Mandiri), E-Wallet (GoPay, OVO, ShopeePay), dan Pembayaran Tunai (COD) khusus untuk wilayah sekitar Ciamis.
+                                Tidak. WhatsApp hanya digunakan untuk komunikasi dan konsultasi. Tim admin akan membantu menjelaskan detail layanan/produk serta langkah selanjutnya sesuai kebutuhan Anda.
                             </div>
                         </div>
                     </div>

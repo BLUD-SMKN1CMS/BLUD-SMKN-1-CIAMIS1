@@ -48,7 +48,7 @@ class ServiceController extends Controller
         }
 
         $request->validate([
-            'tefa_id' => $admin->isSuperAdmin() ? 'required|exists:tefas,id' : 'required',
+            'tefa_id' => 'required|exists:tefas,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price_per_hour' => 'nullable|numeric|min:0',
@@ -113,7 +113,7 @@ class ServiceController extends Controller
         }
 
         $request->validate([
-            'tefa_id' => $admin->isSuperAdmin() ? 'required|exists:tefas,id' : 'required',
+            'tefa_id' => 'required|exists:tefas,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price_per_hour' => 'nullable|numeric|min:0',

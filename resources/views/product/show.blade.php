@@ -107,7 +107,7 @@
                 @endphp
                 <div class="d-grid gap-2 w-100">
                     <button type="button" class="btn-whatsapp w-100" data-bs-toggle="modal" data-bs-target="#orderModal">
-                        <i class="fab fa-whatsapp me-2"></i> Pesan Sekarang
+                        <i class="fab fa-whatsapp me-2"></i> Tanya via WhatsApp
                     </button>
                 </div>
                 @else
@@ -623,12 +623,12 @@
     }
 </style>
 
-<!-- Modal Pemesanan -->
+<!-- Modal Pertanyaan -->
 <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
             <div class="modal-header bg-light border-0" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
-                <h5 class="modal-title fw-bold text-dark" id="orderModalLabel">Formulir Pemesanan</h5>
+                <h5 class="modal-title fw-bold text-dark" id="orderModalLabel">Formulir Pertanyaan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
@@ -641,51 +641,32 @@
                     </div>
                 </div>
 
-                <form id="orderForm">
+                <form id="inquiryForm">
                     <div class="mb-3">
-                        <label for="buyerName" class="form-label fw-semibold">Nama Lengkap</label>
-                        <input type="text" class="form-control" id="buyerName" placeholder="Contoh: Budi Santoso" required style="border-radius: 10px; padding: 10px;">
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <label for="buyerPhone" class="form-label fw-semibold">No. WhatsApp</label>
-                            <input type="tel" class="form-control" id="buyerPhone" placeholder="08..." required style="border-radius: 10px; padding: 10px;">
-                        </div>
-                        <div class="col-6">
-                            <label for="orderQty" class="form-label fw-semibold">Jumlah</label>
-                            <div class="input-group">
-                                <button class="btn btn-outline-secondary" type="button" onclick="updateQty(-1)" style="border-top-left-radius: 10px; border-bottom-left-radius: 10px;">-</button>
-                                <input type="number" class="form-control text-center" id="orderQty" value="1" min="1" max="{{ $product->stock }}" onchange="updateTotal()" style="border-left: 0; border-right: 0;">
-                                <button class="btn btn-outline-secondary" type="button" onclick="updateQty(1)" style="border-top-right-radius: 10px; border-bottom-right-radius: 10px;">+</button>
-                            </div>
-                        </div>
+                        <label for="inquirerName" class="form-label fw-semibold">Nama Lengkap</label>
+                        <input type="text" class="form-control" id="inquirerName" placeholder="Contoh: Budi Santoso" required style="border-radius: 10px; padding: 10px;">
                     </div>
 
                     <div class="mb-3">
-                        <label for="buyerAddress" class="form-label fw-semibold">Alamat Pengiriman / Info</label>
-                        <textarea class="form-control" id="buyerAddress" rows="2" placeholder="Alamat lengkap atau keterangan ambil di sekolah" style="border-radius: 10px; padding: 10px;"></textarea>
+                        <label for="inquirerPhone" class="form-label fw-semibold">No. WhatsApp</label>
+                        <input type="tel" class="form-control" id="inquirerPhone" placeholder="08..." required style="border-radius: 10px; padding: 10px;">
                     </div>
 
                     <div class="mb-3">
-                        <label for="buyerNotes" class="form-label fw-semibold">Catatan (Opsional)</label>
-                        <textarea class="form-control" id="buyerNotes" rows="2" placeholder="Warna, ukuran, atau request khusus..." style="border-radius: 10px; padding: 10px;"></textarea>
+                        <label for="inquiryMessage" class="form-label fw-semibold">Pertanyaan</label>
+                        <textarea class="form-control" id="inquiryMessage" rows="3" placeholder="Tulis pertanyaan Anda terkait produk ini" style="border-radius: 10px; padding: 10px;"></textarea>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center border-top pt-3 mt-4">
-                        <span class="text-muted fw-medium">Total Estimasi:</span>
-                        <h3 class="fw-bold text-primary mb-0" id="totalPriceDisplay">{{ $product->formatted_price }}</h3>
-                    </div>
-
-                    <div class="alert alert-info mt-3 mb-0 py-2 small">
-                        <i class="fas fa-info-circle me-1"></i> Harga belum termasuk ongkos kirim (jika ada).
+                    <div class="mb-3">
+                        <label for="inquiryNotes" class="form-label fw-semibold">Catatan (Opsional)</label>
+                        <textarea class="form-control" id="inquiryNotes" rows="2" placeholder="Info tambahan yang ingin disampaikan" style="border-radius: 10px; padding: 10px;"></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer border-0 p-4 pt-0">
                 <button type="button" class="btn btn-light py-2 px-4 rounded-pill fw-semibold" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-whatsapp flex-grow-1 py-2 rounded-pill fw-bold shadow-sm" onclick="submitOrder()">
-                    <i class="fab fa-whatsapp me-2"></i>Kirim Pesanan
+                <button type="button" class="btn btn-whatsapp flex-grow-1 py-2 rounded-pill fw-bold shadow-sm" onclick="submitInquiry()">
+                    <i class="fab fa-whatsapp me-2"></i>Kirim Pertanyaan
                 </button>
             </div>
         </div>
@@ -693,40 +674,6 @@
 </div>
 
 <script>
-    // Initial setup
-    document.addEventListener('DOMContentLoaded', function() {
-        updateTotal();
-    });
-
-    function updateQty(change) {
-        const qtyInput = document.getElementById('orderQty');
-        let currentQty = parseInt(qtyInput.value);
-        let maxQty = parseInt(qtyInput.getAttribute('max'));
-
-        let newQty = currentQty + change;
-
-        if (newQty >= 1 && newQty <= maxQty) {
-            qtyInput.value = newQty;
-            updateTotal();
-        }
-    }
-
-    function updateTotal() {
-        const price = parseFloat(document.getElementById('basePrice').getAttribute('data-price'));
-        const qty = parseInt(document.getElementById('orderQty').value);
-
-        const total = price * qty;
-
-        // Format to Indonesian Rupiah
-        const formatter = new Intl.NumberFormat('id-ID', {
-            style: 'currency',
-            currency: 'IDR',
-            minimumFractionDigits: 0
-        });
-
-        document.getElementById('totalPriceDisplay').innerText = formatter.format(total);
-    }
-
     function changeImage(element, src) {
         // Update main image
         const mainImage = document.getElementById('mainImage');
@@ -744,40 +691,35 @@
         element.classList.add('active');
     }
 
-    function submitOrder() {
+    function submitInquiry() {
         const productName = "{{ addslashes($product->name) }}";
-        const productUnit = "{{ addslashes($product->unit ?? 'layanan') }}";
         const tefaName = "{{ addslashes($product->tefa->name ?? 'SMKN 1 Ciamis') }}";
-        const buyerName = document.getElementById('buyerName').value;
-        const buyerPhone = document.getElementById('buyerPhone').value;
-        const qty = document.getElementById('orderQty').value;
-        const address = document.getElementById('buyerAddress').value;
-        const notes = document.getElementById('buyerNotes').value;
-        const totalPrice = document.getElementById('totalPriceDisplay').innerText;
+        const inquirerName = document.getElementById('inquirerName').value;
+        const inquirerPhone = document.getElementById('inquirerPhone').value;
+        const inquiryMessage = document.getElementById('inquiryMessage').value;
+        const inquiryNotes = document.getElementById('inquiryNotes').value;
 
-        if (!buyerName || !buyerPhone) {
+        if (!inquirerName || !inquirerPhone) {
             alert('Mohon lengkapi Nama dan No. WhatsApp Anda');
             return;
         }
 
         let message = `*Halo Admin TEFA ${tefaName}* 👋\n\n`;
-        message += `Saya ingin memesan produk berikut:\n`;
-        message += `🛍️ *Produk:* ${productName}\n`;
-        message += `📦 *Jumlah:* ${qty} ${productUnit}\n`;
-        message += `💰 *Total Estimasi:* ${totalPrice}\n\n`;
-        message += `📋 *Data Pemesan:*\n`;
-        message += `👤 Nama: ${buyerName}\n`;
-        message += `📱 No. HP: ${buyerPhone}\n`;
+        message += `Saya ingin bertanya terkait produk berikut:\n`;
+        message += `🛍️ *Produk:* ${productName}\n\n`;
+        message += `📋 *Data Penanya:*\n`;
+        message += `👤 Nama: ${inquirerName}\n`;
+        message += `📱 No. HP: ${inquirerPhone}\n`;
 
-        if (address) {
-            message += `📍 Alamat/Info: ${address}\n`;
+        if (inquiryMessage) {
+            message += `\n❓ *Pertanyaan:*\n${inquiryMessage}\n`;
         }
 
-        if (notes) {
-            message += `📝 Catatan: ${notes}\n`;
+        if (inquiryNotes) {
+            message += `\n📝 Catatan: ${inquiryNotes}\n`;
         }
 
-        message += `\nMohon konfirmasi ketersediaan stok dan total pembayaran. Terima kasih!`;
+        message += `\nMohon informasinya. Terima kasih!`;
 
         const encodedMessage = encodeURIComponent(message);
         const whatsappNumber = "{{ $whatsappNumber ?? '6287790984032' }}"; // Fallback if variable not set

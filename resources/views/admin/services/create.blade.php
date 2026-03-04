@@ -21,12 +21,19 @@
 
                 <div class="form-group">
                     <label>Jurusan TEFA <span class="text-danger">*</span></label>
+                    @if(auth('admin')->user()?->isAdminTefa())
+                    @php $assignedTefa = $tefas->first(); @endphp
+                    <input type="text" class="form-control" value="{{ $assignedTefa?->name }}" readonly>
+                    <input type="hidden" name="tefa_id" value="{{ old('tefa_id', $assignedTefa?->id) }}">
+                    <small class="text-muted">Jurusan terisi otomatis sesuai akun admin Anda.</small>
+                    @else
                     <select name="tefa_id" id="tefa_id" class="form-control @error('tefa_id') is-invalid @enderror" required>
                         <option value="">-- Pilih Jurusan --</option>
                         @foreach($tefas as $tefa)
                         <option value="{{ $tefa->id }}" {{ old('tefa_id') == $tefa->id ? 'selected' : '' }}>{{ $tefa->name }}</option>
                         @endforeach
                     </select>
+                    @endif
                     @error('tefa_id')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror

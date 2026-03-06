@@ -51,8 +51,6 @@ class ServiceController extends Controller
             'tefa_id' => 'required|exists:tefas,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'price_per_hour' => 'nullable|numeric|min:0',
-            'price_per_day' => 'required|numeric|min:0',
             'icon' => 'nullable|string|max:50',
             'status' => 'required|in:available,unavailable',
         ]);
@@ -116,8 +114,6 @@ class ServiceController extends Controller
             'tefa_id' => 'required|exists:tefas,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'price_per_hour' => 'nullable|numeric|min:0',
-            'price_per_day' => 'required|numeric|min:0',
             'icon' => 'nullable|string|max:50',
             'status' => 'required|in:available,unavailable',
         ]);

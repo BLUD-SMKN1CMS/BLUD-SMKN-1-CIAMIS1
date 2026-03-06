@@ -16,6 +16,11 @@ class Tefa extends Model
         'slug',
         'icon',
         'description',
+        'about',
+        'vision',
+        'mission',
+        'video_url',
+        'job_prospects',
         'services',
         'logo',
         'banner',
@@ -31,6 +36,7 @@ class Tefa extends Model
         'is_active' => 'boolean',
         'order' => 'integer',
         'services' => 'array',
+        'job_prospects' => 'array',
     ];
 
     // Relasi ke Products
@@ -62,12 +68,12 @@ class Tefa extends Model
     // Accessor untuk logo URL
     public function getLogoUrlAttribute()
     {
-        return $this->logo ? asset('storage/' . $this->logo) : asset('assets/iconsmea.png');
+        return $this->logo ? asset($this->logo) : asset('assets/iconsmea.png');
     }
 
     // Accessor untuk banner URL
     public function getBannerUrlAttribute()
     {
-        return $this->banner ? asset('storage/' . $this->banner) : asset('assets/teachingfactorysmea.png');
+        return $this->banner ? asset($this->banner) : asset('assets/teachingfactorysmea.png');
     }
 }

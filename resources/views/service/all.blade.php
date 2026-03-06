@@ -79,17 +79,6 @@
                             {{ Str::limit($service->description, 100) }}
                         </p>
 
-                        <div class="pricing-info mb-4 bg-light rounded p-3">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <small class="text-muted"><i class="fas fa-clock me-1"></i> Per Jam</small>
-                                <span class="fw-bold text-primary">{{ $service->price_per_hour > 0 ? 'Rp ' . number_format($service->price_per_hour, 0, ',', '.') : '-' }}</span>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted"><i class="fas fa-calendar-day me-1"></i> Per Hari</small>
-                                <span class="fw-bold text-success">{{ $service->price_per_day > 0 ? 'Rp ' . number_format($service->price_per_day, 0, ',', '.') : '-' }}</span>
-                            </div>
-                        </div>
-
                         <a href="{{ route('service.show', $service->slug) }}" class="btn btn-outline-primary w-100 rounded-pill py-2 fw-bold">
                             Lihat Detail & Pesan <i class="fas fa-arrow-right ms-1"></i>
                         </a>

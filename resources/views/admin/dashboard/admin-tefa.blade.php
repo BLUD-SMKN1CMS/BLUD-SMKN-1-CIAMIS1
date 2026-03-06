@@ -31,11 +31,6 @@
             <strong>{{ $myTefa->name }}</strong>
             <p class="mb-0 text-muted small">{{ $myTefa->description ?? 'Jurusan TEFA Anda' }}</p>
         </div>
-        <div class="ms-auto">
-            <span class="badge {{ $myTefa->is_active ? 'bg-success' : 'bg-secondary' }}">
-                {{ $myTefa->is_active ? 'Aktif' : 'Nonaktif' }}
-            </span>
-        </div>
     </div>
     @endif
 
@@ -90,11 +85,11 @@
 
         <!-- Pesan Masuk -->
         <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pesan Masuk</div>
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Pesan Masuk</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['total_contacts'] }}</div>
                             <div class="text-xs text-muted mt-1">Pesan belum dibaca</div>
                         </div>
@@ -103,7 +98,7 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <a href="{{ route($routePrefix . '.contacts.index') }}" class="btn btn-sm btn-outline-warning">
+                        <a href="{{ route($routePrefix . '.contacts.index') }}" class="btn btn-sm btn-outline-success">
                             <i class="fas fa-cog me-1"></i> Kelola
                         </a>
                     </div>
@@ -203,10 +198,10 @@
         <div class="col-12 mb-4">
             <div class="card shadow">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-warning">
+                    <h6 class="m-0 font-weight-bold text-primary">
                         <i class="fas fa-envelope me-2"></i>Pesan Masuk Terbaru
                     </h6>
-                    <a href="{{ route($routePrefix . '.contacts.index') }}" class="btn btn-sm btn-outline-warning">Lihat Semua</a>
+                    <a href="{{ route($routePrefix . '.contacts.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
                 </div>
                 <div class="card-body p-0">
                     @if($recentContacts->isEmpty())
@@ -217,7 +212,7 @@
                     @else
                     <div class="list-group list-group-flush">
                         @foreach($recentContacts as $contact)
-                        <a href="{{ route($routePrefix . '.contacts.show', $contact->id) }}" class="list-group-item list-group-item-action px-3 py-2 {{ $contact->status == 'new' ? 'list-group-item-warning' : '' }}">
+                        <a href="{{ route($routePrefix . '.contacts.show', $contact->id) }}" class="list-group-item list-group-item-action px-3 py-2 {{ $contact->status == 'new' ? 'list-group-item-primary' : '' }}">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <div class="fw-semibold">

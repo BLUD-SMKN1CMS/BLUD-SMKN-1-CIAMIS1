@@ -1,8 +1,8 @@
     @extends('admin.layouts.app')
 
-@section('title', 'Kelola TEFA')
+    @section('title', 'Kelola TEFA')
 
-@section('content')
+    @section('content')
     <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Kelola TEFA</h1>
@@ -10,13 +10,6 @@
                 <i class="fas fa-plus"></i> Tambah TEFA
             </a>
         </div>
-
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show">
-                {{ session('success') }}
-                <button type="button" class="close" data-dismiss="alert">×</button>
-            </div>
-        @endif
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -38,65 +31,65 @@
                         </thead>
                         <tbody>
                             @forelse($tefas as $tefa)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $tefa->name }}</td>
-                                    <td><span class="badge badge-primary">{{ $tefa->code }}</span></td>
-                                    <td>
-                                        @if ($tefa->icon)
-                                            <i class="{{ $tefa->icon }}"></i>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <span class="badge {{ $tefa->is_active ? 'badge-success' : 'badge-secondary' }}">
-                                            {{ $tefa->is_active ? 'Aktif' : 'Nonaktif' }}
-                                        </span>
-                                    </td>
-                                    <td>{{ $tefa->order }}</td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
-                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-end">
-                                                <li>
-                                                    <a class="dropdown-item"
-                                                        href="{{ route($routePrefix . '.tefas.edit', $tefa->id) }}">
-                                                        <i class="fas fa-edit me-2 text-warning"></i> Edit
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item"
-                                                        href="{{ route($routePrefix . '.tefas.show', $tefa->id) }}">
-                                                        <i class="fas fa-eye me-2 text-info"></i> Lihat
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <hr class="dropdown-divider">
-                                                </li>
-                                                <li>
-                                                    <form action="{{ route($routePrefix . '.tefas.destroy', $tefa->id) }}"
-                                                        method="POST" class="dropdown-item p-0">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit"
-                                                            class="dropdown-item text-danger text-decoration-none w-100 text-start"
-                                                            onclick="return confirm('Hapus TEFA ini?')">
-                                                            <i class="fas fa-trash me-2"></i> Hapus
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $tefa->name }}</td>
+                                <td><span class="badge badge-primary">{{ $tefa->code }}</span></td>
+                                <td>
+                                    @if ($tefa->icon)
+                                    <i class="{{ $tefa->icon }}"></i>
+                                    @endif
+                                </td>
+                                <td>
+                                    <span class="badge {{ $tefa->is_active ? 'badge-success' : 'badge-secondary' }}">
+                                        {{ $tefa->is_active ? 'Aktif' : 'Nonaktif' }}
+                                    </span>
+                                </td>
+                                <td>{{ $tefa->order }}</td>
+                                <td class="text-center">
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-link text-dark dropdown-toggle p-0" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="{{ route($routePrefix . '.tefas.edit', $tefa->id) }}">
+                                                    <i class="fas fa-edit me-2 text-warning"></i> Edit
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="{{ route($routePrefix . '.tefas.show', $tefa->id) }}">
+                                                    <i class="fas fa-eye me-2 text-info"></i> Lihat
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li>
+                                                <form action="{{ route($routePrefix . '.tefas.destroy', $tefa->id) }}"
+                                                    method="POST" class="dropdown-item p-0">
+                                                    @csrf @method('DELETE')
+                                                    <button type="submit"
+                                                        class="dropdown-item text-danger text-decoration-none w-100 text-start"
+                                                        onclick="return confirm('Hapus TEFA ini?')">
+                                                        <i class="fas fa-trash me-2"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
                             @empty
-                                <tr>
-                                    <td colspan="7" class="text-center py-4">
-                                        <i class="fas fa-school fa-2x text-muted mb-2"></i>
-                                        <p>Belum ada data TEFA</p>
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <i class="fas fa-school fa-2x text-muted mb-2"></i>
+                                    <p>Belum ada data TEFA</p>
+                                </td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -104,9 +97,9 @@
             </div>
         </div>
     </div>
-@endsection
+    @endsection
 
-@push('styles')
+    @push('styles')
     <style>
         .dropdown-toggle::after {
             display: none !important;
@@ -135,8 +128,8 @@
             text-align: center;
         }
     </style>
-@endpush
-@push('scripts')
+    @endpush
+    @push('scripts')
     <script>
         $(document).ready(function() {
             // Reinitialize dropdowns for dynamically loaded content
@@ -145,4 +138,4 @@
             });
         });
     </script>
-@endpush
+    @endpush

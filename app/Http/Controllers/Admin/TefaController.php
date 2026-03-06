@@ -12,6 +12,7 @@ class TefaController extends Controller
 {
     public function index()
     {
+        /** @var \App\Models\Admin $admin */
         $admin = Auth::guard('admin')->user();
 
         // Jika admin-tefa, hanya tampilkan TEFA miliknya
@@ -27,6 +28,7 @@ class TefaController extends Controller
 
     public function create()
     {
+        /** @var \App\Models\Admin $admin */
         $admin = Auth::guard('admin')->user();
 
         // Admin-tefa tidak bisa membuat TEFA baru
@@ -40,6 +42,7 @@ class TefaController extends Controller
 
     public function store(Request $request)
     {
+        /** @var \App\Models\Admin $admin */
         $admin = Auth::guard('admin')->user();
 
         // Admin-tefa tidak bisa menyimpan TEFA baru
@@ -52,7 +55,7 @@ class TefaController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:10|unique:tefas,code',
             'description' => 'nullable|string',
-            'icon' => 'nullable|string',
+            'logo' => 'required|image|mimes:jpeg,jpg,png,webp|max:2048',
             'is_active' => 'boolean',
             'order' => 'integer',
             'services_json' => 'nullable|string'
@@ -60,6 +63,27 @@ class TefaController extends Controller
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
+
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            $logo = $request->file('logo');
+            $filename = 'tefa_logo_' . time() . '_' . uniqid() . '.' . $logo->getClientOriginalExtension();
+
+            // Ensure directory exists
+            $uploadPath = public_path('uploads/tefas');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            $logo->move($uploadPath, $filename);
+            $data['logo'] = 'uploads/tefas/' . $filename;
+        }
+
+        // Decode JSON strings to arrays
+        if ($request->has('services_json')) {
+            $data['services'] = json_decode($request->services_json, true) ?? [];
+            unset($data['services_json']);
+        }
 
         Tefa::create($data);
 
@@ -69,6 +93,7 @@ class TefaController extends Controller
 
     public function show($id)
     {
+        /** @var \App\Models\Admin $admin */
         $admin = Auth::guard('admin')->user();
         $tefa = Tefa::findOrFail($id);
 
@@ -82,6 +107,7 @@ class TefaController extends Controller
 
     public function edit($id)
     {
+        /** @var \App\Models\Admin $admin */
         $admin = Auth::guard('admin')->user();
         $tefa = Tefa::findOrFail($id);
 
@@ -95,6 +121,7 @@ class TefaController extends Controller
 
     public function update(Request $request, $id)
     {
+        /** @var \App\Models\Admin $admin */
         $admin = Auth::guard('admin')->user();
         $tefa = Tefa::findOrFail($id);
 
@@ -107,7 +134,7 @@ class TefaController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:10|unique:tefas,code,' . $id,
             'description' => 'nullable|string',
-            'icon' => 'nullable|string',
+            'logo' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'is_active' => 'boolean',
             'order' => 'integer',
             'services_json' => 'nullable|string'
@@ -116,14 +143,47 @@ class TefaController extends Controller
         $data = $request->all();
         $data['slug'] = Str::slug($request->name);
 
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            // Delete old logo if exists
+            if ($tefa->logo && file_exists(public_path($tefa->logo))) {
+                unlink(public_path($tefa->logo));
+            }
+
+            $logo = $request->file('logo');
+            $filename = 'tefa_logo_' . time() . '_' . uniqid() . '.' . $logo->getClientOriginalExtension();
+
+            // Ensure directory exists
+            $uploadPath = public_path('uploads/tefas');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            $logo->move($uploadPath, $filename);
+            $data['logo'] = 'uploads/tefas/' . $filename;
+        }
+
+        // Decode JSON strings to arrays
+        if ($request->has('services_json')) {
+            $data['services'] = json_decode($request->services_json, true) ?? [];
+            unset($data['services_json']);
+        }
+
         $tefa->update($data);
 
-        return redirect()->route('superadmin.tefas.index')
-            ->with('success', 'TEFA berhasil diperbarui');
+        // Redirect based on user role
+        if ($admin->isSuperAdmin()) {
+            return redirect()->route('superadmin.tefas.index')
+                ->with('success', 'TEFA berhasil diperbarui');
+        } else {
+            return redirect()->route('admin.dashboard')
+                ->with('success', 'Program Keahlian berhasil diperbarui');
+        }
     }
 
     public function destroy($id)
     {
+        /** @var \App\Models\Admin $admin */
         $admin = Auth::guard('admin')->user();
         $tefa = Tefa::findOrFail($id);
 
@@ -136,5 +196,70 @@ class TefaController extends Controller
 
         return redirect()->route('superadmin.tefas.index')
             ->with('success', 'TEFA berhasil dihapus');
+    }
+
+    // TEFA Content Management Methods (untuk Super Admin edit konten detail TEFA)
+
+    /**
+     * Tampilkan daftar TEFA untuk edit konten
+     */
+    public function contentIndex()
+    {
+        $tefas = Tefa::orderBy('order')->get();
+        return view('admin.tefas.content-index', compact('tefas'));
+    }
+
+    /**
+     * Form edit konten TEFA (about, vision, mission, video, job_prospects)
+     */
+    public function contentEdit($id)
+    {
+        $tefa = Tefa::findOrFail($id);
+        return view('admin.tefas.content-edit', compact('tefa'));
+    }
+
+    /**
+     * Update konten TEFA
+     */
+    public function contentUpdate(Request $request, $id)
+    {
+        $tefa = Tefa::findOrFail($id);
+
+        $request->validate([
+            'about' => 'nullable|string',
+            'vision' => 'nullable|string',
+            'mission' => 'nullable|string',
+            'video_url' => 'nullable|string',
+            'job_prospects_json' => 'nullable|string'
+        ]);
+
+        $data = [];
+
+        // Update only content fields
+        if ($request->has('about')) {
+            $data['about'] = $request->about;
+        }
+
+        if ($request->has('vision')) {
+            $data['vision'] = $request->vision;
+        }
+
+        if ($request->has('mission')) {
+            $data['mission'] = $request->mission;
+        }
+
+        if ($request->has('video_url')) {
+            $data['video_url'] = $request->video_url;
+        }
+
+        // Decode JSON strings to arrays
+        if ($request->has('job_prospects_json')) {
+            $data['job_prospects'] = json_decode($request->job_prospects_json, true) ?? [];
+        }
+
+        $tefa->update($data);
+
+        return redirect()->route('superadmin.tefas.content.index')
+            ->with('success', 'Konten ' . $tefa->name . ' berhasil diperbarui');
     }
 }

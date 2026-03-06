@@ -40,39 +40,19 @@
                     <div class="badge-icon mb-3" style="font-size: 4rem;">
                         <i class="{{ $service->icon ?? 'fas fa-concierge-bell' }}" style="color: white; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));"></i>
                     </div>
-                    <h3 class="text-white mb-2">Harga per Hari</h3>
-                    <p class="h2 text-white fw-bold mb-0">Rp {{ number_format($service->price_per_day, 0, ',', '.') }}</p>
+                    <h3 class="text-white mb-2">{{ $service->name }}</h3>
+                    <p class="h5 text-white mb-0">Layanan {{ $service->status == 'available' ? 'Tersedia' : 'Tidak Tersedia' }}</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Quick Info Cards -->
+<!-- Quick Info Cards
 <section class="quick-info" style="margin-top: -40px; position: relative; z-index: 10;">
     <div class="container">
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="info-card" style="background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 50px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.1)';">
-                    <div class="icon mb-3" style="width: 60px; height: 60px; background: #4A90E2; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-clock" style="font-size: 1.5rem; color: white;"></i>
-                    </div>
-                    <h5 class="fw-bold mb-2">Harga Per Jam</h5>
-                    <p class="h3 mb-0" style="color: #4A90E2; font-weight: 700;">Rp {{ number_format($service->price_per_hour, 0, ',', '.') }}</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="info-card" style="background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 50px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.1)';">
-                    <div class="icon mb-3" style="width: 60px; height: 60px; background: #f5576c; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-calendar-day" style="font-size: 1.5rem; color: white;"></i>
-                    </div>
-                    <h5 class="fw-bold mb-2">Harga Per Hari</h5>
-                    <p class="h3 mb-0" style="color: #f5576c; font-weight: 700;">Rp {{ number_format($service->price_per_day, 0, ',', '.') }}</p>
-                </div>
-            </div>
-
-            <div class="col-md-4">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-6">
                 <div class="info-card" style="background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 15px 50px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 40px rgba(0,0,0,0.1)';">
                     <div class="icon mb-3" style="width: 60px; height: 60px; background: #00f2fe; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-check-circle" style="font-size: 1.5rem; color: white;"></i>
@@ -83,7 +63,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> -->
 
 <!-- Service Details -->
 <section id="service-details" class="py-5 mt-5">
@@ -197,13 +177,6 @@
                     <div class="card-body p-4">
                         <h5 class="fw-bold mb-2" style="color: #2d3748;">{{ $relatedService->name }}</h5>
                         <p class="text-muted mb-3" style="font-size: 0.95rem;">{{ Str::limit($relatedService->description, 80) }}</p>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div>
-                                <small class="text-muted d-block">Mulai dari</small>
-                                <strong style="color: #4A90E2; font-size: 1.2rem;">Rp {{ number_format($relatedService->price_per_hour, 0, ',', '.') }}</strong>
-                                <small class="text-muted">/jam</small>
-                            </div>
-                        </div>
                         <a href="{{ route('service.show', $relatedService->slug) }}" class="btn btn-outline-primary w-100" style="border-radius: 10px; font-weight: 600;">
                             Lihat Detail
                         </a>

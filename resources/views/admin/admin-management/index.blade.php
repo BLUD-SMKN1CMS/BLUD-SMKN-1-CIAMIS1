@@ -66,9 +66,9 @@
                                     @endif
                                 </td>
                                 <td>{{ $admin->created_at->diffForHumans() }}</td>
-                                <td>
+                                <td class="text-center">
                                     <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                        <button class="btn btn-sm dropdown-toggle" type="button"
                                             data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="fas fa-ellipsis-v"></i>
                                         </button>
@@ -141,6 +141,22 @@
 <style>
     .dropdown-toggle::after {
         display: none !important;
+    }
+
+    .dropdown-toggle {
+        border: none !important;
+        background: transparent !important;
+        color: #6c757d;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .dropdown-toggle:hover {
+        color: #495057;
+        background: transparent !important;
+    }
+
+    .dropdown-toggle:focus {
+        box-shadow: none !important;
     }
 
     .dropdown-menu {

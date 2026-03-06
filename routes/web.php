@@ -52,6 +52,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+        // TEFA Management (Admin TEFA can only edit their own TEFA)
+        Route::get('/tefas/{tefa}/edit', [TefaController::class, 'edit'])->name('tefas.edit');
+        Route::put('/tefas/{tefa}', [TefaController::class, 'update'])->name('tefas.update');
+
         // Products
         Route::resource('products', ProductController::class);
 
@@ -103,6 +107,11 @@ Route::prefix('super-admin')->name('superadmin.')->group(function () {
 
         // TEFAs
         Route::resource('tefas', TefaController::class);
+
+        // TEFA Content Management (Edit detail konten TEFA: about, vision, mission, dll)
+        Route::get('/tefas-content', [TefaController::class, 'contentIndex'])->name('tefas.content.index');
+        Route::get('/tefas-content/{tefa}/edit', [TefaController::class, 'contentEdit'])->name('tefas.content.edit');
+        Route::put('/tefas-content/{tefa}', [TefaController::class, 'contentUpdate'])->name('tefas.content.update');
 
         // Contacts
         Route::resource('contacts', AdminContactController::class)->except(['create', 'store']);

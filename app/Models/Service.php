@@ -14,18 +14,11 @@ class Service extends Model
         'name',
         'slug',
         'description',
-        'price_per_hour',
-        'price_per_day',
         'capacity',
         'image',
         'icon',
         'status',
         'tefa_id',
-    ];
-
-    protected $casts = [
-        'price_per_hour' => 'decimal:2',
-        'price_per_day' => 'decimal:2',
     ];
 
     // Boot method untuk generate slug
@@ -54,17 +47,6 @@ class Service extends Model
     public function scopeAvailable($query)
     {
         return $query->where('status', 'available');
-    }
-
-    // Accessor untuk harga format
-    public function getFormattedPricePerHourAttribute()
-    {
-        return $this->price_per_hour ? 'Rp ' . number_format($this->price_per_hour, 0, ',', '.') : null;
-    }
-
-    public function getFormattedPricePerDayAttribute()
-    {
-        return $this->price_per_day ? 'Rp ' . number_format($this->price_per_day, 0, ',', '.') : null;
     }
 
     // Accessor untuk image URL

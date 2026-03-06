@@ -6,9 +6,15 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Detail TEFA</h1>
+        @if(Auth::guard('admin')->user()->isSuperAdmin())
         <a href="{{ route($routePrefix . '.tefas.index') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Kembali
         </a>
+        @else
+        <a href="{{ route($routePrefix . '.dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+        </a>
+        @endif
     </div>
 
     <div class="card shadow mb-4">
@@ -36,9 +42,9 @@
                             <th>Icon</th>
                             <td>
                                 @if($tefa->icon)
-                                    <i class="{{ $tefa->icon }} fa-2x"></i> {{ $tefa->icon }}
+                                <i class="{{ $tefa->icon }} fa-2x"></i> {{ $tefa->icon }}
                                 @else
-                                    <span class="text-muted">Belum ada icon</span>
+                                <span class="text-muted">Belum ada icon</span>
                                 @endif
                             </td>
                         </tr>
@@ -59,13 +65,13 @@
                             <td>{{ $tefa->created_at->format('d M Y H:i') }}</td>
                         </tr>
                     </table>
-                    
+
                     <h4 class="mt-4">Deskripsi</h4>
                     <div class="border p-3 rounded">
                         {{ $tefa->description ?? 'Tidak ada deskripsi' }}
                     </div>
                 </div>
-                
+
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-header">
@@ -77,31 +83,31 @@
                             </a>
                             <form action="{{ route($routePrefix . '.tefas.destroy', $tefa->id) }}" method="POST">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-block" 
+                                <button type="submit" class="btn btn-danger btn-block"
                                     onclick="return confirm('Hapus TEFA ini? Semua produk di dalamnya juga akan dihapus!')">
                                     <i class="fas fa-trash"></i> Hapus TEFA
                                 </button>
                             </form>
                         </div>
                     </div>
-                    
+
                     <div class="card mt-3">
                         <div class="card-header">
                             <h6 class="m-0 font-weight-bold">Layanan TEFA</h6>
                         </div>
                         <div class="card-body">
                             @php
-                                $services = json_decode($tefa->services_json ?? '[]', true);
+                            $services = json_decode($tefa->services_json ?? '[]', true);
                             @endphp
-                            
+
                             @if(!empty($services))
-                                <ul class="list-group">
-                                    @foreach($services as $service)
-                                        <li class="list-group-item">{{ $service }}</li>
-                                    @endforeach
-                                </ul>
+                            <ul class="list-group">
+                                @foreach($services as $service)
+                                <li class="list-group-item">{{ $service }}</li>
+                                @endforeach
+                            </ul>
                             @else
-                                <p class="text-muted">Belum ada layanan yang didefinisikan</p>
+                            <p class="text-muted">Belum ada layanan yang didefinisikan</p>
                             @endif
                         </div>
                     </div>

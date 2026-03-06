@@ -764,9 +764,21 @@
                     <div class="nav-dropdown-menu">
                         @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->isSuperAdmin())
                         <a href="{{ route('superadmin.tefas.index') }}"
-                            class="nav-link {{ request()->routeIs('superadmin.tefas*') ? 'active' : '' }}">
+                            class="nav-link {{ request()->routeIs('superadmin.tefas.index') || request()->routeIs('superadmin.tefas.create') || request()->routeIs('superadmin.tefas.edit') ? 'active' : '' }}">
                             <i class="fas fa-university"></i>
                             <span>Jurusan TEFA</span>
+                        </a>
+                        <a href="{{ route('superadmin.tefas.content.index') }}"
+                            class="nav-link {{ request()->routeIs('superadmin.tefas.content*') ? 'active' : '' }}">
+                            <i class="fas fa-edit"></i>
+                            <span>Edit Konten Program</span>
+                        </a>
+                        @endif
+                        @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->isAdminTefa() && Auth::guard('admin')->user()->tefa_id)
+                        <a href="{{ route($routePrefix . '.tefas.edit', Auth::guard('admin')->user()->tefa_id) }}"
+                            class="nav-link {{ request()->routeIs($routePrefix . '.tefas.edit') ? 'active' : '' }}">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Program Keahlian Saya</span>
                         </a>
                         @endif
                         <a href="{{ route($routePrefix . '.products.index') }}"

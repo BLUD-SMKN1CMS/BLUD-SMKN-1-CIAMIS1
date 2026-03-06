@@ -4,24 +4,23 @@
 
 @section('content')
 <!-- Hero Banner Section -->
-<div class="tefa-hero-section">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <div class="hero-text">
-                        @if($tefa->icon)
-                        <div class="tefa-icon-large">
-                            <i class="{{ $tefa->icon }}"></i>
-                        </div>
-                        @endif
-                        <h1 class="hero-title">{{ $tefa->name }}</h1>
-                        <p class="hero-subtitle">{{ $tefa->code }}</p>
-                        @if($tefa->description)
-                        <p class="hero-description">{{ Str::limit($tefa->description, 200) }}</p>
-                        @endif
-                    </div>
+<div class="tefa-hero-banner">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h1 class="hero-title">{{ $tefa->name }}</h1>
+                <div class="hero-divider"></div>
+                @if($tefa->description)
+                <p class="hero-description">{{ $tefa->description }}</p>
+                @endif
+            </div>
+            <div class="col-lg-5 text-center">
+                <div class="hero-illustration">
+                    @if($tefa->icon)
+                    <i class="{{ $tefa->icon }} hero-icon"></i>
+                    @else
+                    <i class="fas fa-graduation-cap hero-icon"></i>
+                    @endif
                 </div>
             </div>
         </div>
@@ -29,129 +28,190 @@
 </div>
 
 <!-- Breadcrumb -->
-<div class="breadcrumb-section">
+<div class="breadcrumb-wrapper">
     <div class="container">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('tefa.all') }}">TEFA</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('tefa.all') }}">Program Keahlian</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $tefa->name }}</li>
             </ol>
         </nav>
     </div>
 </div>
 
-<!-- About TEFA Section -->
-@if($tefa->description)
-<div class="about-tefa-section">
+<!-- About Section -->
+<section class="about-section">
     <div class="container">
-        <div class="section-header text-center">
-            <h2>Tentang {{ $tefa->name }}</h2>
-            <div class="header-divider"></div>
+        <h2 class="section-title">Tentang Jurusan Ini</h2>
+        <div class="section-content">
+            @if($tefa->about)
+            <p>{!! nl2br(e($tefa->about)) !!}</p>
+            @elseif($tefa->description)
+            <p>{{ $tefa->description }}</p>
+            @else
+            <p>{{ $tefa->name }} adalah salah satu program keahlian yang ada di SMKN 1 Ciamis yang bertujuan untuk menghasilkan lulusan yang kompeten di bidangnya.</p>
+            @endif
         </div>
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="about-content">
-                    <p>{{ $tefa->description }}</p>
+    </div>
+</section>
+
+<!-- Visi Misi Section -->
+@if($tefa->vision || $tefa->mission)
+<section class="visi-misi-section">
+    <div class="container">
+        <div class="row g-4">
+            @if($tefa->vision)
+            <div class="col-md-{{ $tefa->mission ? '6' : '12' }}">
+                <div class="vm-card vm-visi">
+                    <h3 class="vm-title">VISI</h3>
+                    <div class="vm-content">
+                        <p>{!! nl2br(e($tefa->vision)) !!}</p>
+                    </div>
                 </div>
+            </div>
+            @endif
+            @if($tefa->mission)
+            <div class="col-md-{{ $tefa->vision ? '6' : '12' }}">
+                <div class="vm-card vm-misi">
+                    <h3 class="vm-title">MISI</h3>
+                    <div class="vm-content">
+                        @php
+                        $missions = array_filter(array_map('trim', explode("\n", $tefa->mission)));
+                        @endphp
+                        @if(count($missions) > 0)
+                        <ul>
+                            @foreach($missions as $missionItem)
+                            <li>{{ $missionItem }}</li>
+                            @endforeach
+                        </ul>
+                        @else
+                        <p>{!! nl2br(e($tefa->mission)) !!}</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            @endif
+        </div>
+    </div>
+</section>
+@endif
+
+<!-- Video Section -->
+@if($tefa->video_url)
+<section class="video-section">
+    <div class="container">
+        <h2 class="section-title">Video Profil</h2>
+        <div class="video-wrapper">
+            <div class="ratio ratio-16x9">
+                @php
+                $videoUrl = $tefa->video_url;
+                // Convert YouTube watch URL to embed URL
+                if (strpos($videoUrl, 'youtube.com/watch') !== false) {
+                parse_str(parse_url($videoUrl, PHP_URL_QUERY), $params);
+                $videoUrl = 'https://www.youtube.com/embed/' . ($params['v'] ?? '');
+                } elseif (strpos($videoUrl, 'youtu.be/') !== false) {
+                $videoId = substr(parse_url($videoUrl, PHP_URL_PATH), 1);
+                $videoUrl = 'https://www.youtube.com/embed/' . $videoId;
+                }
+                @endphp
+                <iframe src="{{ $videoUrl }}" title="Video Profil {{ $tefa->name }}" allowfullscreen></iframe>
             </div>
         </div>
     </div>
-</div>
+</section>
 @endif
 
-<!-- Services Section -->
+<!-- Kompetensi Keahlian Section -->
 @if(is_array($tefa->services) && !empty($tefa->services))
-<div class="services-section">
+<section class="kompetensi-section">
     <div class="container">
-        <div class="section-header text-center">
-            <h2>Layanan Kami</h2>
-            <p>Berbagai layanan yang kami tawarkan</p>
-            <div class="header-divider"></div>
-        </div>
-        <div class="row g-4">
+        <h2 class="section-title">Kompetensi Keahlian</h2>
+        <div class="row g-4 justify-content-center">
             @foreach($tefa->services as $index => $service)
-            <div class="col-md-6 col-lg-4">
-                <div class="service-card" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
-                    <div class="service-icon">
+            <div class="col-md-6 col-lg-3">
+                <div class="kompetensi-card">
+                    <div class="kompetensi-icon">
                         <i class="fas fa-check-circle"></i>
                     </div>
-                    <h3 class="service-title">{{ $service }}</h3>
+                    <h4 class="kompetensi-title">{{ $service }}</h4>
                 </div>
             </div>
             @endforeach
         </div>
     </div>
-</div>
+</section>
 @endif
 
-<!-- Products Section -->
-<div class="products-section">
+<!-- Prospek Kerja Section -->
+@if(is_array($tefa->job_prospects) && !empty($tefa->job_prospects))
+<section class="prospek-kerja-section">
     <div class="container">
-        <div class="section-header text-center">
-            <div class="d-flex justify-content-between align-items-end mb-4">
-                <div>
-                    <h2>Layanan Kami</h2>
-                    <p class="mb-0">Layanan berkualitas dari {{ $tefa->name }}</p>
+        <h2 class="section-title text-white">Prospek Kerja</h2>
+
+        <div class="row g-4 justify-content-center">
+            @foreach($tefa->job_prospects as $job)
+            <div class="col-md-6 col-lg-4">
+                <div class="prospek-card">
+                    <div class="prospek-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h4 class="prospek-title">{{ $job }}</h4>
                 </div>
             </div>
-            <div class="header-divider mb-5"></div>
+            @endforeach
         </div>
+    </div>
+</section>
+@endif
 
-        @if($products->count() > 0)
+<!-- Products Section (tetap ada untuk produk TEFA) -->
+@if($products->count() > 0)
+<section class="products-section">
+    <div class="container">
+        <h2 class="section-title">Produk & Layanan TEFA</h2>
+        <p class="section-subtitle text-center mb-5">Produk dan layanan yang kami tawarkan</p>
+
         <div class="row g-4">
             @foreach($products as $product)
-            <div class="col-md-6 col-lg-3">
+            <div class="col-md-6 col-lg-4">
                 <a href="{{ route('products.show', $product->slug) }}" class="product-card-link">
-                    <div class="product-card" style="cursor: pointer;">
-                        <div class="product-image">
+                    <div class="product-display-card">
+                        @if($product->image)
+                        <div class="product-display-image">
                             <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
-                            @if($product->stock <= 0)
-                                <div class="product-badge out-of-stock">Tidak Tersedia
                         </div>
-                        @elseif($product->is_featured)
-                        <div class="product-badge featured">Unggulan</div>
+                        @else
+                        <div class="product-display-icon-wrapper">
+                            <div class="product-display-icon">
+                                <i class="fas fa-box-open"></i>
+                            </div>
+                        </div>
                         @endif
-                    </div>
-                    <div class="product-content">
-                        <h3 class="product-title">{{ $product->name }}</h3>
-                        @if($product->category)
-                        <p class="product-category">{{ ucfirst($product->category) }}</p>
-                        @endif
-                        <p class="product-price">{{ $product->formatted_price }}</p>
-                        <div class="product-footer">
-                            @if($product->stock > 0)
-                            <span class="stock-available">
-                                <i class="fas fa-check-circle"></i> Tersedia
-                            </span>
-                            @else
-                            <span class="stock-unavailable">
-                                <i class="fas fa-times-circle"></i> Tidak Tersedia
-                            </span>
+                        <div class="product-display-content">
+                            <h4 class="product-display-title">{{ $product->name }}</h4>
+                            @if($product->description)
+                            <p class="product-display-desc">{{ Str::limit($product->description, 100) }}</p>
                             @endif
+                            <div class="product-display-footer">
+                                <span class="view-detail">Lihat Detail <i class="fas fa-arrow-right ms-2"></i></span>
+                            </div>
                         </div>
                     </div>
                 </a>
             </div>
+            @endforeach
         </div>
-        @endforeach
-    </div>
 
-    <!-- Pagination -->
-    @if($products->hasPages())
-    <div class="pagination-wrapper">
-        {{ $products->links() }}
+        <!-- Pagination -->
+        @if($products->hasPages())
+        <div class="pagination-wrapper mt-5">
+            {{ $products->links() }}
+        </div>
+        @endif
     </div>
-    @endif
-    @else
-    <div class="empty-state">
-        <i class="fas fa-box-open"></i>
-        <h3>Belum Ada Layanan</h3>
-        <p>Layanan dari {{ $tefa->name }} akan segera hadir</p>
-    </div>
-    @endif
-</div>
-</div>
+</section>
+@endif
 
 <!-- Contact Section -->
 <div class="contact-section">
@@ -219,82 +279,64 @@
 </div>
 
 <style>
-    /* Hero Section */
-    .tefa-hero-section {
+    /* Hero Banner Section */
+    .tefa-hero-banner {
+        background: #4A90E2;
+        padding: 4rem 0;
         position: relative;
-        background: #0992C2;
-        padding: 6rem 0 4rem;
-        margin-bottom: 0;
         overflow: hidden;
     }
 
-    .tefa-hero-section::before {
+    .tefa-hero-banner::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
-        opacity: 0.3;
+        background: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+        opacity: 0.1;
     }
 
-    .hero-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: transparent;
-    }
-
-    .hero-content {
+    .tefa-hero-banner .container {
         position: relative;
         z-index: 2;
     }
 
-    .tefa-icon-large {
-        display: inline-block;
-        width: 80px;
-        height: 80px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 1.5rem;
-        backdrop-filter: blur(10px);
-    }
-
-    .tefa-icon-large i {
-        font-size: 2.5rem;
-        color: white;
-    }
-
     .hero-title {
-        font-size: 3.5rem;
+        font-size: 2.5rem;
         font-weight: 700;
         color: white;
-        margin-bottom: 0.5rem;
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        margin-bottom: 1rem;
     }
 
-    .hero-subtitle {
-        font-size: 1.5rem;
-        color: rgba(255, 255, 255, 0.9);
+    .hero-divider {
+        width: 60px;
+        height: 4px;
+        background: white;
         margin-bottom: 1.5rem;
-        font-weight: 500;
     }
 
     .hero-description {
-        font-size: 1.2rem;
-        color: rgba(255, 255, 255, 0.85);
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.9);
         line-height: 1.8;
-        max-width: 700px;
+    }
+
+    .hero-illustration {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+
+    .hero-icon {
+        font-size: 8rem;
+        color: rgba(255, 255, 255, 0.2);
     }
 
     /* Breadcrumb */
-    .breadcrumb-section {
+    .breadcrumb-wrapper {
         background: #f8f9fa;
         padding: 1rem 0;
         border-bottom: 1px solid #e9ecef;
@@ -307,13 +349,13 @@
     }
 
     .breadcrumb-item a {
-        color: #4A90E2;
+        color: #0d6675;
         text-decoration: none;
-        transition: all 0.3s ease;
     }
 
     .breadcrumb-item a:hover {
-        color: #357ABD;
+        color: #0a4d5c;
+        text-decoration: underline;
     }
 
     .breadcrumb-item.active {
@@ -321,238 +363,341 @@
     }
 
     /* Section Styles */
-    .about-tefa-section,
-    .services-section,
-    .products-section {
-        padding: 5rem 0;
+    .about-section,
+    .kompetensi-section,
+    .video-section {
+        padding: 4rem 0;
+        background: #fff;
     }
 
-    .section-header {
-        margin-bottom: 3rem;
+    .visi-misi-section {
+        padding: 4rem 0;
+        background: #f8f9fa;
     }
 
-    .section-header h2 {
-        font-size: 2.5rem;
+    .section-title {
+        font-size: 1.8rem;
         font-weight: 700;
         color: #1a1a2e;
-        margin-bottom: 0.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
     }
 
-    .section-header p {
-        color: #6c757d;
-        font-size: 1.1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .header-divider {
-        width: 80px;
-        height: 4px;
-        background: #0992C2;
+    .section-content {
+        max-width: 900px;
         margin: 0 auto;
-        border-radius: 2px;
+        font-size: 1rem;
+        line-height: 1.8;
+        color: #495057;
+        text-align: justify;
     }
 
-    /* About Content */
-    .about-content {
+    /* Visi Misi Cards */
+    .vm-card {
         background: white;
-        padding: 3rem;
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-        font-size: 1.1rem;
+        border-radius: 10px;
+        padding: 2rem;
+        height: 100%;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .vm-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .vm-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 3px solid;
+    }
+
+    .vm-visi .vm-title {
+        color: #0d6675;
+        border-bottom-color: #0d6675;
+    }
+
+    .vm-misi .vm-title {
+        color: #0a4d5c;
+        border-bottom-color: #0a4d5c;
+    }
+
+    .vm-content {
+        font-size: 1rem;
         line-height: 1.8;
         color: #495057;
     }
 
-    /* Services Section */
-    .services-section {
-        background: #ffffff;
+    .vm-content ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
     }
 
-    .service-card {
-        background: white;
-        padding: 2.5rem 2rem;
+    .vm-content ul li {
+        padding-left: 1.5rem;
+        margin-bottom: 0.75rem;
+        position: relative;
+    }
+
+    .vm-content ul li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: #0d6675;
+        font-weight: bold;
+    }
+
+    /* Video Section */
+    .video-wrapper {
+        max-width: 900px;
+        margin: 0 auto;
         border-radius: 15px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .video-wrapper iframe {
+        border: none;
+    }
+
+    /* Kompetensi Keahlian */
+    .kompetensi-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 2rem 1.5rem;
+        text-align: center;
         transition: all 0.3s ease;
         height: 100%;
-        border-left: 4px solid #4A90E2;
+        border: 2px solid transparent;
     }
 
-    .service-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    .kompetensi-card:hover {
+        transform: translateY(-5px);
+        background: white;
+        border-color: #0d6675;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
-    .service-icon {
+    .kompetensi-icon {
         width: 60px;
         height: 60px;
-        background: #0992C2;
-        border-radius: 15px;
+        background: #e3f7fa;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+    }
+
+    .kompetensi-icon i {
+        font-size: 1.8rem;
+        color: #0d6675;
+    }
+
+    .kompetensi-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1a1a2e;
+        margin: 0;
+    }
+
+    /* Prospek Kerja Section */
+    .prospek-kerja-section {
+        padding: 4rem 0;
+        background: linear-gradient(135deg, #0a4d5c 0%, #0d6675 100%);
+    }
+
+    .prospek-kerja-section .section-title {
+        color: white;
+    }
+
+    .prospek-card-link {
+        text-decoration: none;
+        display: block;
+    }
+
+    .prospek-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        padding: 2rem;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .prospek-card:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .prospek-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .prospek-icon i {
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .prospek-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 0.75rem;
+    }
+
+    .prospek-desc {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    /* Products Section */
+    .products-section {
+        padding: 4rem 0;
+        background: #f8f9fa;
+    }
+
+    .products-section .section-title {
+        color: #1a1a2e;
+    }
+
+    .section-subtitle {
+        color: #6c757d;
+        font-size: 1rem;
+    }
+
+    .product-card-link {
+        text-decoration: none;
+        display: block;
+    }
+
+    .product-display-card {
+        background: white;
+        border-radius: 12px;
+        padding: 0;
+        height: 100%;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .product-display-card:hover {
+        border-color: #0d6675;
+        transform: translateY(-8px);
+        box-shadow: 0 8px 25px rgba(13, 102, 117, 0.15);
+    }
+
+    .product-display-icon-wrapper {
+        padding: 2rem 2rem 0 2rem;
+    }
+
+    .product-display-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #0d6675 0%, #0a4d5c 100%);
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: 1.5rem;
     }
 
-    .service-icon i {
+    .product-display-icon i {
         font-size: 1.8rem;
         color: white;
     }
 
-    .service-title {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: #1a1a2e;
-        margin: 0;
-        line-height: 1.5;
-    }
-
-    /* Products Section */
-    .product-card {
-        background: white;
-        border-radius: 15px;
+    .product-display-image {
+        width: 100%;
+        height: 220px;
+        border-radius: 0;
         overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
-        cursor: pointer;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .product-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-    }
-
-    .product-image {
-        position: relative;
-        height: 250px;
-        overflow: hidden;
+        margin-bottom: 0;
         background: #f8f9fa;
     }
 
-    .product-image img {
+    .product-display-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s ease;
+        transition: transform 0.3s ease;
     }
 
-    .product-card:hover .product-image img {
-        transform: scale(1.1);
+    .product-display-card:hover .product-display-image img {
+        transform: scale(1.05);
     }
 
-    .product-badge {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        padding: 0.4rem 1rem;
-        border-radius: 50px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        backdrop-filter: blur(10px);
-    }
-
-    .product-badge.featured {
-        background: rgba(255, 193, 7, 0.9);
-        color: #000;
-    }
-
-    .product-badge.out-of-stock {
-        background: rgba(220, 53, 69, 0.9);
-        color: white;
-    }
-
-    .product-content {
-        padding: 1.5rem;
+    .product-display-content {
+        padding: 1.5rem 2rem 2rem 2rem;
         flex: 1;
         display: flex;
         flex-direction: column;
     }
 
-    .product-title {
+    .product-display-title {
         font-size: 1.2rem;
-        font-weight: 600;
-        color: #1a1a2e;
-        margin-bottom: 0.5rem;
-        line-height: 1.4;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .product-category {
-        color: #6c757d;
-        font-size: 0.9rem;
-        margin-bottom: 0.75rem;
-    }
-
-    .product-price {
-        font-size: 1.5rem;
         font-weight: 700;
-        color: #0992C2;
+        color: #1a1a2e;
         margin-bottom: 1rem;
+        line-height: 1.4;
     }
 
-    .product-footer {
-        margin-top: auto;
-        padding-top: 1rem;
-        border-top: 1px solid #f0f0f0;
-    }
-
-    .stock-available {
-        color: #28a745;
-        font-weight: 600;
-        font-size: 0.9rem;
-    }
-
-    .stock-unavailable {
-        color: #dc3545;
-        font-weight: 600;
-        font-size: 0.9rem;
-    }
-
-    /* Empty State */
-    .empty-state {
-        text-align: center;
-        padding: 5rem 2rem;
-    }
-
-    .empty-state i {
-        font-size: 5rem;
-        color: #dee2e6;
-        margin-bottom: 1.5rem;
-    }
-
-    .empty-state h3 {
-        font-size: 1.8rem;
+    .product-display-desc {
+        font-size: 0.95rem;
         color: #6c757d;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+        flex: 1;
     }
 
-    .empty-state p {
-        color: #adb5bd;
-        font-size: 1.1rem;
+    .product-display-footer {
+        padding-top: 1rem;
+        border-top: 2px solid #e9ecef;
+    }
+
+    .view-detail {
+        color: #0d6675;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+    .product-display-card:hover .view-detail {
+        color: #0a4d5c;
     }
 
     /* Contact Section */
     .contact-section {
-        padding: 5rem 0;
-        background: #0992C2;
+        padding: 4rem 0;
+        background: #f8f9fa;
     }
 
     .contact-card {
         background: white;
         padding: 3rem;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
     }
 
     .contact-card h3 {
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 700;
         color: #1a1a2e;
         margin-bottom: 0.5rem;
@@ -560,27 +705,27 @@
 
     .contact-card>p {
         color: #6c757d;
-        font-size: 1.1rem;
+        font-size: 1rem;
+        margin-bottom: 2rem;
     }
 
     .btn-contact-whatsapp {
         display: inline-flex;
         align-items: center;
         gap: 0.75rem;
-        padding: 1rem 2rem;
-        background: #0992C2;
+        padding: 0.875rem 2rem;
+        background: #25D366;
         color: white;
         border-radius: 50px;
         text-decoration: none;
         font-weight: 600;
-        font-size: 1.1rem;
         transition: all 0.3s ease;
-        box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+        box-shadow: 0 3px 10px rgba(37, 211, 102, 0.3);
     }
 
     .btn-contact-whatsapp:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 30px rgba(37, 211, 102, 0.6);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
         color: white;
     }
 
@@ -591,6 +736,7 @@
     .contact-details {
         border-top: 2px solid #f0f0f0;
         padding-top: 2rem;
+        margin-top: 2rem;
     }
 
     .contact-item {
@@ -601,7 +747,7 @@
 
     .contact-item i {
         font-size: 1.5rem;
-        color: #4A90E2;
+        color: #0d6675;
         margin-top: 0.25rem;
     }
 
@@ -615,82 +761,100 @@
     .contact-item p {
         margin: 0;
         color: #6c757d;
+        font-size: 0.95rem;
     }
 
     .contact-item a {
-        color: #4A90E2;
+        color: #0d6675;
         text-decoration: none;
-        transition: color 0.3s ease;
     }
 
     .contact-item a:hover {
-        color: #357ABD;
+        text-decoration: underline;
     }
 
     /* Pagination */
     .pagination-wrapper {
-        margin-top: 3rem;
         display: flex;
         justify-content: center;
+    }
+
+    /* Pagination untuk section dark (prospek kerja) */
+    .prospek-kerja-section .pagination-wrapper .pagination .page-link {
+        color: white;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .prospek-kerja-section .pagination-wrapper .pagination .page-link:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .prospek-kerja-section .pagination-wrapper .pagination .page-item.active .page-link {
+        background: white;
+        color: #0d6675;
+        border-color: white;
+    }
+
+    /* Pagination untuk section light (produk & layanan) */
+    .products-section .pagination-wrapper .pagination .page-link {
+        color: #0d6675;
+        background: white;
+        border: 1px solid #dee2e6;
+    }
+
+    .products-section .pagination-wrapper .pagination .page-link:hover {
+        background: #0d6675;
+        color: white;
+        border-color: #0d6675;
+    }
+
+    .products-section .pagination-wrapper .pagination .page-item.active .page-link {
+        background: #0d6675;
+        color: white;
+        border-color: #0d6675;
     }
 
     /* Responsive */
     @media (max-width: 991px) {
         .hero-title {
-            font-size: 2.5rem;
-        }
-
-        .hero-subtitle {
-            font-size: 1.2rem;
-        }
-
-        .section-header h2 {
             font-size: 2rem;
+        }
+
+        .hero-icon {
+            font-size: 5rem;
         }
     }
 
     @media (max-width: 767px) {
-        .tefa-hero-section {
-            padding: 4rem 0 3rem;
+        .tefa-hero-banner {
+            padding: 3rem 0;
         }
 
         .hero-title {
-            font-size: 2rem;
+            font-size: 1.75rem;
         }
 
-        .about-content {
-            padding: 2rem;
+        .hero-icon {
+            font-size: 4rem;
+            margin-top: 2rem;
         }
 
+        .section-title {
+            font-size: 1.5rem;
+        }
+
+        .vm-card,
         .contact-card {
-            padding: 2rem;
+            padding: 1.5rem;
         }
 
         .btn-contact-whatsapp {
             width: 100%;
             justify-content: center;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
-    }
-
-    /* Animation */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .hero-content,
-    .about-content,
-    .service-card,
-    .product-card {
-        animation: fadeInUp 0.6s ease;
     }
 </style>
 @endsection

@@ -148,14 +148,15 @@
             <div class="col-sm-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}">
                 <a href="{{ route('tefa.show', $tefa->slug) }}" class="text-decoration-none">
                     <div class="tefa-card p-4 text-center h-100 d-flex flex-column">
-                        <div class="tefa-icon">
-                            <i class="fas fa-{{ $tefa->code == 'AKL' ? 'calculator' : ($tefa->code == 'PM' ? 'chart-line' : ($tefa->code == 'MPLB' ? 'building' : ($tefa->code == 'HOTEL' ? 'hotel' : ($tefa->code == 'KULINER' ? 'utensils' : ($tefa->code == 'DKV' ? 'palette' : 'code'))))) }}"></i>
+                        <div class="tefa-logo mb-3">
+                            @if($tefa->logo)
+                            <img src="{{ asset($tefa->logo) }}" alt="{{ $tefa->name }}">
+                            @else
+                            <i class="fas fa-school"></i>
+                            @endif
                         </div>
                         <h4 class="fw-bold mb-2 flex-grow-0">{{ $tefa->name }}</h4>
                         <p class="text-muted small flex-grow-1 mb-3">{{ Str::limit($tefa->description, 80) }}</p>
-                        <div class="mt-auto">
-                            <span class="badge bg-primary">Layanan</span>
-                        </div>
                     </div>
                 </a>
             </div>
@@ -402,6 +403,60 @@
 
     .stat-card:hover .stat-icon {
         transform: scale(1.2) rotate(5deg);
+    }
+
+    /* TEFA Card Styles */
+    .tefa-card {
+        background: white;
+        border-radius: 15px;
+        border: 2px solid #e9ecef;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        overflow: hidden;
+    }
+
+    .tefa-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+        border-color: var(--primary-blue);
+    }
+
+    .tefa-logo {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.4s ease;
+    }
+
+    .tefa-logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.4s ease;
+    }
+
+    .tefa-logo i {
+        font-size: 3.5rem;
+        color: var(--primary-blue);
+        transition: transform 0.4s ease;
+    }
+
+    .tefa-card:hover .tefa-logo img,
+    .tefa-card:hover .tefa-logo i {
+        transform: scale(1.1);
+    }
+
+    .tefa-card h4 {
+        color: #1a1a2e;
+        font-size: 1.1rem;
+        margin-top: 1rem;
+    }
+
+    .tefa-card p {
+        color: #6c757d;
+        font-size: 0.9rem;
     }
 
     .service-card {

@@ -6,38 +6,57 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Tambah TEFA Baru</h1>
+        @if(Auth::guard('admin')->user()->isSuperAdmin())
         <a href="{{ route($routePrefix . '.tefas.index') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Kembali
         </a>
+        @else
+        <a href="{{ route($routePrefix . '.dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+        </a>
+        @endif
     </div>
+
+    @if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <strong>Terjadi kesalahan!</strong>
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Form Tambah TEFA</h6>
         </div>
         <div class="card-body">
-            <form action="{{ route($routePrefix . '.tefas.store') }}" method="POST" id="tefaForm">
+            <form action="{{ route($routePrefix . '.tefas.store') }}" method="POST" enctype="multipart/form-data" id="tefaForm">
                 @csrf
-                
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Nama TEFA *</label>
-                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" 
+                            <label>Nama TEFA <span class="text-danger">*</span></label>
+                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
                                 value="{{ old('name') }}" required placeholder="Contoh: Akuntansi Keuangan Lembaga">
+                            <small class="text-muted">Masukkan nama lengkap program keahlian</small>
                             @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Kode Singkat *</label>
+                            <label>Kode Singkat <span class="text-danger">*</span></label>
                             <input type="text" name="code" class="form-control @error('code') is-invalid @enderror"
-                                value="{{ old('code') }}" required placeholder="Contoh: AKL">
+                                value="{{ old('code') }}" required placeholder="Contoh: AKL, PM, DKV, PPLG">
                             <small class="text-muted">Kode 3 huruf (contoh: AKL, PM, DKV, PPLG)</small>
                             @error('code')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
@@ -45,29 +64,30 @@
 
                 <div class="form-group">
                     <label>Deskripsi Singkat</label>
-                    <textarea name="description" class="form-control" rows="3" 
+                    <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="3"
                         placeholder="Deskripsi singkat tentang jurusan TEFA ini...">{{ old('description') }}</textarea>
+                    <small class="text-muted">Penjelasan singkat yang akan ditampilkan di card</small>
+                    @error('description')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <div class="row mb-4">
+                <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Pilih Icon</label>
-                            <div class="input-group">
-                                <input type="text" name="icon" class="form-control" id="iconInput"
-                                    value="{{ old('icon', 'fas fa-school') }}" 
-                                    placeholder="fas fa-school" required readonly>
-                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#iconModal">
-                                    <i class="fas fa-icons"></i> Pilih Icon
-                                </button>
-                            </div>
+                            <label>Pilih Icon <span class="text-danger">*</span></label>
+                            <input type="file" name="logo" class="form-control @error('logo') is-invalid @enderror"
+                                id="logoInput" accept="image/*" required>
                             <small class="text-muted">Klik tombol untuk memilih icon dari daftar</small>
-                            
-                            <!-- Icon Preview -->
-                            <div class="mt-2" id="iconPreview">
-                                <div class="border rounded p-3 text-center">
-                                    <i class="{{ old('icon', 'fas fa-school') }} fa-2x mb-2 text-primary"></i>
-                                    <p class="mb-0 small text-muted" id="iconName">fas fa-school</p>
+                            @error('logo')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+
+                            <!-- Logo Preview -->
+                            <div class="mt-3" id="logoPreview" style="display: none;">
+                                <div class="border rounded p-3 text-center bg-light">
+                                    <p class="mb-2 small text-muted">fas fa-school</p>
+                                    <img id="logoPreviewImage" src="" alt="Logo Preview" style="max-width: 100px; max-height: 100px; object-fit: contain;">
                                 </div>
                             </div>
                         </div>
@@ -75,17 +95,24 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Status</label>
-                            <select name="is_active" class="form-control">
+                            <select name="is_active" class="form-control @error('is_active') is-invalid @enderror">
                                 <option value="1" {{ old('is_active', 1) == 1 ? 'selected' : '' }}>Aktif</option>
                                 <option value="0" {{ old('is_active') == 0 ? 'selected' : '' }}>Nonaktif</option>
                             </select>
+                            @error('is_active')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Urutan Tampilan</label>
-                            <input type="number" name="order" class="form-control" value="{{ old('order', 0) }}" min="0" max="100">
+                            <input type="number" name="order" class="form-control @error('order') is-invalid @enderror"
+                                value="{{ old('order', 0) }}" min="0" max="100">
                             <small class="text-muted">Angka kecil = tampil di awal</small>
+                            @error('order')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -96,7 +123,7 @@
                         <strong>Layanan yang Ditawarkan</strong>
                         <small class="text-muted">(Opsional - tambah layanan yang ditawarkan jurusan ini)</small>
                     </label>
-                    
+
                     <div class="card mb-3">
                         <div class="card-header bg-light py-2">
                             <div class="d-flex justify-content-between align-items-center">
@@ -111,11 +138,11 @@
                             <div id="servicesContainer">
                                 <!-- Layanan akan ditambahkan di sini -->
                             </div>
-                            
+
                             <!-- Input tersembunyi untuk JSON -->
-                            <input type="hidden" name="services_json" id="servicesJson" 
+                            <input type="hidden" name="services_json" id="servicesJson"
                                 value='{{ old('services_json', '[]') }}'>
-                            
+
                             <div class="text-center mt-3">
                                 <p class="text-muted small" id="noServicesMessage">
                                     <i class="fas fa-info-circle"></i> Belum ada layanan yang ditambahkan
@@ -125,280 +152,134 @@
                     </div>
                 </div>
 
-                <div class="form-group mt-4">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="fas fa-save"></i> Simpan TEFA
-                    </button>
+                <div class="form-group mt-4 text-right">
+                    @if(Auth::guard('admin')->user()->isSuperAdmin())
                     <a href="{{ route($routePrefix . '.tefas.index') }}" class="btn btn-secondary btn-lg">
                         <i class="fas fa-times"></i> Batal
                     </a>
+                    @else
+                    <a href="{{ route($routePrefix . '.dashboard') }}" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-times"></i> Batal
+                    </a>
+                    @endif
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save"></i> Simpan TEFA
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- Modal untuk Pilih Icon - FIXED BOOTSTRAP 5 -->
-<div class="modal fade" id="iconModal" tabindex="-1" aria-labelledby="iconModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="iconModalLabel">
-                    <i class="fas fa-icons me-2"></i>Pilih Icon FontAwesome
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group mb-3">
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                                <input type="text" class="form-control" id="iconSearch" placeholder="Cari icon...">
-                            </div>
-                        </div>
-                        
-                        <div class="icon-grid" id="iconGrid" style="max-height: 400px; overflow-y: auto;">
-                            <!-- Icon akan diisi oleh JavaScript -->
-                        </div>
-                        
-                        <div class="mt-3 alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            Klik icon untuk memilih. Icon yang dipilih: 
-                            <strong id="currentSelectedIcon">fas fa-school</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i> Batal
-                </button>
-                <button type="button" class="btn btn-success" id="selectIconBtn">
-                    <i class="fas fa-check me-1"></i> Pilih Icon
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
 
 @push('styles')
 <style>
-    .icon-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-        gap: 12px;
-        padding: 10px;
-    }
-    
-    .icon-item {
-        padding: 15px;
-        text-align: center;
-        border: 2px solid #e9ecef;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.3s;
-        background: white;
-    }
-    
-    .icon-item:hover {
-        background-color: #f8f9fa;
-        border-color: #4A90E2;
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-    
-    .icon-item.selected {
-        background-color: #e3f2fd;
-        border-color: #4A90E2;
-        border-width: 3px;
-    }
-    
-    .icon-item i {
-        font-size: 28px;
-        margin-bottom: 8px;
-        color: #4A90E2;
-    }
-    
-    .icon-name {
-        font-size: 11px;
-        word-break: break-word;
-        color: #495057;
-        font-weight: 500;
-    }
-    
     .service-item {
         display: flex;
         align-items: center;
+        gap: 10px;
         margin-bottom: 10px;
-        padding: 12px;
-        background: #f8f9fa;
-        border-radius: 8px;
-        border-left: 4px solid #4A90E2;
-        transition: all 0.3s;
+        padding: 10px;
+        background: #f8f9fc;
+        border-radius: 5px;
+        border-left: 3px solid #4e73df;
     }
-    
-    .service-item:hover {
-        background: #e9ecef;
-        transform: translateX(5px);
-    }
-    
+
     .service-item input {
         flex: 1;
-        border: none;
-        background: transparent;
-        padding: 8px;
-        font-size: 0.95rem;
-    }
-    
-    .service-item input:focus {
-        outline: none;
-        background: white;
-        border-radius: 4px;
-        box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.25);
-    }
-    
-    .remove-service {
-        color: #dc3545;
-        cursor: pointer;
-        margin-left: 10px;
+        border: 1px solid #d1d3e2;
         padding: 6px 12px;
         border-radius: 4px;
-        transition: all 0.2s;
+        font-size: 14px;
     }
-    
-    .remove-service:hover {
-        color: #c82333;
-        background: rgba(220, 53, 69, 0.1);
+
+    .service-item input:focus {
+        outline: none;
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
     }
-    
-    #iconInput[readonly] {
-        background-color: #f8f9fa;
-        cursor: pointer;
+
+    .service-item .badge {
+        font-size: 12px;
+        padding: 5px 10px;
     }
 </style>
+@endpush
+
 @push('scripts')
 <script>
-$(document).ready(function() {
-    // ============ ICON PICKER FIXED ============
-    const popularIcons = [
-        'fas fa-school', 'fas fa-laptop-code', 'fas fa-paint-brush', 
-        'fas fa-utensils', 'fas fa-hotel', 'fas fa-briefcase',
-        'fas fa-chart-line', 'fas fa-calculator', 'fas fa-building',
-        'fas fa-desktop', 'fas fa-camera', 'fas fa-car',
-        'fas fa-book', 'fas fa-flask', 'fas fa-microchip',
-        'fas fa-code', 'fas fa-database', 'fas fa-network-wired',
-        'fas fa-print', 'fas fa-video', 'fas fa-music',
-        'fas fa-tools', 'fas fa-wrench', 'fas fa-cogs',
-        'fas fa-graduation-cap', 'fas fa-user-tie', 'fas fa-users',
-        'fas fa-store', 'fas fa-industry', 'fas fa-truck',
-        'fas fa-money-bill-wave', 'fas fa-chart-bar', 'fas fa-cube'
-    ];
-    
-    let selectedIcon = $('#iconInput').val();
-    
-    // Load icons ke modal
-    function loadIcons(search = '') {
-        $('#iconGrid').empty();
-        
-        const filteredIcons = popularIcons.filter(icon => 
-            icon.toLowerCase().includes(search.toLowerCase())
-        );
-        
-        filteredIcons.forEach(icon => {
-            const iconName = icon.replace('fas fa-', '');
-            const isSelected = icon === selectedIcon;
-            
-            $('#iconGrid').append(`
-                <div class="icon-item ${isSelected ? 'selected' : ''}" data-icon="${icon}">
-                    <i class="${icon}"></i>
-                    <div class="icon-name">${iconName}</div>
-                </div>
-            `);
-        });
-        
-        // Update current selected icon text
-        $('#currentSelectedIcon').text(selectedIcon);
-    }
-    
-    // Inisialisasi icons
-    loadIcons();
-    
+    $(document).ready(function() {
+        // ============ LOGO UPLOAD PREVIEW ============
+        $('#logoInput').on('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validate file size (max 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('Ukuran file terlalu besar! Maksimal 2MB.');
+                    $(this).val('');
+                    $('#logoPreview').hide();
+                    return;
+                }
 
-    
-    // Search icons
-    $('#iconSearch').on('input', function() {
-        loadIcons($(this).val());
-    });
-    
-    // Pilih icon
-    $(document).on('click', '.icon-item', function() {
-        $('.icon-item').removeClass('selected');
-        $(this).addClass('selected');
-        selectedIcon = $(this).data('icon');
-        $('#currentSelectedIcon').text(selectedIcon);
-    });
-    
-    // Tombol pilih icon
-    $('#selectIconBtn').click(function() {
-        if (selectedIcon) {
-            $('#iconInput').val(selectedIcon);
-            $('#iconPreview i').attr('class', selectedIcon + ' fa-2x mb-2 text-primary');
-            $('#iconName').text(selectedIcon);
-            
-            // Close modal menggunakan Bootstrap 5 API
-            const iconModal = bootstrap.Modal.getInstance(document.getElementById('iconModal'));
-            if (iconModal) {
-                iconModal.hide();
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Format file tidak valid! Gunakan JPG, PNG, atau WEBP.');
+                    $(this).val('');
+                    $('#logoPreview').hide();
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#logoPreviewImage').attr('src', e.target.result);
+                    $('#logoPreview').show();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                $('#logoPreview').hide();
             }
-            
-            // Feedback
-            showToast('Icon berhasil dipilih: ' + selectedIcon.replace('fas fa-', ''), 'success');
-        }
-    });
-    
-    // ============ SERVICES MANAGEMENT ============
-    let services = [];
-    
-    // Parse existing services from JSON
-    try {
-        const existingServices = JSON.parse($('#servicesJson').val() || '[]');
-        services = existingServices;
-        renderServices();
-    } catch (e) {
-        console.error('Error parsing services JSON:', e);
-        services = [];
-    }
-    
-    // Add new service
-    $('#addServiceBtn').click(function() {
-        const serviceName = prompt('Masukkan nama layanan baru:');
-        if (serviceName && serviceName.trim()) {
-            services.push(serviceName.trim());
+        });
+
+        // ============ SERVICES MANAGEMENT ============
+        let services = [];
+
+        // Parse existing services from JSON
+        try {
+            const existingServices = JSON.parse($('#servicesJson').val() || '[]');
+            services = existingServices;
             renderServices();
-            updateJsonField();
-            showToast('Layanan ditambahkan', 'success');
+        } catch (e) {
+            console.error('Error parsing services JSON:', e);
+            services = [];
         }
-    });
-    
-    // Render services list
-    function renderServices() {
-        $('#servicesContainer').empty();
-        
-        if (services.length === 0) {
-            $('#noServicesMessage').show();
-            return;
-        }
-        
-        $('#noServicesMessage').hide();
-        
-        services.forEach((service, index) => {
-            $('#servicesContainer').append(`
+
+        // Add new service
+        $('#addServiceBtn').click(function() {
+            const serviceName = prompt('Masukkan nama layanan baru:');
+            if (serviceName && serviceName.trim()) {
+                services.push(serviceName.trim());
+                renderServices();
+                updateJsonField();
+            }
+        });
+
+        // Render services list
+        function renderServices() {
+            $('#servicesContainer').empty();
+
+            if (services.length === 0) {
+                $('#noServicesMessage').show();
+                return;
+            }
+
+            $('#noServicesMessage').hide();
+
+            services.forEach((service, index) => {
+                $('#servicesContainer').append(`
                 <div class="service-item" data-index="${index}">
-                    <span class="badge bg-primary me-2">${index + 1}</span>
+                    <span class="badge badge-primary">${index + 1}</span>
                     <input type="text" class="service-input" value="${service}" 
                            placeholder="Nama layanan...">
                     <button type="button" class="btn btn-sm btn-danger remove-service">
@@ -406,84 +287,75 @@ $(document).ready(function() {
                     </button>
                 </div>
             `);
+            });
+        }
+
+        // Update service
+        $(document).on('blur', '.service-input', function() {
+            const index = $(this).closest('.service-item').data('index');
+            const newValue = $(this).val().trim();
+
+            if (newValue) {
+                services[index] = newValue;
+                updateJsonField();
+            } else {
+                alert('Nama layanan tidak boleh kosong!');
+                $(this).val(services[index]).focus();
+            }
         });
-    }
-    
-    // Update service
-    $(document).on('blur', '.service-input', function() {
-        const index = $(this).closest('.service-item').data('index');
-        const newValue = $(this).val().trim();
-        
-        if (newValue) {
-            services[index] = newValue;
-            updateJsonField();
-            showToast('Layanan diperbarui', 'info');
-        }
-    });
-    
-    // Remove service
-    $(document).on('click', '.remove-service', function() {
-        const index = $(this).closest('.service-item').data('index');
-        const serviceName = services[index];
-        
-        if (confirm(`Hapus layanan "${serviceName}"?`)) {
-            services.splice(index, 1);
-            renderServices();
-            updateJsonField();
-            showToast('Layanan dihapus', 'warning');
-        }
-    });
-    
-    // Update hidden JSON field
-    function updateJsonField() {
-        $('#servicesJson').val(JSON.stringify(services));
-    }
-    
-    // Form validation
-    $('#tefaForm').submit(function(e) {
-        const name = $('input[name="name"]').val().trim();
-        const code = $('input[name="code"]').val().trim();
-        
-        if (!name || !code) {
-            e.preventDefault();
-            showToast('Nama dan Kode TEFA harus diisi!', 'error');
-            return false;
-        }
-        
-        // Convert services to JSON
-        updateJsonField();
-    });
-    
-    // Toast notification
-    function showToast(message, type = 'info') {
-        const toastId = 'toast-' + Date.now();
-        const toastHtml = `
-            <div id="${toastId}" class="toast align-items-center text-bg-${type} border-0" role="alert">
-                <div class="d-flex">
-                    <div class="toast-body">
-                        <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'exclamation' : 'info'}-circle me-2"></i>
-                        ${message}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-                </div>
-            </div>
-        `;
-        
-        // Add toast container if not exists
-        if ($('#toastContainer').length === 0) {
-            $('body').append('<div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3"></div>');
-        }
-        
-        $('#toastContainer').append(toastHtml);
-        const toastElement = document.getElementById(toastId);
-        const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
-        toast.show();
-        
-        // Remove after hide
-        toastElement.addEventListener('hidden.bs.toast', function () {
-            $(this).remove();
+
+        // Enter key to blur
+        $(document).on('keypress', '.service-input', function(e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                $(this).blur();
+            }
         });
-    }
-});
+
+        // Remove service
+        $(document).on('click', '.remove-service', function() {
+            const index = $(this).closest('.service-item').data('index');
+            const serviceName = services[index];
+
+            if (confirm(`Hapus layanan "${serviceName}"?`)) {
+                services.splice(index, 1);
+                renderServices();
+                updateJsonField();
+            }
+        });
+
+        // Update hidden JSON field
+        function updateJsonField() {
+            $('#servicesJson').val(JSON.stringify(services));
+        }
+
+        // Form validation
+        $('#tefaForm').submit(function(e) {
+            const name = $('input[name="name"]').val().trim();
+            const code = $('input[name="code"]').val().trim();
+            const logo = $('#logoInput').val();
+
+            if (!name || !code) {
+                e.preventDefault();
+                alert('Nama dan Kode TEFA harus diisi!');
+                if (!name) $('input[name="name"]').focus();
+                else if (!code) $('input[name="code"]').focus();
+                return false;
+            }
+
+            if (!logo) {
+                e.preventDefault();
+                alert('Logo harus dipilih!');
+                $('#logoInput').focus();
+                return false;
+            }
+
+            // Update JSON before submit
+            updateJsonField();
+
+            // Show loading
+            $(this).find('button[type="submit"]').html('<i class="fas fa-spinner fa-spin"></i> Menyimpan...').prop('disabled', true);
+        });
+    });
 </script>
 @endpush

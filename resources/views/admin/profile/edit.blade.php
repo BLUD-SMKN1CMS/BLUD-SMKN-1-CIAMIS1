@@ -88,30 +88,26 @@
             </div>
 
             <!-- Info Box -->
-            <div class="card border-left-info shadow h-100 py-2">
+            <div class="card border-left-info shadow mb-4">
                 <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                <i class="fas fa-info-circle me-2"></i>Informasi Akun
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-                                    <p class="mb-1"><strong>ID Admin:</strong> #{{ $admin->id }}</p>
-                                    <p class="mb-1"><strong>Terdaftar:</strong>
-                                        {{ $admin->created_at->format('d F Y') }}
-                                    </p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="mb-1"><strong>Terakhir Login:</strong>
-                                        {{ $admin->last_login ? $admin->last_login->diffForHumans() : 'Belum pernah login' }}
-                                    </p>
-                                    <p class="mb-1"><strong>Role:</strong> {{ $admin->getRoleDisplay() }}</p>
-                                </div>
-                            </div>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h6 class="text-info font-weight-bold text-uppercase mb-0">
+                            <i class="fas fa-info-circle me-2"></i>Informasi Akun
+                        </h6>
+                        <i class="fas fa-user-circle fa-2x text-info"></i>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <p class="mb-2"><strong>ID Admin:</strong> #{{ $admin->id }}</p>
+                            <p class="mb-0"><strong>Terdaftar:</strong>
+                                {{ $admin->created_at->format('d F Y') }}
+                            </p>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-user-circle fa-2x text-info"></i>
+                        <div class="col-md-6 mb-2">
+                            <p class="mb-2"><strong>Terakhir Login:</strong>
+                                {{ $admin->last_login ? $admin->last_login->diffForHumans() : 'Belum pernah login' }}
+                            </p>
+                            <p class="mb-0"><strong>Role:</strong> {{ $admin->getRoleDisplay() }}</p>
                         </div>
                     </div>
                 </div>

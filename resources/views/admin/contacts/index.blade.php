@@ -13,20 +13,6 @@
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show">
-            {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert">×</button>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show">
-            {{ session('error') }}
-            <button type="button" class="close" data-dismiss="alert">×</button>
-        </div>
-    @endif
-
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Daftar Pesan</h6>
@@ -36,7 +22,7 @@
                 <form id="bulkDeleteForm" action="{{ route($routePrefix . '.contacts.bulkDelete') }}" method="POST">
                     @csrf
                     <input type="hidden" name="ids" id="bulkDeleteIds">
-                    
+
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
@@ -72,12 +58,13 @@
                                     </span>
                                 </td>
                                 <td>{{ $contact->created_at->format('d M Y') }}</td>
-                                <td>
+                                <td class="text-center">
                                     <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 
-                                                type="button" 
-                                                data-bs-toggle="dropdown" 
-                                                aria-expanded="false">
+                                        <button class="btn btn-sm btn-link text-dark dropdown-toggle p-0"
+                                            type="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                            style="text-decoration: none;">
                                             <i class="fas fa-ellipsis-v"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
@@ -91,12 +78,14 @@
                                                     <i class="fas fa-edit me-2 text-warning"></i> Edit
                                                 </a>
                                             </li>
-                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
                                             <li>
                                                 <form action="{{ route($routePrefix . '.contacts.destroy', $contact->id) }}" method="POST" class="dropdown-item p-0">
                                                     @csrf @method('DELETE')
-                                                    <button type="submit" class="dropdown-item text-danger text-decoration-none w-100 text-start" 
-                                                            onclick="return confirm('Hapus pesan ini?')">
+                                                    <button type="submit" class="dropdown-item text-danger text-decoration-none w-100 text-start"
+                                                        onclick="return confirm('Hapus pesan ini?')">
                                                         <i class="fas fa-trash me-2"></i> Hapus
                                                     </button>
                                                 </form>
@@ -116,7 +105,7 @@
                         </tbody>
                     </table>
                 </form>
-                
+
                 @if($contacts->hasPages())
                 <div class="d-flex justify-content-center mt-3">
                     {{ $contacts->links() }}
@@ -133,25 +122,30 @@
     .dropdown-toggle::after {
         display: none !important;
     }
+
     .dropdown-menu {
         min-width: 180px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
         border: 1px solid #eee;
     }
+
     .dropdown-item {
         padding: 8px 15px;
         font-size: 0.9rem;
         transition: all 0.2s;
     }
+
     .dropdown-item:hover {
         background-color: #f8f9fa;
         transform: translateX(3px);
     }
+
     .dropdown-item i {
         width: 20px;
         text-align: center;
     }
+
     .table-warning {
         background-color: #fff3cd !important;
     }
@@ -160,42 +154,42 @@
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    // Select all checkbox
-    $('#selectAll').change(function() {
-        $('.contact-checkbox').prop('checked', this.checked);
-        toggleBulkDeleteBtn();
-    });
-    
-    // Individual checkbox
-    $('.contact-checkbox').change(function() {
-        if (!this.checked) {
-            $('#selectAll').prop('checked', false);
-        }
-        toggleBulkDeleteBtn();
-    });
-    
-    function toggleBulkDeleteBtn() {
-        var checkedCount = $('.contact-checkbox:checked').length;
-        if (checkedCount > 0) {
-            $('#bulkDeleteBtn').show().text('Hapus ' + checkedCount + ' Pesan');
-        } else {
-            $('#bulkDeleteBtn').hide();
-        }
-    }
-    
-    // Bulk delete
-    $('#bulkDeleteBtn').click(function() {
-        var ids = [];
-        $('.contact-checkbox:checked').each(function() {
-            ids.push($(this).val());
+    $(document).ready(function() {
+        // Select all checkbox
+        $('#selectAll').change(function() {
+            $('.contact-checkbox').prop('checked', this.checked);
+            toggleBulkDeleteBtn();
         });
-        
-        if (ids.length > 0 && confirm('Hapus ' + ids.length + ' pesan terpilih?')) {
-            $('#bulkDeleteIds').val(JSON.stringify(ids));
-            $('#bulkDeleteForm').submit();
+
+        // Individual checkbox
+        $('.contact-checkbox').change(function() {
+            if (!this.checked) {
+                $('#selectAll').prop('checked', false);
+            }
+            toggleBulkDeleteBtn();
+        });
+
+        function toggleBulkDeleteBtn() {
+            var checkedCount = $('.contact-checkbox:checked').length;
+            if (checkedCount > 0) {
+                $('#bulkDeleteBtn').show().text('Hapus ' + checkedCount + ' Pesan');
+            } else {
+                $('#bulkDeleteBtn').hide();
+            }
         }
+
+        // Bulk delete
+        $('#bulkDeleteBtn').click(function() {
+            var ids = [];
+            $('.contact-checkbox:checked').each(function() {
+                ids.push($(this).val());
+            });
+
+            if (ids.length > 0 && confirm('Hapus ' + ids.length + ' pesan terpilih?')) {
+                $('#bulkDeleteIds').val(JSON.stringify(ids));
+                $('#bulkDeleteForm').submit();
+            }
+        });
     });
-});
 </script>
 @endpush

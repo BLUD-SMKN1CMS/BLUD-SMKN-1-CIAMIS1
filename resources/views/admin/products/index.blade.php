@@ -11,20 +11,6 @@
         </a>
     </div>
 
-    @if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show">
-        <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    @endif
-
-    @if (session('error'))
-    <div class="alert alert-danger alert-dismissible fade show">
-        <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    @endif
-
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Daftar Produk</h6>
@@ -49,8 +35,6 @@
                             <th width="80">Gambar</th>
                             <th>Nama Produk</th>
                             <th>TEFA</th>
-                            <th width="120">Harga</th>
-                            <th width="80">Stok</th>
                             <th width="100">Status</th>
                             <th width="90">Unggulan</th>
                             <th width="100">Aksi</th>
@@ -96,13 +80,6 @@
                                 @endif
                             </td>
                             <td>
-                                <strong class="text-primary">Rp
-                                    {{ number_format($product->price, 0, ',', '.') }}</strong>
-                            </td>
-                            <td>
-                                {{ number_format($product->stock, 0, ',', '.') }} {{ $product->unit }}
-                            </td>
-                            <td>
                                 <span
                                     class="badge 
                                     @if ($product->status == 'active') badge-success
@@ -126,11 +103,11 @@
                                 <span class="text-muted">-</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <!-- DROPDOWN 3 TITIK -->
                                 <div class="dropdown">
-                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button class="btn btn-sm btn-link text-dark dropdown-toggle p-0" type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
                                         <i class="fas fa-ellipsis-v"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
@@ -197,7 +174,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="8" class="text-center py-5">
+                            <td colspan="7" class="text-center py-5">
                                 <div class="text-muted">
                                     <i class="fas fa-box-open fa-3x mb-4" style="opacity: 0.5;"></i>
                                     <p class="mb-4">Belum ada data produk</p>

@@ -28,99 +28,72 @@
                 <div class="product-images">
                     <div class="main-image-wrapper">
                         <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="main-product-image" id="mainImage">
-                        @if($product->stock <= 0)
-                            <div class="out-of-stock-badge">Tidak Tersedia
                     </div>
-                    @elseif($product->stock < 10)
-                        <div class="low-stock-badge">Stok Terbatas
+
+                    <!-- Thumbnail Gallery -->
+                    @php
+                    $images = [];
+                    if($product->image) $images[] = $product->image_url;
+                    if($product->image_2) $images[] = $product->image_2_url;
+                    if($product->image_3) $images[] = $product->image_3_url;
+                    if($product->image_4) $images[] = $product->image_4_url;
+                    @endphp
+
+                    @if(count($images) > 1)
+                    <div class="thumbnail-gallery">
+                        @foreach($images as $key => $imgUrl)
+                        <div class="thumbnail-item {{ $key == 0 ? 'active' : '' }}" onclick="changeImage(this, '{{ $imgUrl }}')">
+                            <img src="{{ $imgUrl }}" alt="{{ $product->name }}">
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
                 </div>
-                @endif
             </div>
 
-            <!-- Thumbnail Gallery -->
-            @php
-            $images = [];
-            if($product->image) $images[] = $product->image_url;
-            if($product->image_2) $images[] = $product->image_2_url;
-            if($product->image_3) $images[] = $product->image_3_url;
-            if($product->image_4) $images[] = $product->image_4_url;
-            @endphp
+            <!-- Product Info -->
+            <div class="col-lg-6">
+                <div class="product-info">
+                    <!-- Category & TEFA -->
+                    <div class="product-meta">
+                        @if($product->tefa)
+                        <a href="{{ route('tefa.show', $product->tefa->slug) }}" class="tefa-badge">
+                            <i class="fas fa-industry"></i> {{ $product->tefa->name }}
+                        </a>
+                        @endif
+                        @if($product->category)
+                        <span class="category-badge">
+                            <i class="fas fa-tag"></i> {{ ucfirst($product->category) }}
+                        </span>
+                        @endif
+                    </div>
 
-            @if(count($images) > 1)
-            <div class="thumbnail-gallery">
-                @foreach($images as $key => $imgUrl)
-                <div class="thumbnail-item {{ $key == 0 ? 'active' : '' }}" onclick="changeImage(this, '{{ $imgUrl }}')">
-                    <img src="{{ $imgUrl }}" alt="{{ $product->name }}">
+                    <!-- Product Name -->
+                    <h1 class="product-title">{{ $product->name }}</h1>
+
+                    <!-- Description -->
+                    <div class="product-description">
+                        <h3>Deskripsi Layanan</h3>
+                        <p>{{ $product->description ?? 'Layanan berkualitas dari ' . ($product->tefa->name ?? 'BLUD SMKN 1 CIAMIS') }}</p>
+                    </div>
+
+                    <!-- Quantity & Add to Cart -->
+                    <!-- Quantity & Order Actions -->
+                    <div class="product-actions">
+                        @php
+                        // Temporarily hardcoded number as requested
+                        $whatsappNumber = '6287790984032';
+                        @endphp
+                        <div class="d-grid gap-2 w-100">
+                            <button type="button" class="btn-whatsapp w-100" data-bs-toggle="modal" data-bs-target="#orderModal">
+                                <i class="fab fa-whatsapp me-2"></i> Tanya via WhatsApp
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                @endforeach
-            </div>
-            @endif
-        </div>
-    </div>
-
-    <!-- Product Info -->
-    <div class="col-lg-6">
-        <div class="product-info">
-            <!-- Category & TEFA -->
-            <div class="product-meta">
-                @if($product->tefa)
-                <a href="{{ route('tefa.show', $product->tefa->slug) }}" class="tefa-badge">
-                    <i class="fas fa-industry"></i> {{ $product->tefa->name }}
-                </a>
-                @endif
-                @if($product->category)
-                <span class="category-badge">
-                    <i class="fas fa-tag"></i> {{ ucfirst($product->category) }}
-                </span>
-                @endif
-            </div>
-
-            <!-- Product Name -->
-            <h1 class="product-title">{{ $product->name }}</h1>
-
-            <!-- Stock Info -->
-            <div class="stock-info">
-                @if($product->stock > 0)
-                <span class="in-stock">
-                    <i class="fas fa-check-circle"></i> Tersedia
-                </span>
-                @else
-                <span class="out-of-stock">
-                    <i class="fas fa-times-circle"></i> Tidak Tersedia
-                </span>
-                @endif
-            </div>
-
-            <!-- Description -->
-            <div class="product-description">
-                <h3>Deskripsi Layanan</h3>
-                <p>{{ $product->description ?? 'Layanan berkualitas dari ' . ($product->tefa->name ?? 'BLUD SMKN 1 CIAMIS') }}</p>
-            </div>
-
-            <!-- Quantity & Add to Cart -->
-            <!-- Quantity & Order Actions -->
-            <div class="product-actions">
-                @if($product->stock > 0)
-                @php
-                // Temporarily hardcoded number as requested
-                $whatsappNumber = '6287790984032';
-                @endphp
-                <div class="d-grid gap-2 w-100">
-                    <button type="button" class="btn-whatsapp w-100" data-bs-toggle="modal" data-bs-target="#orderModal">
-                        <i class="fab fa-whatsapp me-2"></i> Tanya via WhatsApp
-                    </button>
-                </div>
-                @else
-                <button class="btn-add-to-cart disabled w-100" disabled>
-                    <i class="fas fa-ban"></i>
-                    <span>Tidak Tersedia</span>
-                </button>
-                @endif
             </div>
         </div>
     </div>
-</div>
-</div>
 </div>
 
 <!-- Related Products Section -->
@@ -139,26 +112,12 @@
                     <div class="product-card">
                         <div class="product-card-image">
                             <img src="{{ $relatedProduct->image_url }}" alt="{{ $relatedProduct->name }}">
-                            @if($relatedProduct->stock <= 0)
-                                <div class="product-badge out-of-stock">Tidak Tersedia
-                        </div>
-                        @elseif($relatedProduct->is_featured)
-                        <div class="product-badge featured">Unggulan</div>
-                        @endif
-                    </div>
-                    <div class="product-card-content">
-                        <h3 class="product-card-title">{{ $relatedProduct->name }}</h3>
-                        <p class="product-card-price">{{ $relatedProduct->formatted_price }}</p>
-                        <div class="product-card-footer">
-                            @if($relatedProduct->stock > 0)
-                            <span class="stock-available">
-                                <i class="fas fa-check-circle"></i> Tersedia
-                            </span>
-                            @else
-                            <span class="stock-unavailable">
-                                <i class="fas fa-times-circle"></i> Tidak Tersedia
-                            </span>
+                            @if($relatedProduct->is_featured)
+                            <div class="product-badge featured">Unggulan</div>
                             @endif
+                        </div>
+                        <div class="product-card-content">
+                            <h3 class="product-card-title">{{ $relatedProduct->name }}</h3>
                         </div>
                     </div>
                 </a>
@@ -636,8 +595,6 @@
                     <img src="{{ $product->image_url }}" alt="Product" class="rounded me-3" style="width: 70px; height: 70px; object-fit: cover;">
                     <div>
                         <h6 class="mb-1 fw-bold text-dark">{{ $product->name }}</h6>
-                        <p class="mb-0 text-primary fw-bold" id="basePrice" data-price="{{ $product->price }}">{{ $product->formatted_price }}</p>
-                        <small class="text-muted">{{ $product->stock > 0 ? 'Tersedia' : 'Tidak Tersedia' }}</small>
                     </div>
                 </div>
 

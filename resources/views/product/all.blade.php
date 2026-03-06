@@ -63,7 +63,6 @@
                         <span class="badge bg-warning">Unggulan</span>
                         @endif
                     </div>
-                    <h5 class="text-primary">{{ 'Rp ' . number_format($product->price, 0, ',', '.') }}</h5>
                 </div>
                 <div class="card-footer">
                     <a href="{{ route('products.show', $product->slug) }}" class="btn btn-primary">Lihat Detail</a>

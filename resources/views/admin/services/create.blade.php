@@ -54,40 +54,6 @@
                         placeholder="Deskripsi lengkap layanan...">{{ old('description') }}</textarea>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Harga per Jam</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Rp</span>
-                                </div>
-                                <input type="number" name="price_per_hour" class="form-control @error('price_per_hour') is-invalid @enderror"
-                                    value="{{ old('price_per_hour', 0) }}" placeholder="Opsional">
-                                @error('price_per_hour')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <small class="text-muted">Kosongkan jika tidak dikenakan biaya per jam</small>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Harga per Hari *</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Rp</span>
-                                </div>
-                                <input type="number" name="price_per_day" class="form-control @error('price_per_day') is-invalid @enderror"
-                                    value="{{ old('price_per_day') }}" required>
-                                @error('price_per_day')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="form-group">
                     <label>Pilih Icon</label>
                     <div class="input-group">

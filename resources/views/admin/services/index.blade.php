@@ -11,13 +11,6 @@
         </a>
     </div>
 
-    @if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show">
-        {{ session('success') }}
-        <button type="button" class="close" data-dismiss="alert">×</button>
-    </div>
-    @endif
-
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Daftar Layanan</h6>
@@ -34,8 +27,6 @@
                             <th>Icon</th>
                             <th>Nama Layanan</th>
                             <th>Jurusan TEFA</th>
-                            <th>Harga/Jam</th>
-                            <th>Harga/Hari</th>
                             <th>Status</th>
                             <th width="100">Aksi</th>
                         </tr>
@@ -49,18 +40,16 @@
                             </td>
                             <td>{{ $service->name }}</td>
                             <td>{{ $service->tefa->name ?? '-' }}</td>
-                            <td>{{ $service->price_per_hour ? 'Rp ' . number_format($service->price_per_hour, 0, ',', '.') : '-' }}</td>
-                            <td>Rp {{ number_format($service->price_per_day, 0, ',', '.') }}</td>
                             <td>
                                 <span
                                     class="badge {{ $service->status == 'available' ? 'badge-success' : 'badge-secondary' }}">
                                     {{ strtoupper($service->status) }}
                                 </span>
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <div class="dropdown">
-                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button class="btn btn-sm btn-link text-dark dropdown-toggle p-0" type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
                                         <i class="fas fa-ellipsis-v"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
@@ -69,8 +58,6 @@
                                                 data-id="{{ $service->id }}"
                                                 data-name="{{ $service->name }}"
                                                 data-description="{{ $service->description }}"
-                                                data-price-hour="{{ $service->price_per_hour ?? 0 }}"
-                                                data-price-day="{{ $service->price_per_day }}"
                                                 data-icon="{{ $service->icon ?? 'fas fa-concierge-bell' }}"
                                                 data-status="{{ $service->status }}">
                                                 <i class="fas fa-edit me-2 text-warning"></i> Edit
@@ -80,8 +67,6 @@
                                             <button type="button" class="dropdown-item btn-view-service"
                                                 data-name="{{ $service->name }}"
                                                 data-slug="{{ $service->slug }}"
-                                                data-price-hour="{{ $service->price_per_hour ? 'Rp ' . number_format($service->price_per_hour, 0, ',', '.') : '-' }}"
-                                                data-price-day="Rp {{ number_format($service->price_per_day, 0, ',', '.') }}"
                                                 data-status="{{ strtoupper($service->status) }}"
                                                 data-created="{{ $service->created_at->format('d M Y H:i') }}">
                                                 <i class="fas fa-eye me-2 text-info"></i> Lihat
@@ -107,7 +92,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="8" class="text-center py-5">
+                            <td colspan="6" class="text-center py-5">
                                 <div class="text-muted">
                                     <i class="fas fa-handshake fa-3x mb-4" style="opacity: 0.5;"></i>
                                     <p class="mb-4">Belum ada data layanan</p>
@@ -146,14 +131,6 @@
                             <tr>
                                 <th>Slug URL</th>
                                 <td id="detail_slug">-</td>
-                            </tr>
-                            <tr>
-                                <th>Harga per Jam</th>
-                                <td id="detail_price_hour">-</td>
-                            </tr>
-                            <tr>
-                                <th>Harga per Hari</th>
-                                <td id="detail_price_day">-</td>
                             </tr>
                             <tr>
                                 <th>Status</th>
@@ -200,32 +177,6 @@
                     <div class="form-group mb-3">
                         <label>Deskripsi</label>
                         <textarea name="description" id="edit_description" class="form-control" rows="3"></textarea>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label>Harga per Jam</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="number" name="price_per_hour" id="edit_price_per_hour" class="form-control" placeholder="Opsional">
-                                </div>
-                                <small class="text-muted">Kosongkan jika tidak dikenakan biaya per jam</small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label>Harga per Hari *</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="number" name="price_per_day" id="edit_price_per_day" class="form-control" required>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="form-group mb-3">
@@ -479,8 +430,6 @@
             const id = $(this).data('id');
             const name = $(this).data('name');
             const description = $(this).data('description');
-            const priceHour = $(this).data('price-hour');
-            const priceDay = $(this).data('price-day');
             const icon = $(this).data('icon');
             const status = $(this).data('status');
 
@@ -488,8 +437,6 @@
             $('#edit_service_id').val(id);
             $('#edit_name').val(name);
             $('#edit_description').val(description);
-            $('#edit_price_per_hour').val(priceHour);
-            $('#edit_price_per_day').val(priceDay);
             $('#edit_icon').val(icon);
             $('#edit_status').val(status);
 
@@ -510,15 +457,11 @@
         $('.btn-view-service').click(function() {
             const name = $(this).data('name');
             const slug = $(this).data('slug');
-            const priceHour = $(this).data('price-hour');
-            const priceDay = $(this).data('price-day');
             const status = $(this).data('status');
             const created = $(this).data('created');
 
             $('#detail_name').text(name || '-');
             $('#detail_slug').text(`/layanan/${slug}`);
-            $('#detail_price_hour').text(priceHour || '-');
-            $('#detail_price_day').text(priceDay || '-');
             $('#detail_status').text(status || '-');
             $('#detail_created').text(created || '-');
 

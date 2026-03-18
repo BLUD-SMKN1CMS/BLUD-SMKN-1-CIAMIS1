@@ -4,6 +4,267 @@
 @source "../**/*.js";
 @source "../**/*.vue";
 
+/* ===== MODERN HERO SECTION STYLES ===== */
+.modern-hero {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.modern-hero::before {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: rgba(74, 144, 226, 0.08);
+    border-radius: 50%;
+    top: -100px;
+    left: -100px;
+    z-index: 0;
+}
+
+.modern-hero::after {
+    content: '';
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: rgba(74, 144, 226, 0.05);
+    border-radius: 50%;
+    bottom: -50px;
+    right: -50px;
+    z-index: 0;
+}
+
+.modern-hero .container-xxl {
+    position: relative;
+    z-index: 1;
+}
+
+/* Hero Content */
+.hero-content {
+    padding-right: 2rem;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, #4A90E2 0%, #2563eb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #666 !important;
+    font-weight: 400;
+}
+
+/* Badge Accent */
+.badge-accent {
+    background: rgba(74, 144, 226, 0.1);
+    color: #4A90E2;
+    border: 1px solid rgba(74, 144, 226, 0.2);
+    padding: 0.6rem 1rem !important;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 25px;
+}
+
+/* CTA Buttons */
+.btn-hover-lift {
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 15px rgba(74, 144, 226, 0.2);
+}
+
+.btn-hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
+}
+
+/* Hero Stats Mini */
+.stat-mini {
+    padding: 1rem;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid rgba(74, 144, 226, 0.1);
+    transition: all 0.3s ease;
+}
+
+.stat-mini:hover {
+    border-color: rgba(74, 144, 226, 0.3);
+    background: rgba(74, 144, 226, 0.02);
+    transform: translateY(-2px);
+}
+
+.stat-number {
+    font-size: 1.8rem;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Hero Image Section */
+.hero-image-wrapper {
+    position: relative;
+    height: 500px;
+}
+
+.hero-image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.hero-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #4A90E2 0%, #2563eb 100%);
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #4A90E2 0%, #2563eb 100%) !important;
+}
+
+/* Decorative Shapes */
+.decorative-shape {
+    position: absolute;
+    border-radius: 20px;
+    opacity: 0.05;
+    pointer-events: none;
+}
+
+.shape-1 {
+    width: 100px;
+    height: 100px;
+    background: #4A90E2;
+    top: -20px;
+    right: -20px;
+    transform: rotate(45deg);
+}
+
+.shape-2 {
+    width: 120px;
+    height: 120px;
+    border: 2px solid #4A90E2;
+    bottom: -30px;
+    left: -30px;
+}
+
+/* Scroll Indicator */
+.scroll-indicator {
+    animation: bounce 2s infinite;
+    z-index: 10;
+}
+
+.mouse {
+    width: 26px;
+    height: 40px;
+    border: 2px solid #4A90E2;
+    border-radius: 13px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 5px;
+    position: relative;
+}
+
+.scroll-dot {
+    width: 3px;
+    height: 8px;
+    background: #4A90E2;
+    border-radius: 1.5px;
+    animation: scroll-down 1.5s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes scroll-down {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .hero-image-wrapper {
+        height: 400px;
+    }
+    
+    .hero-title {
+        font-size: 2.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .modern-hero {
+        min-height: auto;
+        padding: 3rem 0;
+    }
+    
+    .hero-image-wrapper {
+        height: 300px;
+        margin-top: 2rem;
+    }
+    
+    .hero-content {
+        padding-right: 0;
+    }
+    
+    .row.g-5 {
+        row-gap: 2rem !important;
+    }
+}
+
 /* Glass Morphism Effect */
 .glass-effect {
     background: rgba(74, 144, 226, 0.55);
@@ -20,4 +281,174 @@
     background: rgba(74, 144, 226, 0.55);
     border: 1px solid rgba(255, 255, 255, 0.5);
     box-shadow: 0 8px 32px 0 rgba(74, 144, 226, 0.4);
+}
+
+/* ===== ENHANCED CARD STYLES ===== */
+
+/* TEFA Card Styles - Enhanced */
+.tefa-card {
+    background: white;
+    border-radius: 15px;
+    border: 1px solid rgba(74, 144, 226, 0.15);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    backdrop-filter: blur(2px);
+}
+
+.tefa-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(74, 144, 226, 0.15);
+    border-color: #4A90E2;
+    background: linear-gradient(135deg, #ffffff 0%, rgba(74, 144, 226, 0.02) 100%);
+}
+
+.tefa-logo {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s ease;
+    border-radius: 12px;
+    background: rgba(74, 144, 226, 0.08);
+}
+
+.tefa-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+}
+
+.tefa-logo i {
+    font-size: 3.5rem;
+    color: #4A90E2;
+    transition: transform 0.4s ease;
+}
+
+.tefa-card:hover .tefa-logo {
+    background: rgba(74, 144, 226, 0.15);
+    transform: scale(1.05);
+}
+
+.tefa-card:hover .tefa-logo img,
+.tefa-card:hover .tefa-logo i {
+    transform: scale(1.1);
+}
+
+.tefa-card h4 {
+    color: #1a1a2e;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    font-weight: 600;
+}
+
+.tefa-card p {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Service Card - Enhanced */
+.service-card {
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(74, 144, 226, 0.1) !important;
+    background: white;
+}
+
+.service-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 25px 50px rgba(74, 144, 226, 0.12) !important;
+    border-color: #4A90E2 !important;
+}
+
+.service-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(74, 144, 226, 0.1);
+    transition: all 0.4s ease;
+}
+
+.service-card:hover .service-icon-wrapper {
+    background: rgba(74, 144, 226, 0.15);
+    transform: scale(1.1);
+}
+
+.service-icon {
+    color: #4A90E2;
+    transition: all 0.4s ease;
+}
+
+.service-card:hover .service-icon {
+    transform: scale(1.15) rotate(5deg);
+}
+
+/* Contact Info Card - Enhanced */
+.contact-info-card {
+    transition: all 0.4s ease;
+    border: 1px solid rgba(74, 144, 226, 0.1) !important;
+    background: white !important;
+}
+
+.contact-info-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 12px 30px rgba(74, 144, 226, 0.1) !important;
+    border-color: #4A90E2 !important;
+}
+
+.contact-info-card .bg-primary {
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: linear-gradient(135deg, #4A90E2 0%, #2563eb 100%) !important;
+    box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+}
+
+/* Product Card - Enhanced */
+.product-card {
+    transition: all 0.4s ease;
+    border: 1px solid rgba(74, 144, 226, 0.1) !important;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(74, 144, 226, 0.15) !important;
+    border-color: #4A90E2 !important;
+}
+
+.product-img {
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-img {
+    transform: scale(1.08);
+}
+
+/* Contact Form Card */
+.contact-form-card {
+    transition: all 0.5s ease;
+    border: 1px solid rgba(74, 144, 226, 0.1) !important;
+    background: white;
+}
+
+.contact-form-card:hover {
+    box-shadow: 0 20px 50px rgba(74, 144, 226, 0.12) !important;
+    border-color: #4A90E2 !important;
+}
+
+/* Section Title Decoration */
+.section-title {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #4A90E2 0%, #2563eb 100%);
+    margin: 0 auto;
+    border-radius: 2px;
 }

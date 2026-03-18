@@ -6,128 +6,99 @@
 @section('title', 'Beranda - BLUD SMKN 1 CIAMIS')
 
 @section('content')
-<!-- Hero Carousel -->
-<section class="hero-section position-relative fade-in">
-    <div class="container position-relative">
-        <!-- CAROUSEL DARI DATABASE -->
-        @if($carousels->count() > 0)
-        <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
-            <div class="carousel-indicators">
-                @foreach($carousels as $key => $item)
-                <button type="button" data-bs-target="#heroCarousel"
-                    data-bs-slide-to="{{ $key }}"
-                    class="{{ $key == 0 ? 'active' : '' }}"
-                    aria-current="{{ $key == 0 ? 'true' : 'false' }}"
-                    aria-label="Slide {{ $key + 1 }}"></button>
-                @endforeach
-            </div>
+<!-- Modern Hero Section -->
+<section class="modern-hero position-relative overflow-hidden">
+    <div class="container-xxl py-5">
+        <div class="row align-items-center g-5">
+            <!-- Left Content -->
+            <div class="col-lg-6 order-lg-1" data-aos="fade-right" data-aos-duration="800">
+                <div class="hero-content">
+                    <!-- Accent Badge -->
+                    <div class="d-inline-flex align-items-center gap-2 mb-4">
+                        <span class="badge badge-accent">
+                            <i class="fas fa-check-circle me-1"></i> Terdaftar LSST
+                        </span>
+                    </div>
 
-            <div class="carousel-inner">
-                @foreach($carousels as $key => $item)
-                <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
-                    @if($item->image)
-                    <img src="{{ asset('storage/' . $item->image) }}"
-                        class="d-block w-100"
-                        alt="{{ $item->title }}"
-                        loading="lazy"
-                        style="height: 60vh; object-fit: cover;">
-                    @else
-                    <!-- Fallback jika tidak ada gambar -->
-                    <div class="d-block w-100 bg-primary" style="height: 60vh; display: flex; align-items: center; justify-content: center;">
-                        <div class="text-white text-center">
-                            <i class="fas fa-image fa-4x mb-3"></i>
-                            <h3>{{ $item->title }}</h3>
+                    <!-- Main Heading -->
+                    <h1 class="hero-title text-dark mb-4 fw-bold lh-1">
+                        <span class="text-gradient">SMKN 1 CIAMIS</span><br>
+                        Membangun Generasi Terampil & Berkarakter
+                    </h1>
+
+                    <!-- Description -->
+                    <p class="hero-subtitle text-muted mb-4 fw-500">
+                        Sekolah Menengah Kejuruan Negeri dengan fokus pada Teaching Factory (TEFA) untuk mengasah keterampilan praktis dan kompetensi industri.
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="d-flex flex-wrap gap-3 mb-5">
+                        <a href="#tefa-section" class="btn btn-primary btn-lg btn-hover-lift">
+                            <i class="fas fa-arrow-down me-2"></i> Jelajahi Program
+                        </a>
+                        <a href="#kontak-section" class="btn btn-outline-primary btn-lg btn-hover-lift">
+                            <i class="fas fa-envelope me-2"></i> Hubungi Kami
+                        </a>
+                    </div>
+
+                    <!-- Hero Stats -->
+                    <div class="row g-3">
+                        <div class="col-sm-6 col-md-4">
+                            <div class="stat-mini">
+                                <div class="stat-number fw-bold text-primary">{{ $stats['total_tefas'] ?? 7 }}</div>
+                                <div class="stat-label text-muted small">Program Keahlian</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <div class="stat-mini">
+                                <div class="stat-number fw-bold text-primary">{{ $stats['total_services'] ?? 15 }}+</div>
+                                <div class="stat-label text-muted small">Layanan Unggulan</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <div class="stat-mini">
+                                <div class="stat-number fw-bold text-primary">95%</div>
+                                <div class="stat-label text-muted small">Tingkat Kelulusan</div>
+                            </div>
                         </div>
                     </div>
-                    @endif
+                </div>
+            </div>
 
-                    <!-- Caption hanya untuk desktop -->
-                    @if($item->title || $item->description)
-                    <div class="carousel-caption d-none d-md-block">
-                        @if($item->title)
-                        <h2 class="h3 fw-bold text-white mb-2">{{ $item->title }}</h2>
-                        @endif
-
-                        @if($item->description)
-                        <p class="small text-light mb-3 opacity-90">{{ Str::limit($item->description, 100) }}</p>
-                        @endif
-
-                        @if($item->button_text && $item->button_url)
-                        <a href="{{ $item->button_url }}" class="btn btn-primary btn-sm px-3 py-2">
-                            <i class="fas fa-arrow-right me-2"></i> {{ $item->button_text }}
-                        </a>
+            <!-- Right Image -->
+            <div class="col-lg-6 order-lg-2" data-aos="fade-left" data-aos-duration="800">
+                <div class="hero-image-wrapper position-relative">
+                    <!-- Main Image -->
+                    <div class="hero-image-container">
+                        @if($carousels->count() > 0 && $carousels->first()->image)
+                            <img src="{{ asset('storage/' . $carousels->first()->image) }}"
+                                alt="SMKN 1 CIAMIS"
+                                class="img-fluid hero-image rounded-4 shadow-lg"
+                                loading="lazy">
                         @else
-                        <a href="#produk-section" class="btn btn-primary btn-sm px-3 py-2">
-                            <i class="fas fa-shopping-bag me-2"></i> Lihat Layanan
-                        </a>
+                            <div class="hero-image-placeholder rounded-4 shadow-lg">
+                                <div class="d-flex align-items-center justify-content-center h-100 bg-gradient-primary">
+                                    <div class="text-center">
+                                        <i class="fas fa-school fa-5x text-white mb-3"></i>
+                                        <h3 class="text-white">SMKN 1 CIAMIS</h3>
+                                    </div>
+                                </div>
+                            </div>
                         @endif
                     </div>
-                    @endif
-                </div>
-                @endforeach
-            </div>
 
-            @if($carousels->count() > 1)
-            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-            @endif
-
-            <!-- Badge info rasio carousel -->
-            <div class="position-absolute bottom-0 end-0 m-3">
-                <span class="badge bg-dark bg-opacity-50 px-2 py-1" style="font-size: 0.7rem;">
-                    <i class="fas fa-info-circle me-1"></i> Rasio: 16:9
-                </span>
-            </div>
-        </div>
-        @else
-        <!-- Fallback jika tidak ada carousel di database -->
-        <div class="text-center py-5" style="background: #E3F2FD; border-radius: 20px;">
-            <img src="{{ asset('assets/teachingfactorysmea.png') }}"
-                alt="TEFA SMKN 1 Ciamis"
-                class="img-fluid mb-4"
-                style="max-height: 300px;">
-            <h1 class="display-5 fw-bold text-primary">Selamat Datang di BLUD SMKN 1 Ciamis</h1>
-            <p class="lead">Teaching Factory untuk mengasah keterampilan siswa</p>
-            <a href="#tefa-section" class="btn btn-primary btn-lg mt-3">
-                <i class="fas fa-arrow-down me-2"></i> Jelajahi TEFA
-            </a>
-        </div>
-        @endif
-
-        <!-- Hero Stats - DINAMIS DARI DATABASE! -->
-        <div class="row mt-5 pt-3 justify-content-center" data-aos="fade-up" data-aos-delay="300">
-            <div class="col-md-10">
-                <div class="row text-center justify-content-center">
-                    <!-- TEFA Program Keahlian -->
-                    <div class="col-md-4 mb-4">
-                        <div class="stat-card p-3 bg-white rounded-3 shadow-sm">
-                            <div class="stat-icon mb-2">
-                                <i class="fas fa-graduation-cap fa-2x text-primary"></i>
-                            </div>
-                            <h3 class="fw-bold mb-1">{{ $stats['total_tefas'] ?? 0 }}</h3>
-                            <p class="text-muted mb-0">TEFA Program Keahlian</p>
-                        </div>
-                    </div>
-
-                    <!-- Layanan -->
-                    <div class="col-md-4 mb-4">
-                        <div class="stat-card p-3 bg-white rounded-3 shadow-sm">
-                            <div class="stat-icon mb-2">
-                                <i class="fas fa-handshake fa-2x text-primary"></i>
-                            </div>
-                            <h3 class="fw-bold mb-1">{{ $stats['total_services'] ?? 0 }}+</h3>
-                            <p class="text-muted mb-0">Layanan</p>
-                        </div>
-                    </div>
-
+                    <!-- Decorative Elements -->
+                    <div class="decorative-shape shape-1"></div>
+                    <div class="decorative-shape shape-2"></div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator position-absolute bottom-0 start-50 translate-middle-x mb-3">
+        <div class="mouse">
+            <span class="scroll-dot"></span>
         </div>
     </div>
 </section>

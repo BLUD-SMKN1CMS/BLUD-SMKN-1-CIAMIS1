@@ -7,12 +7,10 @@
 
 @section('content')
 <!-- Dynamic Modern Hero Section with Background Carousel -->
-@if($carousels->count() > 0)
-    @php
-        $firstCarousel = $carousels->first();
-        $heroBgImage = $firstCarousel->image ? asset('storage/' . $firstCarousel->image) : '';
-    @endphp
-@endif
+@php
+    $firstCarousel = $carousels->count() > 0 ? $carousels->first() : null;
+    $heroBgImage = $firstCarousel && $firstCarousel->image ? asset('storage/' . $firstCarousel->image) : '';
+@endphp
 
 <section class="modern-hero-dynamic position-relative overflow-hidden" 
     @if($heroBgImage) style="background-image: url('{{ $heroBgImage }}'); background-size: cover; background-position: center;" @endif>

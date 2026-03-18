@@ -23,36 +23,22 @@
         <div class="hero-left-content">
             <!-- Main Title -->
             <h1 class="hero-main-title">
-                @if($carousels->count() > 0 && $firstCarousel->title)
-                    {{ $firstCarousel->title }}
-                @else
-                    selamat datang di smkn1 ciamis
-                @endif
+                {{ $landingSettings['hero_title'] ?? 'selamat datang di smkn1 ciamis' }}
             </h1>
 
             <!-- Description -->
             <p class="hero-description">
-                @if($carousels->count() > 0 && $firstCarousel->description)
-                    {{ $firstCarousel->description }}
-                @else
-                    ini dia smk terkeren
-                @endif
+                {{ $landingSettings['hero_description'] ?? 'ini dia smk terkeren' }}
             </p>
 
             <!-- CTA Buttons -->
             <div class="hero-buttons">
-                @if($carousels->count() > 0 && $firstCarousel->button_text && $firstCarousel->button_url)
-                    <a href="{{ $firstCarousel->button_url }}" class="btn-hero btn-primary-hero">
-                        <i class="fas fa-bolt"></i> {{ $firstCarousel->button_text }}
-                    </a>
-                @else
-                    <a href="#tefa-section" class="btn-hero btn-primary-hero">
-                        <i class="fas fa-bolt"></i> Mulai Sekarang
-                    </a>
-                @endif
+                <a href="{{ $landingSettings['primary_button_url'] ?? '#tefa-section' }}" class="btn-hero btn-primary-hero">
+                    <i class="fas fa-bolt"></i> {{ $landingSettings['primary_button_text'] ?? 'Mulai Sekarang' }}
+                </a>
                 
-                <a href="#kontak-section" class="btn-hero btn-secondary-hero">
-                    <i class="fas fa-info-circle"></i> Pelajari Lebih Lanjut
+                <a href="{{ $landingSettings['secondary_button_url'] ?? '#kontak-section' }}" class="btn-hero btn-secondary-hero">
+                    <i class="fas fa-info-circle"></i> {{ $landingSettings['secondary_button_text'] ?? 'Pelajari Lebih Lanjut' }}
                 </a>
             </div>
         </div>

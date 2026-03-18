@@ -1134,40 +1134,51 @@
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 
     <script>
-        // Initialize AOS
-        AOS.init({
-            duration: 800,
-            once: true,
-            offset: 100,
-            easing: 'ease-in-out'
+        // Initialize AOS safely so loader logic still runs even if CDN fails.
+        if (typeof AOS !== 'undefined' && AOS && typeof AOS.init === 'function') {
+            AOS.init({
+                duration: 800,
+                once: true,
+                offset: 100,
+                easing: 'ease-in-out'
+            });
+        }
+
+        function hidePageLoader() {
+            const loader = document.getElementById('pageLoader');
+            if (!loader) return;
+
+            loader.style.opacity = '0';
+            loader.style.visibility = 'hidden';
+
+            // Animate section titles
+            document.querySelectorAll('.section-title').forEach(title => {
+                title.classList.add('animate');
+            });
+
+            // Add fade-in class to elements
+            document.querySelectorAll('.fade-in').forEach(el => {
+                el.style.animationDelay = '0.3s';
+            });
+        }
+
+        // Page loader: jangan hanya bergantung ke window.load agar tidak stuck
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(hidePageLoader, 150);
+            initializeCarousel();
         });
 
-        // Page loader
         window.addEventListener('load', function() {
-            setTimeout(function() {
-                const loader = document.getElementById('pageLoader');
-                loader.style.opacity = '0';
-                loader.style.visibility = 'hidden';
-
-                // Animate section titles
-                document.querySelectorAll('.section-title').forEach(title => {
-                    title.classList.add('animate');
-                });
-
-                // Add fade-in class to elements
-                document.querySelectorAll('.fade-in').forEach(el => {
-                    el.style.animationDelay = '0.3s';
-                });
-
-                // Initialize carousel with auto play - FIXED
-                initializeCarousel();
-            }, 500);
+            setTimeout(hidePageLoader, 350);
         });
+
+        // Safety fallback: paksa hide loader jika ada resource yang lama/hang
+        setTimeout(hidePageLoader, 4000);
 
         // Carousel initialization function - FIXED AUTO SLIDE
         function initializeCarousel() {
             const carouselElement = document.getElementById('heroCarousel');
-            if (carouselElement) {
+            if (carouselElement && typeof bootstrap !== 'undefined' && bootstrap && bootstrap.Carousel) {
                 // Initialize Bootstrap Carousel dengan auto play YANG BENAR
                 const carousel = new bootstrap.Carousel(carouselElement, {
                     interval: 5000, // 5 detik
@@ -1205,7 +1216,7 @@
         // Alternatif: Bootstrap 5 Carousel dengan auto-play SIMPLE
         document.addEventListener('DOMContentLoaded', function() {
             const carouselElement = document.getElementById('heroCarousel');
-            if (carouselElement) {
+            if (carouselElement && typeof bootstrap !== 'undefined' && bootstrap && bootstrap.Carousel) {
                 // Cara paling sederhana untuk Bootstrap 5
                 const carousel = new bootstrap.Carousel(carouselElement, {
                     interval: 5000,

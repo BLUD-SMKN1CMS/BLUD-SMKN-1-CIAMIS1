@@ -802,6 +802,7 @@
                 </li>
             </ul>
 
+            @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->isSuperAdmin())
             <!-- Divider -->
             <div class="sidebar-divider"></div>
             <div class="sidebar-heading">Komunikasi</div>
@@ -822,6 +823,7 @@
                     </a>
                 </li>
             </ul>
+            @endif
 
             <!-- Divider -->
             <div class="sidebar-divider"></div>

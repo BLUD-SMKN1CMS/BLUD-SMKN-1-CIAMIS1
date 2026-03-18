@@ -43,7 +43,6 @@
                                 <tr>
                                     <th width="60">#</th>
                                     <th width="100">Preview</th>
-                                    <th>Judul</th>
                                     <th>Status</th>
                                     <th>Urutan</th>
                                     <th>Tanggal</th>
@@ -58,7 +57,7 @@
                                         <td>
                                             @if ($carousel->image)
                                                 <img src="{{ asset('storage/' . $carousel->image) }}"
-                                                    alt="{{ $carousel->title }}" class="img-thumbnail"
+                                                    alt="Carousel {{ $carousel->id }}" class="img-thumbnail"
                                                     style="width: 80px; height: 45px; object-fit: cover; border-radius: 4px;"
                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                                 <div class="bg-light text-center d-none align-items-center justify-content-center"
@@ -71,10 +70,6 @@
                                                     <i class="fas fa-image text-muted"></i>
                                                 </div>
                                             @endif
-                                        </td>
-                                        <td>
-                                            <strong>{{ $carousel->title }}</strong><br>
-                                            <small class="text-muted">{{ Str::limit($carousel->description, 50) }}</small>
                                         </td>
                                         <td>
                                             <span

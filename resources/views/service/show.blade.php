@@ -26,9 +26,6 @@
                 </p>
 
                 <div class="d-flex gap-3 flex-wrap">
-                    <a href="#booking-form" class="btn btn-light btn-lg px-4 py-3" style="border-radius: 50px; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                        <i class="fab fa-whatsapp me-2"></i>Tanya via WhatsApp
-                    </a>
                     <a href="#service-details" class="btn btn-outline-light btn-lg px-4 py-3" style="border-radius: 50px; font-weight: 600; border-width: 2px;">
                         <i class="fas fa-info-circle me-2"></i>Detail Layanan
                     </a>
@@ -68,7 +65,7 @@
 <!-- Service Details -->
 <section id="service-details" class="py-5 mt-5">
     <div class="container">
-        <div class="row">
+        <div class="row g-4">
             <div class="col-lg-8">
                 <div class="service-content" style="background: white; border-radius: 20px; padding: 40px; box-shadow: 0 5px 30px rgba(0,0,0,0.08);">
                     <h2 class="fw-bold mb-4" style="color: #2d3748;">Deskripsi Layanan</h2>
@@ -81,25 +78,39 @@
                     <h3 class="fw-bold mb-4" style="color: #2d3748;">Fasilitas & Keunggulan</h3>
                     <div class="row g-3">
                         @php
-                        $features = [
-                        ['icon' => 'fa-shield-alt', 'title' => 'Aman & Terpercaya', 'desc' => 'Dijamin keamanan dan kualitasnya'],
-                        ['icon' => 'fa-headset', 'title' => 'Dukungan 24/7', 'desc' => 'Tim support siap membantu kapan saja'],
-                        ['icon' => 'fa-tools', 'title' => 'Perawatan Rutin', 'desc' => 'Fasilitas terawat dengan baik'],
-                        ['icon' => 'fa-dollar-sign', 'title' => 'Harga Kompetitif', 'desc' => 'Harga terjangkau dan transparan'],
-                        ['icon' => 'fa-clock', 'title' => 'Fleksibel', 'desc' => 'Waktu penyewaan yang fleksibel'],
-                        ['icon' => 'fa-certificate', 'title' => 'Bersertifikat', 'desc' => 'Standar kualitas terjamin'],
-                        ];
+                        $featureLines = collect(preg_split('/\r\n|\r|\n/', (string) $service->facilities))
+                            ->map(fn($line) => trim($line))
+                            ->filter()
+                            ->values();
+
+                        $defaultFeatures = collect([
+                            ['title' => 'Aman & Terpercaya', 'desc' => 'Dijamin keamanan dan kualitasnya'],
+                            ['title' => 'Dukungan 24/7', 'desc' => 'Tim support siap membantu kapan saja'],
+                            ['title' => 'Perawatan Rutin', 'desc' => 'Fasilitas terawat dengan baik'],
+                        ]);
+
+                        $parsedFeatures = $featureLines->map(function ($line) {
+                            $parts = array_map('trim', explode('|', $line, 2));
+                            return [
+                                'title' => $parts[0] ?? $line,
+                                'desc' => $parts[1] ?? '',
+                            ];
+                        });
+
+                        $features = $parsedFeatures->isNotEmpty() ? $parsedFeatures : $defaultFeatures;
                         @endphp
 
                         @foreach($features as $feature)
                         <div class="col-md-6">
                             <div class="feature-item d-flex align-items-start p-3" style="border-radius: 12px; transition: all 0.3s ease;" onmouseover="this.style.background='#f7fafc';" onmouseout="this.style.background='transparent';">
                                 <div class="feature-icon me-3" style="width: 50px; height: 50px; background: #4A90E2; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                    <i class="fas {{ $feature['icon'] }}" style="color: white; font-size: 1.2rem;"></i>
+                                    <i class="fas fa-check" style="color: white; font-size: 1.2rem;"></i>
                                 </div>
                                 <div>
                                     <h5 class="fw-bold mb-1" style="color: #2d3748;">{{ $feature['title'] }}</h5>
-                                    <p class="mb-0" style="color: #718096; font-size: 0.95rem;">{{ $feature['desc'] }}</p>
+                                    @if(!empty($feature['desc']))
+                                        <p class="mb-0" style="color: #718096; font-size: 0.95rem;">{{ $feature['desc'] }}</p>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -109,49 +120,44 @@
                     <hr class="my-5" style="opacity: 0.1;">
 
                     <h3 class="fw-bold mb-4" style="color: #2d3748;">Syarat & Ketentuan</h3>
+                    @php
+                    $terms = collect(preg_split('/\r\n|\r|\n/', (string) $service->terms_conditions))
+                        ->map(fn($line) => trim($line))
+                        ->filter()
+                        ->values();
+
+                    if ($terms->isEmpty()) {
+                        $terms = collect([
+                            'Melakukan pemesanan minimal 3 hari sebelumnya',
+                            'Membayar DP minimal 30% dari total biaya',
+                            'Menyertakan identitas diri yang valid (KTP/SIM)',
+                        ]);
+                    }
+                    @endphp
                     <ul class="list-unstyled" style="font-size: 1.05rem; color: #4a5568;">
-                        <li class="mb-3"><i class="fas fa-check-circle me-2" style="color: #48bb78;"></i> Melakukan pemesanan minimal 3 hari sebelumnya</li>
-                        <li class="mb-3"><i class="fas fa-check-circle me-2" style="color: #48bb78;"></i> Membayar DP minimal 30% dari total biaya</li>
-                        <li class="mb-3"><i class="fas fa-check-circle me-2" style="color: #48bb78;"></i> Menyertakan identitas diri yang valid (KTP/SIM)</li>
-                        <li class="mb-3"><i class="fas fa-check-circle me-2" style="color: #48bb78;"></i> Bertanggung jawab atas kerusakan yang terjadi</li>
-                        <li class="mb-3"><i class="fas fa-check-circle me-2" style="color: #48bb78;"></i> Mengembalikan fasilitas sesuai waktu yang disepakati</li>
+                        @foreach($terms as $term)
+                            <li class="mb-3"><i class="fas fa-check-circle me-2" style="color: #48bb78;"></i> {{ $term }}</li>
+                        @endforeach
                     </ul>
                 </div>
             </div>
 
-            <!-- Booking Form Sidebar -->
             <div class="col-lg-4">
-                <div id="booking-form" class="booking-sidebar" style="background: white; border-radius: 20px; padding: 30px; box-shadow: 0 5px 30px rgba(0,0,0,0.08); position: sticky; top: 100px;">
-                    <h4 class="fw-bold mb-4" style="color: #2d3748;">Formulir Pertanyaan</h4>
+                <div class="service-content" style="background: white; border-radius: 20px; padding: 20px; box-shadow: 0 5px 30px rgba(0,0,0,0.08); position: sticky; top: 100px;">
+                    <h3 class="fw-bold mb-3" style="color: #2d3748;">Foto 360 Derajat</h3>
 
-                    <form id="inquiryForm">
-                        <input type="hidden" id="serviceName" value="{{ $service->name }}">
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold" style="color: #4a5568;">Nama Lengkap</label>
-                            <input type="text" name="customer_name" class="form-control" required style="border-radius: 10px; padding: 12px; border: 2px solid #e2e8f0;" placeholder="Masukkan nama lengkap">
-                        </div>
-
-
-
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold" style="color: #4a5568;">No. Telepon</label>
-                            <input type="tel" name="customer_phone" class="form-control" required style="border-radius: 10px; padding: 12px; border: 2px solid #e2e8f0;" placeholder="08xxxxxxxxxx">
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold" style="color: #4a5568;">Pertanyaan (Opsional)</label>
-                            <textarea name="question" class="form-control" rows="3" style="border-radius: 10px; padding: 12px; border: 2px solid #e2e8f0;" placeholder="Tulis pertanyaan Anda terkait layanan ini"></textarea>
-                        </div>
-
-                        <button type="button" onclick="sendToWhatsapp(event)" class="btn btn-success w-100 py-3" style="background: #25D366; border: none; border-radius: 12px; font-weight: 600; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);">
-                            <i class="fab fa-whatsapp me-2"></i>Kirim Pertanyaan via WhatsApp
-                        </button>
-
-                        <p class="text-center mt-3 mb-0" style="font-size: 0.85rem; color: #a0aec0;">
-                            <i class="fas fa-check-circle me-1"></i> WhatsApp digunakan untuk konsultasi/pertanyaan
+                    @if($service->panorama_image_url)
+                        <div id="panorama-viewer" style="width: 100%; height: 360px; border-radius: 14px; overflow: hidden;"></div>
+                        <p class="small text-muted mt-3 mb-0">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Geser gambar untuk melihat sudut 360°.
                         </p>
-                    </form>
+                    @else
+                        <div class="d-flex flex-column align-items-center justify-content-center text-center" style="height: 360px; border: 1px dashed #cbd5e0; border-radius: 14px; background: #f8fafc;">
+                            <i class="fas fa-panorama fa-2x mb-2" style="color: #94a3b8;"></i>
+                            <p class="mb-0 text-muted">Foto 360 belum tersedia.</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -208,33 +214,44 @@
     </div>
 </section>
 
+@if($service->panorama_image_url)
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 <script>
-    function sendToWhatsapp(e) {
-        e.preventDefault();
-
-        const serviceName = document.getElementById('serviceName').value;
-        const name = document.querySelector('input[name="customer_name"]').value;
-        const phone = document.querySelector('input[name="customer_phone"]').value;
-        const question = document.querySelector('textarea[name="question"]').value;
-
-        let message = `*Halo Admin BLUD SMKN 1 Ciamis* 👋\n\n`;
-        message += `Saya ingin bertanya terkait layanan berikut:\n`;
-        message += `🏫 *Layanan:* ${serviceName}\n\n`;
-        message += `📋 *Data Penanya:*\n`;
-        message += `👤 Nama: ${name}\n`;
-        message += `📱 No. HP: ${phone}\n`;
-
-        if (question) {
-            message += `\n❓ *Pertanyaan:*\n${question}\n`;
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize panorama viewer using uploaded 360 image.
+        const viewerContainer = document.getElementById('panorama-viewer');
+        if (viewerContainer && window.pannellum) {
+            try {
+                pannellum.viewer('panorama-viewer', {
+                    type: 'equirectangular',
+                    panorama: "{{ $service->panorama_image_url }}",
+                    autoLoad: true,
+                    showZoomCtrl: true,
+                    showFullscreenCtrl: true,
+                    compass: false,
+                    hfov: 110,
+                });
+            } catch (error) {
+                viewerContainer.innerHTML = `<img src="{{ $service->panorama_image_url }}" alt="Foto 360" style="width:100%;height:100%;object-fit:cover;">`;
+            }
+        } else if (viewerContainer) {
+            viewerContainer.innerHTML = `<img src="{{ $service->panorama_image_url }}" alt="Foto 360" style="width:100%;height:100%;object-fit:cover;">`;
         }
+    });
+</script>
+@endif
 
-        message += `\nMohon informasinya. Terima kasih!`;
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const panoramaHint = document.querySelector('#panorama-viewer')?.nextElementSibling;
+        if (panoramaHint && !window.pannellum) {
+            panoramaHint.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i>Viewer 360 tidak termuat, menampilkan gambar biasa.';
+        }
+    });
+</script>
 
-        const encodedMessage = encodeURIComponent(message);
-        const adminPhone = "6287790984032";
-        window.open(`https://wa.me/${adminPhone}?text=${encodedMessage}`, '_blank');
-    }
-
+<script>
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {

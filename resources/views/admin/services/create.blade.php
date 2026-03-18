@@ -16,19 +16,19 @@
             <h6 class="m-0 font-weight-bold text-primary">Form Tambah Layanan</h6>
         </div>
         <div class="card-body">
-            <form action="{{ route($routePrefix . '.services.store') }}" method="POST">
+            <form action="{{ route($routePrefix . '.services.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="form-group">
-                    <label>Jurusan TEFA <span class="text-danger">*</span></label>
+                    <label>Jurusan TEFA (Opsional)</label>
                     @if(auth('admin')->user()?->isAdminTefa())
                     @php $assignedTefa = $tefas->first(); @endphp
                     <input type="text" class="form-control" value="{{ $assignedTefa?->name }}" readonly>
                     <input type="hidden" name="tefa_id" value="{{ old('tefa_id', $assignedTefa?->id) }}">
                     <small class="text-muted">Jurusan terisi otomatis sesuai akun admin Anda.</small>
                     @else
-                    <select name="tefa_id" id="tefa_id" class="form-control @error('tefa_id') is-invalid @enderror" required>
-                        <option value="">-- Pilih Jurusan --</option>
+                    <select name="tefa_id" id="tefa_id" class="form-control @error('tefa_id') is-invalid @enderror">
+                        <option value="">-- Tanpa Jurusan TEFA --</option>
                         @foreach($tefas as $tefa)
                         <option value="{{ $tefa->id }}" {{ old('tefa_id') == $tefa->id ? 'selected' : '' }}>{{ $tefa->name }}</option>
                         @endforeach
@@ -54,6 +54,68 @@
                         placeholder="Deskripsi lengkap layanan...">{{ old('description') }}</textarea>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label>Harga per Jam</label>
+                        <input type="number" step="0.01" min="0" name="price_per_hour" class="form-control @error('price_per_hour') is-invalid @enderror"
+                            value="{{ old('price_per_hour') }}" placeholder="Contoh: 50000">
+                        @error('price_per_hour')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>Harga per Hari</label>
+                        <input type="number" step="0.01" min="0" name="price_per_day" class="form-control @error('price_per_day') is-invalid @enderror"
+                            value="{{ old('price_per_day') }}" placeholder="Contoh: 300000">
+                        @error('price_per_day')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label>Kapasitas</label>
+                        <input type="number" min="0" name="capacity" class="form-control @error('capacity') is-invalid @enderror"
+                            value="{{ old('capacity') }}" placeholder="Contoh: 100">
+                        @error('capacity')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>Satuan</label>
+                        <input type="text" name="unit" class="form-control @error('unit') is-invalid @enderror"
+                            value="{{ old('unit') }}" placeholder="Contoh: orang / unit / kursi">
+                        @error('unit')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Gambar Utama Layanan (Opsional)</label>
+                    <input type="file" name="image" class="form-control @error('image') is-invalid @enderror"
+                        accept="image/*">
+                    @error('image')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <small class="text-muted">Gambar utama layanan untuk kartu/listing layanan.</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Fasilitas & Keunggulan</label>
+                    <textarea name="facilities" class="form-control" rows="5"
+                        placeholder="Satu baris satu item. Format opsional: Judul|Deskripsi&#10;Contoh:&#10;Aman & Terpercaya|Dijamin keamanan dan kualitasnya&#10;Dukungan 24/7|Tim support siap membantu kapan saja">{{ old('facilities') }}</textarea>
+                    <small class="text-muted">Isi per baris agar tampil dinamis di halaman detail layanan.</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Syarat & Ketentuan</label>
+                    <textarea name="terms_conditions" class="form-control" rows="5"
+                        placeholder="Satu baris satu syarat.&#10;Contoh:&#10;Melakukan pemesanan minimal 3 hari sebelumnya&#10;Membayar DP minimal 30% dari total biaya">{{ old('terms_conditions') }}</textarea>
+                    <small class="text-muted">Isi per baris agar tampil dinamis di halaman detail layanan.</small>
+                </div>
+
                 <div class="form-group">
                     <label>Pilih Icon</label>
                     <div class="input-group">
@@ -73,6 +135,16 @@
                             <p class="mb-0 small text-muted" id="iconName">fas fa-concierge-bell</p>
                         </div>
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Foto 360 Derajat (Opsional)</label>
+                    <input type="file" name="panorama_image" class="form-control @error('panorama_image') is-invalid @enderror"
+                        accept="image/*">
+                    @error('panorama_image')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <small class="text-muted">Upload foto panorama/equirectangular agar tampil sebagai viewer 360 di detail layanan.</small>
                 </div>
 
                 <div class="form-group">

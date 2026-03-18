@@ -14,8 +14,14 @@ class Service extends Model
         'name',
         'slug',
         'description',
+        'facilities',
+        'terms_conditions',
+        'price_per_hour',
+        'price_per_day',
         'capacity',
+        'unit',
         'image',
+        'panorama_image',
         'icon',
         'status',
         'tefa_id',
@@ -53,5 +59,10 @@ class Service extends Model
     public function getImageUrlAttribute()
     {
         return $this->image ? asset('storage/' . $this->image) : asset('images/default-service.jpg');
+    }
+
+    public function getPanoramaImageUrlAttribute()
+    {
+        return $this->panorama_image ? asset('storage/' . $this->panorama_image) : null;
     }
 }

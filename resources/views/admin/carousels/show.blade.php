@@ -26,49 +26,16 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="font-weight-bold">Judul</h6>
-                            <p>{{ $carousel->title }}</p>
-                        </div>
-                        <div class="col-md-3">
                             <h6 class="font-weight-bold">Status</h6>
                             <span class="badge bg-{{ $carousel->status === 'active' ? 'success' : 'secondary' }}">
                                 {{ $carousel->status === 'active' ? 'Aktif' : 'Nonaktif' }}
                             </span>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <h6 class="font-weight-bold">Urutan</h6>
                             <span class="badge bg-info">{{ $carousel->order }}</span>
                         </div>
                     </div>
-
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <h6 class="font-weight-bold">Deskripsi</h6>
-                            <p>{{ $carousel->description ?? 'Tidak ada deskripsi' }}</p>
-                        </div>
-                    </div>
-
-                    @if($carousel->button_text || $carousel->button_url)
-                    <div class="row mt-3">
-                        <div class="col-md-6">
-                            <h6 class="font-weight-bold">Teks Tombol</h6>
-                            <p>{{ $carousel->button_text ?? '-' }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <h6 class="font-weight-bold">URL Tombol</h6>
-                            <p>
-                                @if($carousel->button_url)
-                                    <a href="{{ $carousel->button_url }}" target="_blank" class="text-decoration-none">
-                                        {{ $carousel->button_url }}
-                                        <i class="fas fa-external-link-alt ms-1"></i>
-                                    </a>
-                                @else
-                                    -
-                                @endif
-                            </p>
-                        </div>
-                    </div>
-                    @endif
 
                     <div class="row mt-3">
                         <div class="col-md-6">
@@ -95,7 +62,7 @@
                     @if($carousel->image)
                         <div class="ratio ratio-16x9 mb-3">
                             <img src="{{ asset('storage/' . $carousel->image) }}" 
-                                 alt="{{ $carousel->title }}" 
+                                 alt="Carousel {{ $carousel->id }}" 
                                  class="img-fluid rounded" 
                                  style="object-fit: cover;">
                         </div>
@@ -167,7 +134,7 @@
                     @if($carousel->image)
                         <img src="{{ asset('storage/' . $carousel->image) }}" 
                              class="d-block w-100" 
-                             alt="{{ $carousel->title }}" 
+                             alt="Carousel {{ $carousel->id }}" 
                              style="height: 400px; object-fit: cover;">
                     @else
                         <div class="bg-dark text-white text-center py-5" style="height: 400px;">
@@ -177,15 +144,8 @@
                     @endif
                     
                     <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-4 rounded">
-                        <h5 class="text-white">{{ $carousel->title }}</h5>
-                        @if($carousel->description)
-                            <p class="text-light">{{ Str::limit($carousel->description, 100) }}</p>
-                        @endif
-                        @if($carousel->button_text && $carousel->button_url)
-                            <a href="{{ $carousel->button_url }}" class="btn btn-primary btn-sm">
-                                {{ $carousel->button_text }}
-                            </a>
-                        @endif
+                        <h5 class="text-white">Preview gambar carousel</h5>
+                        <p class="text-light mb-0">Teks hero diatur melalui menu Settings.</p>
                     </div>
                 </div>
             </div>

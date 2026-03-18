@@ -83,6 +83,7 @@
             </div>
         </div>
 
+        @if(Route::has($routePrefix . '.contacts.index'))
         <!-- Pesan Masuk -->
         <div class="col-xl-4 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 py-2">
@@ -105,6 +106,7 @@
                 </div>
             </div>
         </div>
+        @endif
 
     </div>
 
@@ -193,6 +195,7 @@
 
     </div>
 
+    @if(Route::has($routePrefix . '.contacts.index'))
     <!-- Pesan Masuk Terbaru -->
     <div class="row">
         <div class="col-12 mb-4">
@@ -233,6 +236,7 @@
             </div>
         </div>
     </div>
+    @endif
 
 </div>
 @endsection

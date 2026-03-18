@@ -11,25 +11,27 @@
         </a>
     </div>
 
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Edit Data Layanan: {{ $service->name }}</h6>
-        </div>
-        <div class="card-body">
-            <form action="{{ route($routePrefix . '.services.update', $service->id) }}" method="POST">
-                @csrf
-                @method('PUT')
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Edit Data Layanan: {{ $service->name }}</h6>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route($routePrefix . '.services.update', $service->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
 
                 <div class="form-group">
-                    <label>Jurusan TEFA <span class="text-danger">*</span></label>
+                    <label>Jurusan TEFA (Opsional)</label>
                     @if(auth('admin')->user()?->isAdminTefa())
                     @php $assignedTefa = $tefas->first(); @endphp
                     <input type="text" class="form-control" value="{{ $assignedTefa?->name }}" readonly>
                     <input type="hidden" name="tefa_id" value="{{ old('tefa_id', $service->tefa_id) }}">
                     <small class="text-muted">Jurusan terisi otomatis sesuai akun admin Anda.</small>
                     @else
-                    <select name="tefa_id" id="tefa_id" class="form-control @error('tefa_id') is-invalid @enderror" required>
-                        <option value="">-- Pilih Jurusan --</option>
+                    <select name="tefa_id" id="tefa_id" class="form-control @error('tefa_id') is-invalid @enderror">
+                        <option value="">-- Tanpa Jurusan TEFA --</option>
                         @foreach($tefas as $tefa)
                         <option value="{{ $tefa->id }}" {{ old('tefa_id', $service->tefa_id) == $tefa->id ? 'selected' : '' }}>{{ $tefa->name }}</option>
                         @endforeach
@@ -54,6 +56,73 @@
                     <textarea name="description" class="form-control" rows="3">{{ old('description', $service->description) }}</textarea>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label>Harga per Jam</label>
+                        <input type="number" step="0.01" min="0" name="price_per_hour" class="form-control @error('price_per_hour') is-invalid @enderror"
+                            value="{{ old('price_per_hour', $service->price_per_hour) }}" placeholder="Contoh: 50000">
+                        @error('price_per_hour')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>Harga per Hari</label>
+                        <input type="number" step="0.01" min="0" name="price_per_day" class="form-control @error('price_per_day') is-invalid @enderror"
+                            value="{{ old('price_per_day', $service->price_per_day) }}" placeholder="Contoh: 300000">
+                        @error('price_per_day')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label>Kapasitas</label>
+                        <input type="number" min="0" name="capacity" class="form-control @error('capacity') is-invalid @enderror"
+                            value="{{ old('capacity', $service->capacity) }}" placeholder="Contoh: 100">
+                        @error('capacity')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label>Satuan</label>
+                        <input type="text" name="unit" class="form-control @error('unit') is-invalid @enderror"
+                            value="{{ old('unit', $service->unit) }}" placeholder="Contoh: orang / unit / kursi">
+                        @error('unit')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Gambar Utama Layanan (Opsional)</label>
+                    @if($service->image_url)
+                    <div class="mb-2">
+                        <img src="{{ $service->image_url }}" alt="Gambar layanan {{ $service->name }}" class="img-fluid rounded border" style="max-height: 180px; object-fit: cover;">
+                    </div>
+                    @endif
+                    <input type="file" name="image" class="form-control @error('image') is-invalid @enderror"
+                        accept="image/*">
+                    @error('image')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <small class="text-muted">Upload file baru untuk mengganti gambar utama layanan.</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Fasilitas & Keunggulan</label>
+                    <textarea name="facilities" class="form-control" rows="5"
+                        placeholder="Satu baris satu item. Format opsional: Judul|Deskripsi">{{ old('facilities', $service->facilities) }}</textarea>
+                    <small class="text-muted">Contoh baris: Aman & Terpercaya|Dijamin keamanan dan kualitasnya</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Syarat & Ketentuan</label>
+                    <textarea name="terms_conditions" class="form-control" rows="5"
+                        placeholder="Satu baris satu syarat">{{ old('terms_conditions', $service->terms_conditions) }}</textarea>
+                    <small class="text-muted">Contoh baris: Melakukan pemesanan minimal 3 hari sebelumnya</small>
+                </div>
+
                 <div class="form-group">
                     <label>Pilih Icon</label>
                     <div class="input-group">
@@ -75,6 +144,16 @@
                     </div>
                 </div>
 
+                        <div class="form-group">
+                            <label>Foto 360 Derajat (Opsional)</label>
+                            <input type="file" id="panoramaInput" name="panorama_image" class="form-control @error('panorama_image') is-invalid @enderror"
+                                accept="image/*">
+                            @error('panorama_image')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="text-muted">Upload file baru untuk mengganti foto 360 saat ini.</small>
+                        </div>
+
                 <div class="form-group">
                     <label>Status</label>
                     <select name="status" class="form-control">
@@ -83,19 +162,41 @@
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Update Layanan
-                    </button>
-                    <a href="{{ route($routePrefix . '.services.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Batal
-                    </a>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Update Layanan
+                            </button>
+                            <a href="{{ route($routePrefix . '.services.index') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Batal
+                            </a>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow mb-4" style="position: sticky; top: 90px;">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Preview 360 Derajat</h6>
+                </div>
+                <div class="card-body">
+                    @if($service->panorama_image_url)
+                        <div id="admin-panorama-viewer" style="height: 360px; border-radius: 12px; overflow: hidden;"></div>
+                        <small class="text-muted d-block mt-2">
+                            <i class="fas fa-info-circle me-1"></i>Geser untuk melihat sudut 360°.
+                        </small>
+                    @else
+                        <div id="admin-panorama-fallback" class="d-flex flex-column align-items-center justify-content-center text-center"
+                            style="height: 360px; border: 1px dashed #cbd5e0; border-radius: 12px; background: #f8fafc;">
+                            <i class="fas fa-panorama fa-2x mb-2 text-muted"></i>
+                            <p class="mb-0 text-muted">Belum ada foto 360.</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
-</div>
-</div>
 </div>
 
 <!-- Modal untuk Pilih Icon -->
@@ -146,6 +247,9 @@
 @endsection
 
 @push('styles')
+@if($service->panorama_image_url)
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+@endif
 <style>
     .icon-grid {
         display: grid;
@@ -198,6 +302,9 @@
 @endpush
 
 @push('scripts')
+@if($service->panorama_image_url)
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+@endif
 <script>
     $(document).ready(function() {
         const popularIcons = [
@@ -275,6 +382,51 @@
         $('#iconInput').click(function() {
             const iconModal = new bootstrap.Modal(document.getElementById('iconModal'));
             iconModal.show();
+        });
+
+        @if($service->panorama_image_url)
+        if (window.pannellum && document.getElementById('admin-panorama-viewer')) {
+            pannellum.viewer('admin-panorama-viewer', {
+                type: 'equirectangular',
+                panorama: "{{ $service->panorama_image_url }}",
+                autoLoad: true,
+                showZoomCtrl: true,
+                showFullscreenCtrl: true,
+                compass: false,
+                hfov: 110,
+            });
+        }
+        @endif
+
+        // Live preview for newly selected panorama image.
+        $('#panoramaInput').on('change', function(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+
+            const blobUrl = URL.createObjectURL(file);
+            const viewerId = 'admin-panorama-viewer';
+            let viewer = document.getElementById(viewerId);
+
+            if (!viewer) {
+                const fallback = document.getElementById('admin-panorama-fallback');
+                if (fallback) {
+                    fallback.outerHTML = `<div id="${viewerId}" style="height: 360px; border-radius: 12px; overflow: hidden;"></div>`;
+                }
+                viewer = document.getElementById(viewerId);
+            }
+
+            if (viewer && window.pannellum) {
+                viewer.innerHTML = '';
+                pannellum.viewer(viewerId, {
+                    type: 'equirectangular',
+                    panorama: blobUrl,
+                    autoLoad: true,
+                    showZoomCtrl: true,
+                    showFullscreenCtrl: true,
+                    compass: false,
+                    hfov: 110,
+                });
+            }
         });
     });
 </script>

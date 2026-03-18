@@ -60,6 +60,32 @@
                             {{ $service->description ?? 'Tidak ada deskripsi' }}
                         </div>
                     </div>
+
+                    <div class="mt-4">
+                        <h5>Fasilitas & Keunggulan</h5>
+                        <div class="border p-3 rounded bg-light" style="white-space: pre-line;">
+                            {{ $service->facilities ?: 'Belum diisi' }}
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h5>Syarat & Ketentuan</h5>
+                        <div class="border p-3 rounded bg-light" style="white-space: pre-line;">
+                            {{ $service->terms_conditions ?: 'Belum diisi' }}
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <h5>Foto 360 Derajat</h5>
+                        <div class="border p-3 rounded bg-light">
+                            @if($service->panorama_image_url)
+                                <img src="{{ $service->panorama_image_url }}" alt="Foto 360 {{ $service->name }}" class="img-fluid rounded border mb-2" style="max-height: 220px; object-fit: cover;">
+                                <div class="small text-muted">File: {{ basename($service->panorama_image) }}</div>
+                            @else
+                                <span class="text-muted">Belum diisi</span>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

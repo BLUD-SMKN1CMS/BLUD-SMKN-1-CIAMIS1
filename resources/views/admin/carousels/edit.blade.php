@@ -22,46 +22,9 @@
                 
                 <div class="row">
                     <div class="col-md-8">
-                        <div class="mb-3">
-                            <label for="title" class="form-label">Judul Carousel <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror" 
-                                   id="title" name="title" value="{{ old('title', $carousel->title) }}" required>
-                            @error('title')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Deskripsi</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" 
-                                      id="description" name="description" rows="3">{{ old('description', $carousel->description) }}</textarea>
-                            @error('description')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <div id="charCounter" class="form-text">0/200 karakter</div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="button_text" class="form-label">Teks Tombol</label>
-                                    <input type="text" class="form-control @error('button_text') is-invalid @enderror" 
-                                           id="button_text" name="button_text" value="{{ old('button_text', $carousel->button_text) }}">
-                                    @error('button_text')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="button_url" class="form-label">URL Tombol</label>
-                                    <input type="text" class="form-control @error('button_url') is-invalid @enderror" 
-                                           id="button_url" name="button_url" value="{{ old('button_url', $carousel->button_url) }}">
-                                    @error('button_url')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Carousel sekarang hanya untuk <strong>gambar background hero</strong>. Teks judul, deskripsi, dan tombol diatur dari menu <strong>Settings</strong>.
                         </div>
 
                         <div class="row">
@@ -202,27 +165,5 @@
         }
     }
 
-    // Initialize character counter
-    document.addEventListener('DOMContentLoaded', function() {
-        const description = document.getElementById('description');
-        const counter = document.getElementById('charCounter');
-        
-        if (description && counter) {
-            const updateCounter = () => {
-                const maxLength = 200;
-                const currentLength = description.value.length;
-                counter.textContent = `${currentLength}/${maxLength} karakter`;
-                
-                if (currentLength > maxLength) {
-                    counter.classList.add('text-danger');
-                } else {
-                    counter.classList.remove('text-danger');
-                }
-            };
-            
-            description.addEventListener('input', updateCounter);
-            updateCounter(); // Initial update
-        }
-    });
 </script>
 @endpush

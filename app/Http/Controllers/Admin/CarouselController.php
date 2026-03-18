@@ -34,13 +34,9 @@ class CarouselController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
             'status' => 'required|in:active,inactive',
             'order' => 'nullable|integer',
-            'button_text' => 'nullable|string|max:50',
-            'button_url' => 'nullable|string|max:255',
         ]);
 
         // Handle image upload with 16:9 validation
@@ -79,6 +75,12 @@ class CarouselController extends Controller
             $validated['order'] = $maxOrder + 1;
         }
 
+        // Keep text fields internal because carousel is now image-focused in admin UI.
+        $validated['title'] = 'Carousel Image ' . now()->format('YmdHis');
+        $validated['description'] = null;
+        $validated['button_text'] = null;
+        $validated['button_url'] = null;
+
         Carousel::create($validated);
 
         return redirect()->route('superadmin.carousels.index')
@@ -111,13 +113,9 @@ class CarouselController extends Controller
         $carousel = Carousel::findOrFail($id);
 
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
             'status' => 'required|in:active,inactive',
             'order' => 'nullable|integer',
-            'button_text' => 'nullable|string|max:50',
-            'button_url' => 'nullable|string|max:255',
         ]);
 
         // Handle image upload if new image provided

@@ -54,14 +54,9 @@
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li>
-                                            <button type="button" class="dropdown-item btn-edit-service"
-                                                data-id="{{ $service->id }}"
-                                                data-name="{{ $service->name }}"
-                                                data-description="{{ $service->description }}"
-                                                data-icon="{{ $service->icon ?? 'fas fa-concierge-bell' }}"
-                                                data-status="{{ $service->status }}">
+                                            <a class="dropdown-item" href="{{ route($routePrefix . '.services.edit', $service->id) }}">
                                                 <i class="fas fa-edit me-2 text-warning"></i> Edit
-                                            </button>
+                                            </a>
                                         </li>
                                         <li>
                                             <button type="button" class="dropdown-item btn-view-service"

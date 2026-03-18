@@ -76,20 +76,6 @@
                         <h3>Deskripsi Layanan</h3>
                         <p>{{ $product->description ?? 'Layanan berkualitas dari ' . ($product->tefa->name ?? 'BLUD SMKN 1 CIAMIS') }}</p>
                     </div>
-
-                    <!-- Quantity & Add to Cart -->
-                    <!-- Quantity & Order Actions -->
-                    <div class="product-actions">
-                        @php
-                        // Temporarily hardcoded number as requested
-                        $whatsappNumber = '6287790984032';
-                        @endphp
-                        <div class="d-grid gap-2 w-100">
-                            <button type="button" class="btn-whatsapp w-100" data-bs-toggle="modal" data-bs-target="#orderModal">
-                                <i class="fab fa-whatsapp me-2"></i> Tanya via WhatsApp
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -132,15 +118,27 @@
 <style>
     /* Breadcrumb Section */
     .breadcrumb-section {
-        background: #0992C2;
-        padding: 1.5rem 0;
-        margin-bottom: 3rem;
+        background: linear-gradient(120deg, #0f172a 0%, #1e3a8a 50%, #0ea5e9 100%);
+        padding: 1.25rem 0;
+        margin-bottom: 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .breadcrumb-section::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.12), transparent 40%);
+        pointer-events: none;
     }
 
     .breadcrumb {
         background: transparent;
         margin: 0;
         padding: 0;
+        position: relative;
+        z-index: 1;
     }
 
     .breadcrumb-item a {
@@ -164,7 +162,10 @@
 
     /* Product Detail Section */
     .product-detail-section {
-        padding: 3rem 0;
+        padding: 3.5rem 0 4rem;
+        background:
+            radial-gradient(circle at top right, rgba(14, 165, 233, 0.12), transparent 40%),
+            linear-gradient(180deg, #f6fbff 0%, #eef6ff 100%);
     }
 
     /* Product Images */
@@ -175,10 +176,11 @@
 
     .main-image-wrapper {
         position: relative;
-        background: #f8f9fa;
-        border-radius: 20px;
+        background: #eaf2ff;
+        border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(74, 144, 226, 0.2);
+        box-shadow: 0 20px 45px rgba(30, 58, 138, 0.18);
         margin-bottom: 1rem;
     }
 
@@ -190,7 +192,7 @@
     }
 
     .main-image-wrapper:hover .main-product-image {
-        transform: scale(1.05);
+        transform: scale(1.04);
     }
 
     .out-of-stock-badge,
@@ -224,15 +226,16 @@
     .thumbnail-item {
         width: 80px;
         height: 80px;
-        border-radius: 10px;
+        border-radius: 14px;
         overflow: hidden;
         cursor: pointer;
         border: 3px solid transparent;
         transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
     }
 
     .thumbnail-item.active {
-        border-color: #4A90E2;
+        border-color: #1d4ed8;
     }
 
     .thumbnail-item img {
@@ -243,7 +246,12 @@
 
     /* Product Info */
     .product-info {
-        padding: 1rem 0;
+        padding: 2rem;
+        border-radius: 24px;
+        border: 1px solid rgba(74, 144, 226, 0.18);
+        background: rgba(255, 255, 255, 0.78);
+        box-shadow: 0 14px 35px rgba(15, 23, 42, 0.1);
+        backdrop-filter: blur(8px);
     }
 
     .product-meta {
@@ -267,7 +275,7 @@
     }
 
     .tefa-badge {
-        background: #0992C2;
+        background: linear-gradient(135deg, #1d4ed8 0%, #0ea5e9 100%);
         color: white;
     }
 
@@ -278,17 +286,18 @@
     }
 
     .category-badge {
-        background: #f8f9fa;
-        color: #495057;
-        border: 2px solid #dee2e6;
+        background: #eff6ff;
+        color: #1e3a8a;
+        border: 1px solid #bfdbfe;
     }
 
     .product-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #1a1a2e;
+        font-size: clamp(2rem, 4vw, 3.25rem);
+        font-weight: 800;
+        color: #0f172a;
         margin-bottom: 1.5rem;
-        line-height: 1.2;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
     }
 
     .product-price {
@@ -326,68 +335,26 @@
     }
 
     .product-description {
-        margin-bottom: 2rem;
-        padding-bottom: 2rem;
-        border-bottom: 2px solid #f0f0f0;
+        margin-bottom: 0;
+        padding: 1.5rem;
+        border: 1px solid rgba(14, 165, 233, 0.22);
+        border-radius: 16px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(239, 246, 255, 0.95) 100%);
     }
 
     .product-description h3 {
-        font-size: 1.3rem;
-        font-weight: 600;
-        color: #1a1a2e;
-        margin-bottom: 1rem;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #1d4ed8;
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
     }
 
     .product-description p {
-        color: #6c757d;
-        line-height: 1.8;
-        font-size: 1.05rem;
-    }
-
-    /* Product Actions */
-    .product-actions {
-        margin-bottom: 2rem;
-    }
-
-    .btn-whatsapp {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.75rem;
-        padding: 1rem 2rem;
-        background: #0992C2;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
-        width: 100%;
-    }
-
-    .btn-whatsapp:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 30px rgba(37, 211, 102, 0.6);
-        color: white;
-    }
-
-    .btn-add-to-cart.disabled {
-        padding: 1rem 2rem;
-        background: #6c757d;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: not-allowed;
-        box-shadow: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.75rem;
+        color: #334155;
+        line-height: 1.75;
+        font-size: 1.04rem;
     }
 
     /* Product Features */
@@ -416,7 +383,7 @@
     /* Related Products Section */
     .related-products-section {
         padding: 5rem 0;
-        background: #ffffff;
+        background: linear-gradient(180deg, #ffffff 0%, #f3f8ff 100%);
     }
 
     .section-header {
@@ -425,9 +392,9 @@
     }
 
     .section-header h2 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        color: #1a1a2e;
+        font-size: clamp(2rem, 3.5vw, 2.9rem);
+        font-weight: 800;
+        color: #0f172a;
         margin-bottom: 0.5rem;
     }
 
@@ -439,9 +406,10 @@
     /* Product Card */
     .product-card {
         background: white;
-        border-radius: 15px;
+        border-radius: 18px;
         overflow: hidden;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
         transition: all 0.3s ease;
         cursor: pointer;
         height: 100%;
@@ -450,8 +418,9 @@
     }
 
     .product-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        transform: translateY(-8px);
+        box-shadow: 0 24px 40px rgba(30, 58, 138, 0.16);
+        border-color: rgba(37, 99, 235, 0.3);
     }
 
     .product-card-image {
@@ -545,6 +514,10 @@
             margin-bottom: 2rem;
         }
 
+        .product-info {
+            padding: 1.5rem;
+        }
+
         .product-title {
             font-size: 2rem;
         }
@@ -582,54 +555,6 @@
     }
 </style>
 
-<!-- Modal Pertanyaan -->
-<div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-            <div class="modal-header bg-light border-0" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
-                <h5 class="modal-title fw-bold text-dark" id="orderModalLabel">Formulir Pertanyaan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <div class="d-flex align-items-center mb-4 p-3 bg-white rounded-3 shadow-sm border">
-                    <img src="{{ $product->image_url }}" alt="Product" class="rounded me-3" style="width: 70px; height: 70px; object-fit: cover;">
-                    <div>
-                        <h6 class="mb-1 fw-bold text-dark">{{ $product->name }}</h6>
-                    </div>
-                </div>
-
-                <form id="inquiryForm">
-                    <div class="mb-3">
-                        <label for="inquirerName" class="form-label fw-semibold">Nama Lengkap</label>
-                        <input type="text" class="form-control" id="inquirerName" placeholder="Contoh: Budi Santoso" required style="border-radius: 10px; padding: 10px;">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="inquirerPhone" class="form-label fw-semibold">No. WhatsApp</label>
-                        <input type="tel" class="form-control" id="inquirerPhone" placeholder="08..." required style="border-radius: 10px; padding: 10px;">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="inquiryMessage" class="form-label fw-semibold">Pertanyaan</label>
-                        <textarea class="form-control" id="inquiryMessage" rows="3" placeholder="Tulis pertanyaan Anda terkait produk ini" style="border-radius: 10px; padding: 10px;"></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="inquiryNotes" class="form-label fw-semibold">Catatan (Opsional)</label>
-                        <textarea class="form-control" id="inquiryNotes" rows="2" placeholder="Info tambahan yang ingin disampaikan" style="border-radius: 10px; padding: 10px;"></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer border-0 p-4 pt-0">
-                <button type="button" class="btn btn-light py-2 px-4 rounded-pill fw-semibold" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-whatsapp flex-grow-1 py-2 rounded-pill fw-bold shadow-sm" onclick="submitInquiry()">
-                    <i class="fab fa-whatsapp me-2"></i>Kirim Pertanyaan
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
     function changeImage(element, src) {
         // Update main image
@@ -646,47 +571,6 @@
             item.classList.remove('active');
         });
         element.classList.add('active');
-    }
-
-    function submitInquiry() {
-        const productName = "{{ addslashes($product->name) }}";
-        const tefaName = "{{ addslashes($product->tefa->name ?? 'SMKN 1 Ciamis') }}";
-        const inquirerName = document.getElementById('inquirerName').value;
-        const inquirerPhone = document.getElementById('inquirerPhone').value;
-        const inquiryMessage = document.getElementById('inquiryMessage').value;
-        const inquiryNotes = document.getElementById('inquiryNotes').value;
-
-        if (!inquirerName || !inquirerPhone) {
-            alert('Mohon lengkapi Nama dan No. WhatsApp Anda');
-            return;
-        }
-
-        let message = `*Halo Admin TEFA ${tefaName}* 👋\n\n`;
-        message += `Saya ingin bertanya terkait produk berikut:\n`;
-        message += `🛍️ *Produk:* ${productName}\n\n`;
-        message += `📋 *Data Penanya:*\n`;
-        message += `👤 Nama: ${inquirerName}\n`;
-        message += `📱 No. HP: ${inquirerPhone}\n`;
-
-        if (inquiryMessage) {
-            message += `\n❓ *Pertanyaan:*\n${inquiryMessage}\n`;
-        }
-
-        if (inquiryNotes) {
-            message += `\n📝 Catatan: ${inquiryNotes}\n`;
-        }
-
-        message += `\nMohon informasinya. Terima kasih!`;
-
-        const encodedMessage = encodeURIComponent(message);
-        const whatsappNumber = "{{ $whatsappNumber ?? '6287790984032' }}"; // Fallback if variable not set
-
-        window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
-
-        // Optional: Close modal after sending
-        const modalEl = document.getElementById('orderModal');
-        const modal = bootstrap.Modal.getInstance(modalEl);
-        modal.hide();
     }
 </script>
 @endsection

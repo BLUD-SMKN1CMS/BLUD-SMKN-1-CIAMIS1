@@ -31,6 +31,8 @@
                         <i class="fas fa-share-alt"></i> Media Sosial
                     @elseif($group == 'hours')
                         <i class="fas fa-clock"></i> Jam Operasional
+                    @elseif($group == 'landing')
+                        <i class="fas fa-images"></i> Landing Page Hero
                     @else
                         <i class="fas fa-cog"></i> Pengaturan {{ ucfirst($group) }}
                     @endif

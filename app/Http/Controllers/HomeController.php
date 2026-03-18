@@ -82,6 +82,15 @@ class HomeController extends Controller
                 'tiktok' => $settings['social']['tiktok_url'] ?? '#',
                 'twitter' => $settings['social']['twitter_url'] ?? '#',
             ];
+
+            $landingSettings = [
+                'hero_title' => $settings['landing']['landing_hero_title'] ?? 'selamat datang di smkn1 ciamis',
+                'hero_description' => $settings['landing']['landing_hero_description'] ?? 'ini dia smk terkeren',
+                'primary_button_text' => $settings['landing']['landing_primary_button_text'] ?? 'Mulai Sekarang',
+                'primary_button_url' => $settings['landing']['landing_primary_button_url'] ?? '#tefa-section',
+                'secondary_button_text' => $settings['landing']['landing_secondary_button_text'] ?? 'Pelajari Lebih Lanjut',
+                'secondary_button_url' => $settings['landing']['landing_secondary_button_url'] ?? '#kontak-section',
+            ];
             
             // 9. DEBUG: Log untuk verifikasi
             Log::info('=== HOME PAGE LOADED ===');
@@ -101,7 +110,8 @@ class HomeController extends Controller
                 'featuredProducts', 
                 'services',
                 'contactInfo',
-                'socialMedia'
+                'socialMedia',
+                'landingSettings'
             ));
             
         } catch (\Exception $e) {
@@ -125,6 +135,14 @@ class HomeController extends Controller
                     'youtube' => '#',
                     'tiktok' => '#',
                     'twitter' => '#',
+                ],
+                'landingSettings' => [
+                    'hero_title' => 'selamat datang di smkn1 ciamis',
+                    'hero_description' => 'ini dia smk terkeren',
+                    'primary_button_text' => 'Mulai Sekarang',
+                    'primary_button_url' => '#tefa-section',
+                    'secondary_button_text' => 'Pelajari Lebih Lanjut',
+                    'secondary_button_url' => '#kontak-section',
                 ],
             ]);
         }
@@ -166,9 +184,88 @@ class HomeController extends Controller
     public function showTefa($slug)
     {
         $tefa = Tefa::where('slug', $slug)->firstOrFail();
+
+        $servicesQuery = Service::where('tefa_id', $tefa->id)
+            ->where('status', 'available');
+
+        $serviceCards = (clone $servicesQuery)
+            ->latest()
+            ->get()
+            ->map(function ($service) {
+                return (object) [
+                    'name' => $service->name,
+                    'description' => $service->description,
+                    'icon' => $service->icon,
+                    'image' => $service->image,
+                    'image_url' => $service->image_url,
+                    'link_url' => route('service.show', $service->slug),
+                ];
+            });
+
+        // Produk dengan kategori Jasa ikut ditampilkan sebagai layanan jurusan.
+        $jasaProductCards = Product::where('tefa_id', $tefa->id)
+            ->where('status', 'active')
+            ->whereRaw('LOWER(category) = ?', ['jasa'])
+            ->latest()
+            ->get()
+            ->map(function ($product) {
+                return (object) [
+                    'name' => $product->name,
+                    'description' => $product->description,
+                    'icon' => 'fas fa-briefcase',
+                    'image' => $product->image,
+                    'image_url' => $product->image_url,
+                    'link_url' => route('products.show', $product->slug),
+                ];
+            });
+
+        $allServices = $serviceCards
+            ->concat($jasaProductCards)
+            ->unique(fn($item) => strtolower(trim($item->name)))
+            ->values();
+
+        // Fallback: beberapa data lama menyimpan layanan di kolom JSON/string pada tabel tefas.
+        if ($allServices->isEmpty()) {
+            $tefaServices = [];
+
+            if (is_array($tefa->services)) {
+                $tefaServices = $tefa->services;
+            } elseif (is_string($tefa->services) && trim($tefa->services) !== '') {
+                $decoded = json_decode($tefa->services, true);
+
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $tefaServices = $decoded;
+                } else {
+                    $tefaServices = preg_split('/\r\n|\r|\n|,/', $tefa->services);
+                }
+            }
+
+            $fallbackServices = collect($tefaServices)
+                ->filter(fn($name) => is_string($name) && trim($name) !== '')
+                ->map(function ($name) {
+                    return (object) [
+                        'name' => trim($name),
+                        'description' => 'Layanan jurusan',
+                        'icon' => 'fas fa-check-circle',
+                        'image' => null,
+                        'image_url' => null,
+                        'link_url' => null,
+                    ];
+                })
+                ->values();
+
+            $allServices = $fallbackServices;
+        }
+
+        // Sidebar: tampilkan 3 layanan teratas dari daftar layanan gabungan.
+        $featuredServices = $allServices->take(3);
         
         $products = Product::where('tefa_id', $tefa->id)
             ->where('status', 'active')
+            ->where(function ($query) {
+                $query->whereNull('category')
+                    ->orWhereRaw('LOWER(category) <> ?', ['jasa']);
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(12)
             ->through(function ($product) {
@@ -193,6 +290,8 @@ class HomeController extends Controller
         return view('tefa.show', compact(
             'tefa', 
             'products', 
+            'featuredServices',
+            'allServices',
             'contactInfo',
             'footerTefas',
             'footerServices'

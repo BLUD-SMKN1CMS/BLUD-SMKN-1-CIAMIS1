@@ -21,50 +21,9 @@
                 
                 <div class="row">
                     <div class="col-md-8">
-                        <div class="mb-3">
-                            <label for="title" class="form-label">Judul Carousel <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror" 
-                                   id="title" name="title" value="{{ old('title') }}" 
-                                   placeholder="Contoh: Selamat Datang di TEFA SMKN 1 Ciamis" required>
-                            @error('title')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Deskripsi</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" 
-                                      id="description" name="description" rows="3" 
-                                      placeholder="Deskripsi singkat carousel">{{ old('description') }}</textarea>
-                            @error('description')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="text-muted">Maksimal 200 karakter (akan dipotong di tampilan)</small>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="button_text" class="form-label">Teks Tombol</label>
-                                    <input type="text" class="form-control @error('button_text') is-invalid @enderror" 
-                                           id="button_text" name="button_text" value="{{ old('button_text') }}" 
-                                           placeholder="Contoh: Lihat Produk">
-                                    @error('button_text')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="button_url" class="form-label">URL Tombol</label>
-                                    <input type="text" class="form-control @error('button_url') is-invalid @enderror" 
-                                           id="button_url" name="button_url" value="{{ old('button_url') }}" 
-                                           placeholder="Contoh: #produk-section">
-                                    @error('button_url')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Carousel sekarang hanya untuk <strong>gambar background hero</strong>. Teks judul, deskripsi, dan tombol diatur dari menu <strong>Settings</strong>.
                         </div>
 
                         <div class="row">
@@ -190,25 +149,5 @@
         }
     }
 
-    // Live character counter for description
-    document.getElementById('description').addEventListener('input', function() {
-        const maxLength = 200;
-        const currentLength = this.value.length;
-        const counter = document.getElementById('charCounter') || (function() {
-            const counter = document.createElement('div');
-            counter.id = 'charCounter';
-            counter.className = 'form-text';
-            this.parentNode.appendChild(counter);
-            return counter;
-        }.bind(this)());
-
-        counter.textContent = `${currentLength}/${maxLength} karakter`;
-        
-        if (currentLength > maxLength) {
-            counter.classList.add('text-danger');
-        } else {
-            counter.classList.remove('text-danger');
-        }
-    });
 </script>
 @endpush

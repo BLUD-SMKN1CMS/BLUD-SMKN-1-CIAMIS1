@@ -62,12 +62,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Services
         Route::resource('services', ServiceController::class);
 
-        // Contacts
-        Route::resource('contacts', AdminContactController::class)->except(['create', 'store']);
-        Route::post('/contacts/{contact}/reply', [AdminContactController::class, 'reply'])->name('contacts.reply');
-        Route::post('/contacts/{contact}/mark-as-read', [AdminContactController::class, 'markAsRead'])->name('contacts.markAsRead');
-        Route::post('/contacts/bulk-delete', [AdminContactController::class, 'bulkDelete'])->name('contacts.bulkDelete');
-
         // Profile
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');

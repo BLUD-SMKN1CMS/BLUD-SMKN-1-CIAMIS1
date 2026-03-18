@@ -18,7 +18,7 @@
     <!-- Overlay gradient untuk text readability -->
     <div class="hero-overlay"></div>
 
-    <div class="container-fluid py-5 position-relative z-2">
+    <div class="container-fluid py-5 position-relative z-2" style="padding-top: 4rem; padding-bottom: 6rem;">
         <div class="row align-items-center g-5">
             <!-- Left Content - Editable from Admin -->
             <div class="col-lg-6 order-lg-1" data-aos="fade-right" data-aos-duration="800">

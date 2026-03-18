@@ -12,124 +12,70 @@
     $heroBgImage = $firstCarousel && $firstCarousel->image ? asset('storage/' . $firstCarousel->image) : '';
 @endphp
 
-<section class="modern-hero-dynamic position-relative overflow-hidden" 
-    @if($heroBgImage) style="background-image: url('{{ $heroBgImage }}'); background-size: cover; background-position: center;" @endif>
+<section class="hero-section-v2" 
+    @if($heroBgImage) style="background-image: url('{{ $heroBgImage }}')" @endif>
     
-    <!-- Overlay gradient untuk text readability -->
-    <div class="hero-overlay"></div>
+    <!-- Dark Overlay -->
+    <div class="hero-dark-overlay"></div>
 
-    <div class="container-fluid py-5 position-relative z-2" style="padding-top: 4rem; padding-bottom: 6rem;">
-        <div class="row align-items-center g-5">
-            <!-- Left Content - Editable from Admin -->
-            <div class="col-lg-6 order-lg-1" data-aos="fade-right" data-aos-duration="800">
-                <div class="hero-content">
-                    <!-- Accent Badge -->
-                    <div class="d-inline-flex align-items-center gap-2 mb-4">
-                        <span class="badge badge-accent">
-                            <i class="fas fa-check-circle me-1"></i> Terdaftar LSST
-                        </span>
-                    </div>
-
-                    <!-- Main Heading - dari database carousel -->
-                    @if($carousels->count() > 0)
-                        <h1 class="hero-title text-white mb-4 fw-bold lh-1">
-                            {{ $firstCarousel->title ?? 'SMKN 1 CIAMIS' }}
-                        </h1>
-                    @else
-                        <h1 class="hero-title text-white mb-4 fw-bold lh-1">
-                            <span class="text-gradient">SMKN 1 CIAMIS</span><br>
-                            Membangun Generasi Terampil & Berkarakter
-                        </h1>
-                    @endif
-
-                    <!-- Description - dari database carousel -->
-                    @if($carousels->count() > 0 && $firstCarousel->description)
-                        <p class="hero-subtitle text-white mb-4 fw-500">
-                            {{ $firstCarousel->description }}
-                        </p>
-                    @else
-                        <p class="hero-subtitle text-white mb-4 fw-500">
-                            Sekolah Menengah Kejuruan Negeri dengan fokus pada Teaching Factory (TEFA) untuk mengasah keterampilan praktis dan kompetensi industri.
-                        </p>
-                    @endif
-
-                    <!-- CTA Buttons - dari database carousel -->
-                    <div class="d-flex flex-wrap gap-3 mb-5">
-                        @if($carousels->count() > 0 && $firstCarousel->button_text && $firstCarousel->button_url)
-                            <a href="{{ $firstCarousel->button_url }}" class="btn btn-primary btn-lg btn-hover-lift">
-                                <i class="fas fa-arrow-down me-2"></i> {{ $firstCarousel->button_text }}
-                            </a>
-                        @else
-                            <a href="#tefa-section" class="btn btn-primary btn-lg btn-hover-lift">
-                                <i class="fas fa-arrow-down me-2"></i> Jelajahi Program
-                            </a>
-                        @endif
-                        
-                        <a href="#kontak-section" class="btn btn-outline-light btn-lg btn-hover-lift-light">
-                            <i class="fas fa-envelope me-2"></i> Hubungi Kami
-                        </a>
-                    </div>
-
-                    <!-- Hero Stats - Minimal Stats Display -->
-                    <div class="row g-3">
-                        <div class="col-sm-6 col-md-4">
-                            <div class="stat-mini stat-mini-light">
-                                <div class="stat-number fw-bold text-white">{{ $stats['total_tefas'] ?? 7 }}</div>
-                                <div class="stat-label text-white-50 small">Program Keahlian</div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-md-4">
-                            <div class="stat-mini stat-mini-light">
-                                <div class="stat-number fw-bold text-white">{{ $stats['total_services'] ?? 15 }}+</div>
-                                <div class="stat-label text-white-50 small">Layanan Unggulan</div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-md-4">
-                            <div class="stat-mini stat-mini-light">
-                                <div class="stat-number fw-bold text-white">95%</div>
-                                <div class="stat-label text-white-50 small">Tingkat Kelulusan</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Admin Edit Button -->
-                    @auth
-                        @if(auth()->user()->role === 'super-admin' || auth()->user()->role === 'admin')
-                            <div class="mt-4">
-                                <a href="{{ route('super-admin.carousels.index') }}" class="btn btn-sm btn-outline-light">
-                                    <i class="fas fa-edit me-1"></i> Edit di Admin Panel
-                                </a>
-                            </div>
-                        @endif
-                    @endauth
-                </div>
+    <!-- Hero Content Container -->
+    <div class="hero-content-wrapper">
+        <div class="hero-left-content">
+            <!-- Badge -->
+            <div class="hero-badge">
+                <i class="fas fa-circle"></i> Terdaftar LSST
             </div>
 
-            <!-- Right Side - Carousel Image Showcase (optional) -->
-            <div class="col-lg-6 order-lg-2 d-lg-none d-none" data-aos="fade-left" data-aos-duration="800">
-                <div class="hero-image-wrapper position-relative">
-                    <div class="hero-image-container">
-                        @if($carousels->count() > 1)
-                            @php
-                                $secondCarousel = $carousels->skip(1)->first();
-                            @endphp
-                            @if($secondCarousel && $secondCarousel->image)
-                                <img src="{{ asset('storage/' . $secondCarousel->image) }}"
-                                    alt="SMKN 1 CIAMIS"
-                                    class="img-fluid hero-image rounded-4 shadow-lg"
-                                    loading="lazy">
-                            @endif
-                        @endif
-                    </div>
+            <!-- Main Title -->
+            <h1 class="hero-main-title">
+                @if($carousels->count() > 0 && $firstCarousel->title)
+                    {{ $firstCarousel->title }}
+                @else
+                    selamat datang di smkn1 ciamis
+                @endif
+            </h1>
+
+            <!-- Description -->
+            <p class="hero-description">
+                @if($carousels->count() > 0 && $firstCarousel->description)
+                    {{ $firstCarousel->description }}
+                @else
+                    ini dia smk terkeren
+                @endif
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="hero-buttons">
+                @if($carousels->count() > 0 && $firstCarousel->button_text && $firstCarousel->button_url)
+                    <a href="{{ $firstCarousel->button_url }}" class="btn-hero btn-primary-hero">
+                        <i class="fas fa-bolt"></i> {{ $firstCarousel->button_text }}
+                    </a>
+                @else
+                    <a href="#tefa-section" class="btn-hero btn-primary-hero">
+                        <i class="fas fa-bolt"></i> Mulai Sekarang
+                    </a>
+                @endif
+                
+                <a href="#kontak-section" class="btn-hero btn-secondary-hero">
+                    <i class="fas fa-info-circle"></i> Pelajari Lebih Lanjut
+                </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-num">{{ $stats['total_tefas'] ?? 7 }}</div>
+                    <div class="stat-text">Program Keahlian</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">{{ $stats['total_services'] ?? 15 }}+</div>
+                    <div class="stat-text">Layanan Unggulan</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">95%</div>
+                    <div class="stat-text">Tingkat Kelulusan</div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Scroll Indicator -->
-    <div class="scroll-indicator position-absolute bottom-0 start-50 translate-middle-x mb-3">
-        <div class="mouse">
-            <span class="scroll-dot"></span>
         </div>
     </div>
 </section>

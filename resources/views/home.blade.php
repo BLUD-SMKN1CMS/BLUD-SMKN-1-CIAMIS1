@@ -21,11 +21,6 @@
     <!-- Hero Content Container -->
     <div class="hero-content-wrapper">
         <div class="hero-left-content">
-            <!-- Badge -->
-            <div class="hero-badge">
-                <i class="fas fa-circle"></i> Terdaftar LSST
-            </div>
-
             <!-- Main Title -->
             <h1 class="hero-main-title">
                 @if($carousels->count() > 0 && $firstCarousel->title)
@@ -59,22 +54,6 @@
                 <a href="#kontak-section" class="btn-hero btn-secondary-hero">
                     <i class="fas fa-info-circle"></i> Pelajari Lebih Lanjut
                 </a>
-            </div>
-
-            <!-- Stats -->
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <div class="stat-num">{{ $stats['total_tefas'] ?? 7 }}</div>
-                    <div class="stat-text">Program Keahlian</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-num">{{ $stats['total_services'] ?? 15 }}+</div>
-                    <div class="stat-text">Layanan Unggulan</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-num">95%</div>
-                    <div class="stat-text">Tingkat Kelulusan</div>
-                </div>
             </div>
         </div>
     </div>

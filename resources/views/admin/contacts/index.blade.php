@@ -49,7 +49,7 @@
                                 <td>{{ $contact->email }}</td>
                                 <td>{{ Str::limit($contact->subject, 30) }}</td>
                                 <td>
-                                    <span class="badge 
+                                    <span class="badge
                                         @if($contact->status == 'unread') badge-danger
                                         @elseif($contact->status == 'read') badge-warning
                                         @elseif($contact->status == 'replied') badge-success
@@ -108,7 +108,7 @@
 
                 @if($contacts->hasPages())
                 <div class="d-flex justify-content-center mt-3">
-                    {{ $contacts->links() }}
+                    {{ $contacts->links('vendor.pagination.admin-pill') }}
                 </div>
                 @endif
             </div>

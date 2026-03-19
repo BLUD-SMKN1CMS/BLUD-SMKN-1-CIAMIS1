@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'FAQ - Pertanyaan Umum')
 
@@ -7,7 +7,7 @@
 <section class="faq-hero py-5 mb-5" style="background: #4A90E2; color: white; position: relative; overflow: hidden;">
     <div class="container position-relative z-1 text-center py-5">
         <h1 class="display-4 fw-bold mb-3" data-aos="fade-up">Pertanyaan Umum (FAQ)</h1>
-        <p class="lead mb-0" data-aos="fade-up" data-aos-delay="100">Temukan jawaban atas pertanyaan Anda seputar layanan dan produk kami.</p>
+        <p class="lead mb-0" data-aos="fade-up" data-aos-delay="100">Temukan jawaban atas pertanyaan Anda seputar layanan dan layanan kami.</p>
     </div>
     <!-- Decorative Circle -->
     <div style="position: absolute; top: -50px; right: -50px; width: 300px; height: 300px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
@@ -32,7 +32,7 @@
                         </h2>
                         <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
                             <div class="accordion-body text-muted">
-                                BLUD SMKN 1 Ciamis adalah Badan Layanan Umum Daerah yang dikelola oleh SMKN 1 Ciamis. Kami menyediakan berbagai produk dan jasa hasil karya siswa (Teaching Factory) dengan standar industri dan harga kompetitif.
+                                BLUD SMKN 1 Ciamis adalah Badan Layanan Umum Daerah yang dikelola oleh SMKN 1 Ciamis. Kami menyediakan berbagai layanan dan jasa hasil karya siswa (Teaching Factory) dengan standar industri dan harga kompetitif.
                             </div>
                         </div>
                     </div>
@@ -58,12 +58,12 @@
                     <div class="accordion-item shadow-sm border-0 mb-3 rounded overflow-hidden">
                         <h2 class="accordion-header" id="headingThree">
                             <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                Bagaimana cara bertanya tentang produk atau layanan?
+                                Bagaimana cara bertanya tentang layanan atau layanan?
                             </button>
                         </h2>
                         <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
                             <div class="accordion-body text-muted">
-                                Anda dapat memilih produk/layanan yang diinginkan, lalu klik tombol WhatsApp untuk tanya-tanya langsung ke admin. Saat ini WhatsApp digunakan untuk konsultasi dan informasi, bukan proses pembelian langsung di website.
+                                Anda dapat memilih layanan/layanan yang diinginkan, lalu klik tombol WhatsApp untuk tanya-tanya langsung ke admin. Saat ini WhatsApp digunakan untuk konsultasi dan informasi, bukan proses pembelian langsung di website.
                             </div>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                         </h2>
                         <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
                             <div class="accordion-body text-muted">
-                                Tidak. WhatsApp hanya digunakan untuk komunikasi dan konsultasi. Tim admin akan membantu menjelaskan detail layanan/produk serta langkah selanjutnya sesuai kebutuhan Anda.
+                                Tidak. WhatsApp hanya digunakan untuk komunikasi dan konsultasi. Tim admin akan membantu menjelaskan detail layanan/layanan serta langkah selanjutnya sesuai kebutuhan Anda.
                             </div>
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                         </h2>
                         <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
                             <div class="accordion-body text-muted">
-                                Untuk produk ready stock, pengiriman dilakukan H+1 setelah pembayaran terkonfirmasi. Estimasi sampai tergantung ekspedisi yang dipilih (JNE, J&T, SiCepat). Untuk produk pre-order, waktu pengerjaan akan diinfokan oleh admin.
+                                Untuk layanan ready stock, pengiriman dilakukan H+1 setelah pembayaran terkonfirmasi. Estimasi sampai tergantung ekspedisi yang dipilih (JNE, J&T, SiCepat). Untuk layanan pre-order, waktu pengerjaan akan diinfokan oleh admin.
                             </div>
                         </div>
                     </div>
@@ -166,3 +166,4 @@
     }
 </style>
 @endsection
+

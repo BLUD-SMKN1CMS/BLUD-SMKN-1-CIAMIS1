@@ -20,26 +20,6 @@
                 @csrf
 
                 <div class="form-group">
-                    <label>Jurusan TEFA (Opsional)</label>
-                    @if(auth('admin')->user()?->isAdminTefa())
-                    @php $assignedTefa = $tefas->first(); @endphp
-                    <input type="text" class="form-control" value="{{ $assignedTefa?->name }}" readonly>
-                    <input type="hidden" name="tefa_id" value="{{ old('tefa_id', $assignedTefa?->id) }}">
-                    <small class="text-muted">Jurusan terisi otomatis sesuai akun admin Anda.</small>
-                    @else
-                    <select name="tefa_id" id="tefa_id" class="form-control @error('tefa_id') is-invalid @enderror">
-                        <option value="">-- Tanpa Jurusan TEFA --</option>
-                        @foreach($tefas as $tefa)
-                        <option value="{{ $tefa->id }}" {{ old('tefa_id') == $tefa->id ? 'selected' : '' }}>{{ $tefa->name }}</option>
-                        @endforeach
-                    </select>
-                    @endif
-                    @error('tefa_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="form-group">
                     <label>Nama Layanan *</label>
                     <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
                         value="{{ old('name') }}" required placeholder="Contoh: Sewa Gedung, Air Minum Galon">
@@ -52,44 +32,6 @@
                     <label>Deskripsi</label>
                     <textarea name="description" class="form-control" rows="3"
                         placeholder="Deskripsi lengkap layanan...">{{ old('description') }}</textarea>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 form-group">
-                        <label>Harga per Jam</label>
-                        <input type="number" step="0.01" min="0" name="price_per_hour" class="form-control @error('price_per_hour') is-invalid @enderror"
-                            value="{{ old('price_per_hour') }}" placeholder="Contoh: 50000">
-                        @error('price_per_hour')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label>Harga per Hari</label>
-                        <input type="number" step="0.01" min="0" name="price_per_day" class="form-control @error('price_per_day') is-invalid @enderror"
-                            value="{{ old('price_per_day') }}" placeholder="Contoh: 300000">
-                        @error('price_per_day')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 form-group">
-                        <label>Kapasitas</label>
-                        <input type="number" min="0" name="capacity" class="form-control @error('capacity') is-invalid @enderror"
-                            value="{{ old('capacity') }}" placeholder="Contoh: 100">
-                        @error('capacity')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label>Satuan</label>
-                        <input type="text" name="unit" class="form-control @error('unit') is-invalid @enderror"
-                            value="{{ old('unit') }}" placeholder="Contoh: orang / unit / kursi">
-                        @error('unit')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
                 </div>
 
                 <div class="form-group">

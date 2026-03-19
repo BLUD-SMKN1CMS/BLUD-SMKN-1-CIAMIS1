@@ -15,7 +15,7 @@
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Daftar Layanan</h6>
             <span class="badge badge-success">
-                Total: {{ $services->count() }}
+                Total: {{ $services->total() }}
             </span>
         </div>
         <div class="card-body">
@@ -26,7 +26,6 @@
                             <th>#</th>
                             <th>Icon</th>
                             <th>Nama Layanan</th>
-                            <th>Jurusan TEFA</th>
                             <th>Status</th>
                             <th width="100">Aksi</th>
                         </tr>
@@ -34,12 +33,11 @@
                     <tbody>
                         @forelse($services as $service)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ ($services->currentPage() - 1) * $services->perPage() + $loop->iteration }}</td>
                             <td class="text-center">
                                 <i class="{{ $service->icon ?? 'fas fa-concierge-bell' }} fa-lg text-primary"></i>
                             </td>
                             <td>{{ $service->name }}</td>
-                            <td>{{ $service->tefa->name ?? '-' }}</td>
                             <td>
                                 <span
                                     class="badge {{ $service->status == 'available' ? 'badge-success' : 'badge-secondary' }}">
@@ -87,7 +85,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center py-5">
+                            <td colspan="5" class="text-center py-5">
                                 <div class="text-muted">
                                     <i class="fas fa-handshake fa-3x mb-4" style="opacity: 0.5;"></i>
                                     <p class="mb-4">Belum ada data layanan</p>
@@ -101,6 +99,12 @@
                     </tbody>
                 </table>
             </div>
+
+            @if($services->hasPages())
+            <div class="mt-3 d-flex justify-content-center">
+                {{ $services->links('vendor.pagination.admin-pill') }}
+            </div>
+            @endif
         </div>
     </div>
 </div>

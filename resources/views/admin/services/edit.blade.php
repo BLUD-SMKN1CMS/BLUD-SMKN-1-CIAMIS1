@@ -23,26 +23,6 @@
                         @method('PUT')
 
                 <div class="form-group">
-                    <label>Jurusan TEFA (Opsional)</label>
-                    @if(auth('admin')->user()?->isAdminTefa())
-                    @php $assignedTefa = $tefas->first(); @endphp
-                    <input type="text" class="form-control" value="{{ $assignedTefa?->name }}" readonly>
-                    <input type="hidden" name="tefa_id" value="{{ old('tefa_id', $service->tefa_id) }}">
-                    <small class="text-muted">Jurusan terisi otomatis sesuai akun admin Anda.</small>
-                    @else
-                    <select name="tefa_id" id="tefa_id" class="form-control @error('tefa_id') is-invalid @enderror">
-                        <option value="">-- Tanpa Jurusan TEFA --</option>
-                        @foreach($tefas as $tefa)
-                        <option value="{{ $tefa->id }}" {{ old('tefa_id', $service->tefa_id) == $tefa->id ? 'selected' : '' }}>{{ $tefa->name }}</option>
-                        @endforeach
-                    </select>
-                    @endif
-                    @error('tefa_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="form-group">
                     <label>Nama Layanan *</label>
                     <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
                         value="{{ old('name', $service->name) }}" required>
@@ -95,18 +75,16 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Gambar Utama Layanan (Opsional)</label>
-                    @if($service->image_url)
-                    <div class="mb-2">
-                        <img src="{{ $service->image_url }}" alt="Gambar layanan {{ $service->name }}" class="img-fluid rounded border" style="max-height: 180px; object-fit: cover;">
-                    </div>
-                    @endif
-                    <input type="file" name="image" class="form-control @error('image') is-invalid @enderror"
-                        accept="image/*">
-                    @error('image')
+                    <label>Foto Layanan (Bisa Lebih dari 1)</label>
+                    <input type="file" id="galleryImagesInput" name="gallery_images[]" class="form-control @error('gallery_images') is-invalid @enderror @error('gallery_images.*') is-invalid @enderror"
+                        accept="image/*" multiple>
+                    @error('gallery_images')
                     <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
-                    <small class="text-muted">Upload file baru untuk mengganti gambar utama layanan.</small>
+                    @error('gallery_images.*')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <small class="text-muted">Pilih beberapa foto sekaligus untuk ditambahkan. Foto lama bisa dihapus per-item di panel preview kanan.</small>
                 </div>
 
                 <div class="form-group">
@@ -176,7 +154,8 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="card shadow mb-4" style="position: sticky; top: 90px;">
+            <div class="services-preview-sticky">
+            <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Preview 360 Derajat</h6>
                 </div>
@@ -194,6 +173,50 @@
                         </div>
                     @endif
                 </div>
+            </div>
+
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Preview Foto Layanan</h6>
+                </div>
+                <div class="card-body">
+                    <div id="admin-gallery-preview" class="admin-gallery-preview">
+                        @if($service->image)
+                            <div class="admin-gallery-card" data-main-image="true">
+                                <img src="{{ asset('storage/' . ltrim($service->image, '/')) }}" alt="Foto utama {{ $service->name }}" class="admin-gallery-item">
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" name="remove_main_image" value="1" id="remove_main_image">
+                                    <label class="form-check-label small text-danger" for="remove_main_image">
+                                        Hapus foto utama lama
+                                    </label>
+                                </div>
+                            </div>
+                        @endif
+
+                        @foreach(($service->gallery_images ?? []) as $galleryImagePath)
+                            <div class="admin-gallery-card" data-gallery-path="{{ $galleryImagePath }}">
+                                <img src="{{ asset('storage/' . ltrim($galleryImagePath, '/')) }}" alt="Foto layanan {{ $service->name }}" class="admin-gallery-item">
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input remove-gallery-checkbox" type="checkbox" name="remove_gallery_images[]" value="{{ $galleryImagePath }}" id="remove_{{ md5($galleryImagePath) }}">
+                                    <label class="form-check-label small text-danger" for="remove_{{ md5($galleryImagePath) }}">
+                                        Hapus foto ini
+                                    </label>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    @if(!$service->image && empty($service->gallery_images))
+                        <div id="admin-gallery-empty" class="d-flex flex-column align-items-center justify-content-center text-center"
+                            style="height: 200px; border: 1px dashed #cbd5e0; border-radius: 12px; background: #f8fafc;">
+                            <i class="fas fa-images fa-2x mb-2 text-muted"></i>
+                            <p class="mb-0 text-muted">Belum ada foto layanan.</p>
+                        </div>
+                    @endif
+
+                    <div id="admin-gallery-new-preview" class="admin-gallery-preview mt-3"></div>
+                </div>
+            </div>
             </div>
         </div>
     </div>
@@ -297,6 +320,47 @@
     #iconInput[readonly] {
         background-color: #f8f9fa;
         cursor: pointer;
+    }
+
+    .admin-gallery-preview {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .admin-gallery-item {
+        width: 100%;
+        height: 120px;
+        border-radius: 10px;
+        object-fit: cover;
+        border: 1px solid #e2e8f0;
+    }
+
+    .admin-gallery-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 8px;
+        background: #fff;
+    }
+
+    .admin-gallery-card.to-remove {
+        opacity: 0.45;
+        border-color: #ef4444;
+        background: #fff5f5;
+    }
+
+    .admin-gallery-new-label {
+        grid-column: 1 / -1;
+        font-size: 12px;
+        color: #64748b;
+        font-weight: 600;
+        margin-bottom: -4px;
+    }
+
+    .services-preview-sticky {
+        position: sticky;
+        top: 90px;
+        z-index: 1;
     }
 </style>
 @endpush
@@ -427,6 +491,30 @@
                     hfov: 110,
                 });
             }
+        });
+
+        $('#galleryImagesInput').on('change', function(e) {
+            const files = Array.from(e.target.files || []);
+            const previewContainer = $('#admin-gallery-new-preview');
+            previewContainer.empty();
+
+            if (!files.length) return;
+
+            $('#admin-gallery-empty').remove();
+            previewContainer.append('<div class="admin-gallery-new-label">Foto baru yang akan ditambahkan:</div>');
+            files.forEach(file => {
+                const imageUrl = URL.createObjectURL(file);
+                previewContainer.append(`
+                    <div class="admin-gallery-card">
+                        <img src="${imageUrl}" alt="Preview foto layanan" class="admin-gallery-item">
+                    </div>
+                `);
+            });
+        });
+
+        $(document).on('change', '.remove-gallery-checkbox', function() {
+            const card = $(this).closest('.admin-gallery-card');
+            card.toggleClass('to-remove', $(this).is(':checked'));
         });
     });
 </script>

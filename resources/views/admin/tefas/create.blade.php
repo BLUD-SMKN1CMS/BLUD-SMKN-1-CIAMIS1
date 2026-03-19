@@ -62,16 +62,6 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Deskripsi Singkat</label>
-                    <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="3"
-                        placeholder="Deskripsi singkat tentang jurusan TEFA ini...">{{ old('description') }}</textarea>
-                    <small class="text-muted">Penjelasan singkat yang akan ditampilkan di card</small>
-                    @error('description')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -113,41 +103,6 @@
                             @error('order')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Layanan per Jurusan -->
-                <div class="form-group">
-                    <label class="d-block mb-2">
-                        <strong>Layanan yang Ditawarkan</strong>
-                        <small class="text-muted">(Opsional - tambah layanan yang ditawarkan jurusan ini)</small>
-                    </label>
-
-                    <div class="card mb-3">
-                        <div class="card-header bg-light py-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span>Daftar Layanan</span>
-                                <button type="button" class="btn btn-sm btn-primary" id="addServiceBtn">
-                                    <i class="fas fa-plus"></i> Tambah Layanan
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <!-- Container untuk daftar layanan -->
-                            <div id="servicesContainer">
-                                <!-- Layanan akan ditambahkan di sini -->
-                            </div>
-
-                            <!-- Input tersembunyi untuk JSON -->
-                            <input type="hidden" name="services_json" id="servicesJson"
-                                value='{{ old('services_json', '[]') }}'>
-
-                            <div class="text-center mt-3">
-                                <p class="text-muted small" id="noServicesMessage">
-                                    <i class="fas fa-info-circle"></i> Belum ada layanan yang ditambahkan
-                                </p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -242,93 +197,6 @@
             }
         });
 
-        // ============ SERVICES MANAGEMENT ============
-        let services = [];
-
-        // Parse existing services from JSON
-        try {
-            const existingServices = JSON.parse($('#servicesJson').val() || '[]');
-            services = existingServices;
-            renderServices();
-        } catch (e) {
-            console.error('Error parsing services JSON:', e);
-            services = [];
-        }
-
-        // Add new service
-        $('#addServiceBtn').click(function() {
-            const serviceName = prompt('Masukkan nama layanan baru:');
-            if (serviceName && serviceName.trim()) {
-                services.push(serviceName.trim());
-                renderServices();
-                updateJsonField();
-            }
-        });
-
-        // Render services list
-        function renderServices() {
-            $('#servicesContainer').empty();
-
-            if (services.length === 0) {
-                $('#noServicesMessage').show();
-                return;
-            }
-
-            $('#noServicesMessage').hide();
-
-            services.forEach((service, index) => {
-                $('#servicesContainer').append(`
-                <div class="service-item" data-index="${index}">
-                    <span class="badge badge-primary">${index + 1}</span>
-                    <input type="text" class="service-input" value="${service}" 
-                           placeholder="Nama layanan...">
-                    <button type="button" class="btn btn-sm btn-danger remove-service">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `);
-            });
-        }
-
-        // Update service
-        $(document).on('blur', '.service-input', function() {
-            const index = $(this).closest('.service-item').data('index');
-            const newValue = $(this).val().trim();
-
-            if (newValue) {
-                services[index] = newValue;
-                updateJsonField();
-            } else {
-                alert('Nama layanan tidak boleh kosong!');
-                $(this).val(services[index]).focus();
-            }
-        });
-
-        // Enter key to blur
-        $(document).on('keypress', '.service-input', function(e) {
-            if (e.which === 13) {
-                e.preventDefault();
-                $(this).blur();
-            }
-        });
-
-        // Remove service
-        $(document).on('click', '.remove-service', function() {
-            const index = $(this).closest('.service-item').data('index');
-            const serviceName = services[index];
-
-            if (confirm(`Hapus layanan "${serviceName}"?`)) {
-                services.splice(index, 1);
-                renderServices();
-                updateJsonField();
-            }
-        });
-
-        // Update hidden JSON field
-        function updateJsonField() {
-            $('#servicesJson').val(JSON.stringify(services));
-        }
-
         // Form validation
         $('#tefaForm').submit(function(e) {
             const name = $('input[name="name"]').val().trim();
@@ -349,9 +217,6 @@
                 $('#logoInput').focus();
                 return false;
             }
-
-            // Update JSON before submit
-            updateJsonField();
 
             // Show loading
             $(this).find('button[type="submit"]').html('<i class="fas fa-spinner fa-spin"></i> Menyimpan...').prop('disabled', true);

@@ -25,7 +25,7 @@
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Daftar Admin TEFA</h6>
                 <span class="badge badge-success">
-                    Total: {{ $admins->count() }}
+                    Total: {{ $admins->total() }}
                 </span>
             </div>
             <div class="card-body">
@@ -104,7 +104,7 @@
                 </div>
 
                 <div class="mt-3">
-                    {{ $admins->links() }}
+                    {{ $admins->links('vendor.pagination.admin-pill') }}
                 </div>
                 <div class="mt-3">
                     <div class="row">

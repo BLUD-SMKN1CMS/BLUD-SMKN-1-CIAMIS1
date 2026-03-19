@@ -21,10 +21,15 @@ class Service extends Model
         'capacity',
         'unit',
         'image',
+        'gallery_images',
         'panorama_image',
         'icon',
         'status',
         'tefa_id',
+    ];
+
+    protected $casts = [
+        'gallery_images' => 'array',
     ];
 
     // Boot method untuk generate slug
@@ -64,5 +69,17 @@ class Service extends Model
     public function getPanoramaImageUrlAttribute()
     {
         return $this->panorama_image ? asset('storage/' . $this->panorama_image) : null;
+    }
+
+    public function getGalleryImageUrlsAttribute()
+    {
+        $images = collect($this->gallery_images ?? [])
+            ->filter(fn($path) => is_string($path) && trim($path) !== '')
+            ->values();
+
+        return $images
+            ->map(fn($path) => asset('storage/' . ltrim($path, '/')))
+            ->values()
+            ->all();
     }
 }

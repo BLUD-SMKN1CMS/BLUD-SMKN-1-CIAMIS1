@@ -17,17 +17,22 @@ class SettingsController extends Controller
 
         return view('admin.settings.index', compact('groups'));
     }
-    
+
     public function update(Request $request)
     {
-        $this->ensureLandingPageSettings();
-
         $data = $request->except('_token', '_method');
-        
+        $keys = array_keys($data);
+        $settings = Setting::whereIn('key', $keys)->get()->keyBy('key');
+
         foreach ($data as $key => $value) {
-            Setting::where('key', $key)->update(['value' => $value]);
+            if (!isset($settings[$key])) {
+                continue;
+            }
+
+            $settings[$key]->value = $value;
+            $settings[$key]->save();
         }
-        
+
         return redirect()->route('superadmin.settings.index')
             ->with('success', 'Pengaturan berhasil diperbarui!');
     }
@@ -86,10 +91,19 @@ class SettingsController extends Controller
         ];
 
         foreach ($landingSettings as $setting) {
-            Setting::updateOrCreate(
-                ['key' => $setting['key']],
-                $setting
-            );
+            $existing = Setting::where('key', $setting['key'])->first();
+
+            if (!$existing) {
+                Setting::create($setting);
+                continue;
+            }
+
+            $existing->update([
+                'group' => $setting['group'],
+                'type' => $setting['type'],
+                'description' => $setting['description'],
+                'order' => $setting['order'],
+            ]);
         }
     }
 }

@@ -21,6 +21,15 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Turbo Drive: navigasi halaman tanpa full refresh -->
+    <script src="https://unpkg.com/@hotwired/turbo@8.0.12/dist/turbo.es2017-umd.js" data-turbo-track="reload"></script>
+    <script>
+        if (window.Turbo && Turbo.session) {
+            Turbo.session.drive = true;
+            Turbo.session.formMode = 'off';
+        }
+    </script>
+
     <!-- Custom CSS -->
     <style>
         :root {
@@ -765,10 +774,11 @@
             height: 100%;
             background: white;
             z-index: 9999;
-            display: flex;
+            display: none !important;
             align-items: center;
             justify-content: center;
             transition: opacity 0.5s ease, visibility 0.5s ease;
+            pointer-events: none;
         }
 
         .loader-spinner {
@@ -934,7 +944,7 @@
                         <a class="nav-link" href="{{ request()->routeIs('home') ? '#tefa-section' : url('/#tefa-section') }}">TEFA</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ request()->routeIs('home') ? '#produk-section' : url('/#produk-section') }}">Produk</a>
+                        <a class="nav-link" href="{{ request()->routeIs('home') ? '#layanan-section' : url('/#layanan-section') }}">Layanan</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ request()->routeIs('home') ? '#layanan-section' : url('/#layanan-section') }}">Layanan</a>

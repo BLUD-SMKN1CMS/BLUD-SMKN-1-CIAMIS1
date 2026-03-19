@@ -1,11 +1,11 @@
-@extends('admin.layouts.app')
+﻿@extends('admin.layouts.app')
 
-@section('title', 'Tambah Produk')
+@section('title', 'Tambah Layanan')
 
 @section('content')
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Tambah Produk Baru</h1>
+        <h1 class="h3 mb-0 text-gray-800">Tambah Layanan Baru</h1>
         <a href="{{ route($routePrefix . '.products.index') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Kembali
         </a>
@@ -25,7 +25,7 @@
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Form Tambah Produk</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Form Tambah Layanan</h6>
         </div>
         <div class="card-body">
             <form action="{{ route($routePrefix . '.products.store') }}" method="POST" enctype="multipart/form-data">
@@ -34,7 +34,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Nama Produk *</label>
+                            <label>Nama Layanan *</label>
                             <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
                                 value="{{ old('name') }}" required>
                             @error('name')
@@ -99,7 +99,7 @@
 
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label class="font-weight-bold">Gambar Produk (Maks. 4)</label>
+                        <label class="font-weight-bold">Gambar Layanan (Maks. 4)</label>
                         <div class="row">
                             <!-- Image 1 -->
                             <div class="col-md-3">
@@ -165,13 +165,13 @@
                     <input type="checkbox" name="is_featured" class="form-check-input" id="is_featured"
                         value="1" {{ old('is_featured') ? 'checked' : '' }}>
                     <label class="form-check-label" for="is_featured">
-                        Tampilkan sebagai produk unggulan di homepage
+                        Tampilkan sebagai layanan unggulan di homepage
                     </label>
                 </div>
 
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Simpan Produk
+                        <i class="fas fa-save"></i> Simpan Layanan
                     </button>
                     <button type="reset" class="btn btn-secondary">
                         <i class="fas fa-redo"></i> Reset

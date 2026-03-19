@@ -1,11 +1,11 @@
-@extends('admin.layouts.app')
+﻿@extends('admin.layouts.app')
 
-@section('title', 'Detail Produk: ' . $product->name)
+@section('title', 'Detail Layanan: ' . $product->name)
 
 @section('content')
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Detail Produk</h1>
+        <h1 class="h3 mb-0 text-gray-800">Detail Layanan</h1>
         <div class="btn-group" role="group">
             <a href="{{ route($routePrefix . '.products.index') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left mr-1"></i> Kembali
@@ -16,19 +16,32 @@
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show">
         <i class="fas fa-check-circle mr-2"></i> {{ session('success') }}
-        <button type="button" class="close" data-dismiss="alert">×</button>
+        <button type="button" class="close" data-dismiss="alert">Ã—</button>
     </div>
     @endif
 
     @if(session('error'))
     <div class="alert alert-danger alert-dismissible fade show">
         <i class="fas fa-exclamation-triangle mr-2"></i> {{ session('error') }}
-        <button type="button" class="close" data-dismiss="alert">×</button>
+        <button type="button" class="close" data-dismiss="alert">Ã—</button>
     </div>
     @endif
 
+    @php
+        $tefaShowRouteName = $routePrefix . '.tefas.show';
+        $tefaEditRouteName = $routePrefix . '.tefas.edit';
+        $tefaCreateRouteName = $routePrefix . '.tefas.create';
+        $toggleFeaturedRouteName = $routePrefix . '.products.toggle-featured';
+        $isAdminTefa = auth('admin')->user()?->isAdminTefa();
+
+        $hasTefaShowRoute = \Illuminate\Support\Facades\Route::has($tefaShowRouteName);
+        $hasTefaEditRoute = \Illuminate\Support\Facades\Route::has($tefaEditRouteName);
+        $hasTefaCreateRoute = \Illuminate\Support\Facades\Route::has($tefaCreateRouteName);
+        $hasToggleFeaturedRoute = \Illuminate\Support\Facades\Route::has($toggleFeaturedRouteName);
+    @endphp
+
     <div class="row">
-        <!-- Kolom Kiri: Informasi Produk -->
+        <!-- Kolom Kiri: Informasi Layanan -->
         <div class="col-lg-8">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -43,7 +56,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <!-- Gambar Produk -->
+                        <!-- Gambar Layanan -->
                         <div class="col-md-5 mb-4 mb-md-0">
                             @php
                             $imagePath = $product->image;
@@ -91,12 +104,12 @@
                             </div>
                         </div>
 
-                        <!-- Detail Produk -->
+                        <!-- Detail Layanan -->
                         <div class="col-md-7">
                             <table class="table table-bordered table-hover">
                                 <tbody>
                                     <tr>
-                                        <th width="35%" class="bg-light">Nama Produk</th>
+                                        <th width="35%" class="bg-light">Nama Layanan</th>
                                         <td>
                                             <strong>{{ $product->name }}</strong>
                                             @if($product->is_featured)
@@ -115,10 +128,12 @@
                                                 {{ $product->tefa->code }}
                                             </span>
                                             {{ $product->tefa->name }}
-                                            <a href="{{ route($routePrefix . '.tefas.show', $product->tefa->id) }}"
-                                                class="btn btn-sm btn-outline-primary ml-2">
-                                                <i class="fas fa-external-link-alt"></i>
-                                            </a>
+                                            @if($hasTefaShowRoute)
+                                                <a href="{{ route($tefaShowRouteName, $product->tefa->id) }}"
+                                                    class="btn btn-sm btn-outline-primary ml-2">
+                                                    <i class="fas fa-external-link-alt"></i>
+                                                </a>
+                                            @endif
                                             @else
                                             <span class="text-danger">
                                                 <i class="fas fa-exclamation-triangle mr-1"></i>
@@ -127,15 +142,7 @@
                                             @endif
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th class="bg-light">Harga</th>
-                                        <td>
-                                            <h4 class="text-primary mb-0">
-                                                Rp {{ number_format($product->price, 0, ',', '.') }}
-                                            </h4>
-                                            <small class="text-muted">Harga per unit</small>
-                                        </td>
-                                    </tr>
+
                                     <tr>
                                         <th class="bg-light">Kategori</th>
                                         <td>
@@ -145,7 +152,7 @@
                                     <tr>
                                         <th class="bg-light">Status</th>
                                         <td>
-                                            <span class="badge 
+                                            <span class="badge
                                                 @if($product->status == 'active') badge-success
                                                 @elseif($product->status == 'inactive') badge-secondary
                                                 @else badge-warning @endif"
@@ -160,6 +167,24 @@
                                             </span>
                                         </td>
                                     </tr>
+                                    @if($hasToggleFeaturedRoute)
+                                        <tr>
+                                            <th class="bg-light">Unggulan</th>
+                                            <td>
+                                                <form action="{{ route($toggleFeaturedRouteName, $product->id) }}" method="POST" class="d-flex align-items-center gap-2 mb-0">
+                                                    @csrf
+                                                    <input type="hidden" name="is_featured" value="0">
+                                                    <div class="form-check mb-0">
+                                                        <input class="form-check-input" type="checkbox" value="1" id="is_featured" name="is_featured" {{ $product->is_featured ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="is_featured">
+                                                            Jadikan layanan unggulan
+                                                        </label>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-sm btn-outline-primary ml-2">Simpan</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endif
                                     <tr>
                                         <th class="bg-light">Urutan Tampilan</th>
                                         <td>
@@ -167,18 +192,7 @@
                                             <small class="text-muted ml-2">(Angka kecil = tampil lebih awal)</small>
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <th class="bg-light">Slug URL</th>
-                                        <td>
-                                            <code style="background: #f8f9fa; padding: 2px 6px; border-radius: 3px;">
-                                                /produk/{{ $product->slug }}
-                                            </code>
-                                            <button class="btn btn-sm btn-outline-secondary ml-2"
-                                                onclick="copyToClipboard('/produk/{{ $product->slug }}')">
-                                                <i class="fas fa-copy"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
+
                                     <tr>
                                         <th class="bg-light">Dibuat</th>
                                         <td>
@@ -201,10 +215,10 @@
                         </div>
                     </div>
 
-                    <!-- Deskripsi Produk -->
+                    <!-- Deskripsi Layanan -->
                     <div class="mt-4">
                         <h5 class="border-bottom pb-2 mb-3">
-                            <i class="fas fa-align-left mr-2 text-primary"></i>Deskripsi Produk
+                            <i class="fas fa-align-left mr-2 text-primary"></i>Deskripsi Layanan
                         </h5>
                         <div class="p-4 rounded bg-light border">
                             @if($product->description)
@@ -212,7 +226,7 @@
                             @else
                             <div class="text-center text-muted py-4">
                                 <i class="fas fa-info-circle fa-2x mb-3"></i>
-                                <p class="mb-0">Belum ada deskripsi produk</p>
+                                <p class="mb-0">Belum ada deskripsi layanan</p>
                                 <small>Tambahkan deskripsi di halaman edit</small>
                             </div>
                             @endif
@@ -256,32 +270,39 @@
                             <td>{{ $product->tefa->order }}</td>
                         </tr>
                         <tr>
-                            <td><strong>Produk:</strong></td>
-                            <td>{{ $product->tefa->products_count ?? 0 }} produk</td>
+                            <td><strong>Layanan:</strong></td>
+                            <td>{{ $product->tefa->products_count ?? 0 }} layanan</td>
                         </tr>
                     </table>
 
                     <div class="mt-3 text-center">
-                        <a href="{{ route($routePrefix . '.tefas.show', $product->tefa->id) }}"
-                            class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-external-link-alt mr-1"></i> Detail TEFA
-                        </a>
-                        <a href="{{ route($routePrefix . '.tefas.edit', $product->tefa->id) }}"
-                            class="btn btn-outline-warning btn-sm ml-2">
-                            <i class="fas fa-edit mr-1"></i> Edit TEFA
-                        </a>
+                        @if($hasTefaShowRoute)
+                            <a href="{{ route($tefaShowRouteName, $product->tefa->id) }}"
+                                class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-external-link-alt mr-1"></i> Detail TEFA
+                            </a>
+                        @endif
+
+                        @if($hasTefaEditRoute)
+                            <a href="{{ route($tefaEditRouteName, $product->tefa->id) }}"
+                                class="btn btn-outline-warning btn-sm {{ $hasTefaShowRoute ? 'ml-2' : '' }}">
+                                <i class="fas fa-edit mr-1"></i> Edit TEFA
+                            </a>
+                        @endif
                     </div>
                     @else
                     <div class="text-center py-4">
                         <i class="fas fa-exclamation-triangle fa-2x text-warning mb-3"></i>
-                        <p class="text-muted mb-0">Produk ini belum memiliki TEFA</p>
-                        <small class="text-muted">Tambahkan TEFA di halaman edit produk</small>
-                        <div class="mt-3">
-                            <a href="{{ route($routePrefix . '.tefas.create') }}"
-                                class="btn btn-sm btn-outline-primary">
-                                <i class="fas fa-plus mr-1"></i> Buat TEFA Baru
-                            </a>
-                        </div>
+                        <p class="text-muted mb-0">Layanan ini belum memiliki TEFA</p>
+                        <small class="text-muted">Tambahkan TEFA di halaman edit layanan</small>
+                        @if($hasTefaCreateRoute)
+                            <div class="mt-3">
+                                <a href="{{ route($tefaCreateRouteName) }}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-plus mr-1"></i> Buat TEFA Baru
+                                </a>
+                            </div>
+                        @endif
                     </div>
                     @endif
                 </div>
@@ -305,7 +326,7 @@
                         <div class="col-6 mb-3">
                             <div class="border rounded p-2">
                                 <div class="h4 mb-0 text-success">
-                                    {{ $product->status == 'active' ? '✓' : '✗' }}
+                                    {{ $product->status == 'active' ? 'âœ“' : 'âœ—' }}
                                 </div>
                                 <small class="text-muted">Status</small>
                             </div>
@@ -313,7 +334,7 @@
                         <div class="col-6">
                             <div class="border rounded p-2">
                                 <div class="h4 mb-0 text-warning">
-                                    {{ $product->is_featured ? '★' : '☆' }}
+                                    {{ $product->is_featured ? 'â˜…' : 'â˜†' }}
                                 </div>
                                 <small class="text-muted">Unggulan</small>
                             </div>
@@ -321,7 +342,7 @@
                         <div class="col-6">
                             <div class="border rounded p-2">
                                 <div class="h4 mb-0 text-info">
-                                    {{ $product->tefa ? '✓' : '✗' }}
+                                    {{ $product->tefa ? 'âœ“' : 'âœ—' }}
                                 </div>
                                 <small class="text-muted">TEFA</small>
                             </div>
@@ -383,7 +404,7 @@
 @push('scripts')
 <script>
     function confirmDelete() {
-        return confirm('Hapus produk "{{ $product->name }}"?\n\nTindakan ini tidak dapat dibatalkan!');
+        return confirm('Hapus layanan "{{ $product->name }}"?\n\nTindakan ini tidak dapat dibatalkan!');
     }
 
     function copyToClipboard(text) {
@@ -413,3 +434,4 @@
     });
 </script>
 @endpush
+

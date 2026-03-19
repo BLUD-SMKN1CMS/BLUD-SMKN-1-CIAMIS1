@@ -58,9 +58,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Products
         Route::resource('products', ProductController::class);
-
-        // Services
-        Route::resource('services', ServiceController::class);
+        Route::post('/products/{product}/toggle-featured', [ProductController::class, 'toggleFeatured'])->name('products.toggle-featured');
 
         // Profile
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -78,7 +76,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Export/Import
         Route::get('/export/products', [ProductController::class, 'export'])->name('export.products');
-        Route::get('/export/services', [ServiceController::class, 'export'])->name('export.services');
         Route::post('/import/products', [ProductController::class, 'import'])->name('import.products');
     });
 });
@@ -95,6 +92,7 @@ Route::prefix('super-admin')->name('superadmin.')->group(function () {
 
         // Products
         Route::resource('products', ProductController::class);
+        Route::post('/products/{product}/toggle-featured', [ProductController::class, 'toggleFeatured'])->name('products.toggle-featured');
 
         // Services
         Route::resource('services', ServiceController::class);

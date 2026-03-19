@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Tentang Kami')
 
@@ -22,8 +22,8 @@
         </div>
         <div class="col-lg-6" data-aos="fade-left">
             <h2 class="fw-bold mb-4 text-primary">Siapa Kami?</h2>
-            <p class="lead text-muted">Badan Layanan Umum Daerah (BLUD) SMKN 1 Ciamis adalah unit usaha profesional yang dikelola oleh sekolah untuk memberikan layanan dan produk berkualitas kepada masyarakat.</p>
-            <p>Berdiri dengan semangat Teaching Factory (TEFA), kami mengintegrasikan pembelajaran praktik siswa dengan standar industri yang sesungguhnya. Setiap produk dan layanan yang kami tawarkan dikerjakan oleh siswa-siswa kompeten di bawah bimbingan guru ahli dan praktisi industri.</p>
+            <p class="lead text-muted">Badan Layanan Umum Daerah (BLUD) SMKN 1 Ciamis adalah unit usaha profesional yang dikelola oleh sekolah untuk memberikan layanan dan layanan berkualitas kepada masyarakat.</p>
+            <p>Berdiri dengan semangat Teaching Factory (TEFA), kami mengintegrasikan pembelajaran praktik siswa dengan standar industri yang sesungguhnya. Setiap layanan dan layanan yang kami tawarkan dikerjakan oleh siswa-siswa kompeten di bawah bimbingan guru ahli dan praktisi industri.</p>
             <div class="row mt-4 g-3">
                 <div class="col-6">
                     <div class="d-flex align-items-center">
@@ -77,7 +77,7 @@
                     </div>
                     <ul class="list-unstyled text-muted">
                         <li class="mb-2"><i class="fas fa-arrow-right text-success me-2"></i> Mengembangkan unit produksi berbasis kompetensi keahlian.</li>
-                        <li class="mb-2"><i class="fas fa-arrow-right text-success me-2"></i> Meningkatkan kualitas layanan dan produk sesuai standar pasar.</li>
+                        <li class="mb-2"><i class="fas fa-arrow-right text-success me-2"></i> Meningkatkan kualitas layanan dan layanan sesuai standar pasar.</li>
                         <li class="mb-2"><i class="fas fa-arrow-right text-success me-2"></i> Membangun kemitraan strategis dengan DU/DI.</li>
                         <li class="mb-2"><i class="fas fa-arrow-right text-success me-2"></i> Menumbuhkan jiwa wirausaha bagi warga sekolah.</li>
                     </ul>
@@ -95,7 +95,7 @@
             </div>
             <div class="col-md-3 mb-4 mb-md-0">
                 <h2 class="fw-bold text-primary display-4">{{ $stats['total_products'] ?? 50 }}+</h2>
-                <p class="text-muted fw-bold">Produk Unggulan</p>
+                <p class="text-muted fw-bold">Layanan Unggulan</p>
             </div>
             <div class="col-md-3 mb-4 mb-md-0">
                 <h2 class="fw-bold text-primary display-4">{{ $stats['total_services'] ?? 20 }}+</h2>
@@ -127,3 +127,4 @@
     }
 </style>
 @endsection
+

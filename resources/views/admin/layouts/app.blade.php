@@ -20,6 +20,15 @@
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
+    <!-- Turbo Drive: navigasi halaman tanpa full refresh -->
+    <script src="https://unpkg.com/@hotwired/turbo@8.0.12/dist/turbo.es2017-umd.js" data-turbo-track="reload"></script>
+    <script>
+        if (window.Turbo && Turbo.session) {
+            Turbo.session.drive = true;
+            Turbo.session.formMode = 'off';
+        }
+    </script>
+
     <!-- Custom Admin CSS - Filament Style -->
     <style>
         :root {
@@ -522,6 +531,61 @@
             color: var(--gray-700);
         }
 
+        .admin-pagination-wrap {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .admin-pagination {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+            margin: 0;
+            padding: 10px 14px;
+            background: #eaf2ff;
+            border-radius: 999px;
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.16);
+        }
+
+        .admin-page-item {
+            display: inline-flex;
+        }
+
+        .admin-page-link {
+            min-width: 34px;
+            height: 34px;
+            padding: 0 10px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #1e40af;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            background: transparent;
+        }
+
+        .admin-page-item.active .admin-page-link {
+            background: #3b82f6;
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.5);
+        }
+
+        .admin-page-item:not(.active):not(.disabled) .admin-page-link:hover {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .admin-page-item.disabled .admin-page-link {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
         /* ===== FILAMENT DROPDOWN MENU ===== */
         .nav-dropdown {
             cursor: pointer;
@@ -628,9 +692,10 @@
             height: 100%;
             background: white;
             z-index: 9999;
-            display: flex;
+            display: none !important;
             align-items: center;
             justify-content: center;
+            pointer-events: none;
         }
 
         .loader-spinner {
@@ -786,11 +851,13 @@
                             <i class="fas fa-box-open"></i>
                             <span>Layanan</span>
                         </a>
+                        @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->isSuperAdmin())
                         <a href="{{ route($routePrefix . '.services.index') }}"
                             class="nav-link {{ request()->routeIs($routePrefix . '.services*') ? 'active' : '' }}">
                             <i class="fas fa-handshake"></i>
                             <span>Layanan Sewa</span>
                         </a>
+                        @endif
                         @if(Auth::guard('admin')->check() && Auth::guard('admin')->user()->isSuperAdmin())
                         <a href="{{ route('superadmin.carousels.index') }}"
                             class="nav-link {{ request()->routeIs('superadmin.carousels*') ? 'active' : '' }}">

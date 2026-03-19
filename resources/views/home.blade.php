@@ -1,4 +1,4 @@
-@extends('layouts.app', [
+﻿@extends('layouts.app', [
 'socialMedia' => $socialMedia,
 'contactInfo' => $contactInfo
 ])
@@ -8,13 +8,22 @@
 @section('content')
 <!-- Dynamic Modern Hero Section with Background Carousel -->
 @php
-    $firstCarousel = $carousels->count() > 0 ? $carousels->first() : null;
-    $heroBgImage = $firstCarousel && $firstCarousel->image ? asset('storage/' . $firstCarousel->image) : '';
+    $carouselImages = $carousels
+        ->pluck('image')
+        ->filter()
+        ->map(fn($image) => asset('storage/' . $image))
+        ->values();
+    $heroBgImage = $carouselImages->first() ?? '';
 @endphp
 
-<section class="hero-section-v2" 
-    @if($heroBgImage) style="background-image: url('{{ $heroBgImage }}')" @endif>
-    
+<section id="heroBackgroundSlider"
+    class="hero-section-v2"
+    data-carousel-images='@json($carouselImages)'>
+
+    <div class="hero-bg-layer hero-bg-layer-a is-active" data-hero-layer="a"
+        @if($heroBgImage) style="background-image: url('{{ $heroBgImage }}')" @endif></div>
+    <div class="hero-bg-layer hero-bg-layer-b" data-hero-layer="b"></div>
+
     <!-- Dark Overlay -->
     <div class="hero-dark-overlay"></div>
 
@@ -34,11 +43,11 @@
             <!-- CTA Buttons -->
             <div class="hero-buttons">
                 <a href="{{ $landingSettings['primary_button_url'] ?? '#tefa-section' }}" class="btn-hero btn-primary-hero">
-                    <i class="fas fa-bolt"></i> {{ $landingSettings['primary_button_text'] ?? 'Mulai Sekarang' }}
+                    {{ $landingSettings['primary_button_text'] ?? 'Mulai Sekarang' }}
                 </a>
-                
+
                 <a href="{{ $landingSettings['secondary_button_url'] ?? '#kontak-section' }}" class="btn-hero btn-secondary-hero">
-                    <i class="fas fa-info-circle"></i> {{ $landingSettings['secondary_button_text'] ?? 'Pelajari Lebih Lanjut' }}
+                    {{ $landingSettings['secondary_button_text'] ?? 'Pelajari Lebih Lanjut' }}
                 </a>
             </div>
         </div>
@@ -80,7 +89,7 @@
 </section>
 
 <!-- Featured Products -->
-<section id="produk-section" class="py-5 bg-light" data-aos="fade-up">
+<section id="layanan-section" class="py-5 bg-light" data-aos="fade-up">
     <div class="container">
         <div class="row mb-5">
             <div class="col-12 text-center">
@@ -90,45 +99,109 @@
             </div>
         </div>
 
-        <!-- ======= Featured Products List ======= -->
-        <div class="row">
-            <!-- PRODUK UNGGULAN BARU -->
-            @foreach($featuredProducts as $product)
-            <div class="col-md-3 col-sm-6" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
-                <div class="product-card card shadow-sm h-100">
-                    <div class="position-relative overflow-hidden">
-                        <img src="{{ $product->image_url }}"
-                            class="card-img-top product-img"
-                            alt="{{ $product->name }}"
-                            loading="lazy"
-                            style="height: 200px; object-fit: cover;"
-                            onerror="this.src='https://via.placeholder.com/300x200/4A90E2/FFFFFF?text={{ urlencode(substr($product->name, 0, 20)) }}'">
+        @if($featuredProducts->isEmpty())
+            <div class="alert alert-info text-center mb-0">
+                <i class="fas fa-info-circle me-2"></i>Belum ada layanan unggulan.
+            </div>
+        @elseif($featuredProducts->count() > 8)
+            @php
+                $featuredChunks = $featuredProducts->chunk(8);
+            @endphp
+            <div id="featuredServicesCarousel" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
+                <div class="carousel-indicators featured-indicators">
+                    @foreach($featuredChunks as $chunkIndex => $chunk)
+                        <button type="button" data-bs-target="#featuredServicesCarousel" data-bs-slide-to="{{ $chunkIndex }}" class="{{ $chunkIndex === 0 ? 'active' : '' }}" aria-current="{{ $chunkIndex === 0 ? 'true' : 'false' }}" aria-label="Slide {{ $chunkIndex + 1 }}"></button>
+                    @endforeach
+                </div>
 
-                        <span class="position-absolute top-0 end-0 m-2 badge glass-effect glass-success">
-                            {{ $product->tefa->code ?? 'TEFA' }}
-                        </span>
-                        @if($product->is_featured)
-                        <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark">
-                            <i class="fas fa-star me-1"></i> Unggulan
-                        </span>
-                        @endif
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ $product->name }}</h5>
-                        <p class="card-text flex-grow-1 small text-muted">
-                            {{ Str::limit($product->description, 60) }}
-                        </p>
-                        <div class="d-flex justify-content-end align-items-center mt-auto">
-                            <a href="{{ route('products.show', $product->slug) }}"
-                                class="btn btn-sm btn-outline-primary">
-                                Detail <i class="fas fa-arrow-right ms-1"></i>
-                            </a>
+                <div class="carousel-inner">
+                    @foreach($featuredChunks as $chunkIndex => $chunk)
+                        <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
+                            <div class="row">
+                                @foreach($chunk as $product)
+                                    <div class="col-md-3 col-sm-6 mb-4" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
+                                        <div class="product-card card shadow-sm h-100">
+                                            <div class="position-relative overflow-hidden">
+                                                <img src="{{ $product->image_url }}"
+                                                    class="card-img-top product-img"
+                                                    alt="{{ $product->name }}"
+                                                    loading="lazy"
+                                                    style="height: 200px; object-fit: cover;"
+                                                    onerror="this.src='https://via.placeholder.com/300x200/4A90E2/FFFFFF?text={{ urlencode(substr($product->name, 0, 20)) }}'">
+
+                                                <span class="position-absolute top-0 end-0 m-2 badge glass-effect glass-success">
+                                                    {{ $product->tefa->code ?? 'TEFA' }}
+                                                </span>
+                                                <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark">
+                                                    <i class="fas fa-star me-1"></i> Unggulan
+                                                </span>
+                                            </div>
+                                            <div class="card-body d-flex flex-column">
+                                                <h5 class="card-title">{{ $product->name }}</h5>
+                                                <p class="card-text flex-grow-1 small text-muted">
+                                                    {{ Str::limit($product->description, 60) }}
+                                                </p>
+                                                <div class="d-flex justify-content-end align-items-center mt-auto">
+                                                    <a href="{{ route('products.show', $product->slug) }}"
+                                                        class="btn btn-sm btn-outline-primary">
+                                                        Detail <i class="fas fa-arrow-right ms-1"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <button class="carousel-control-prev featured-control" type="button" data-bs-target="#featuredServicesCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next featured-control" type="button" data-bs-target="#featuredServicesCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        @else
+            <div class="row">
+                @foreach($featuredProducts as $product)
+                <div class="col-md-3 col-sm-6" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
+                    <div class="product-card card shadow-sm h-100">
+                        <div class="position-relative overflow-hidden">
+                            <img src="{{ $product->image_url }}"
+                                class="card-img-top product-img"
+                                alt="{{ $product->name }}"
+                                loading="lazy"
+                                style="height: 200px; object-fit: cover;"
+                                onerror="this.src='https://via.placeholder.com/300x200/4A90E2/FFFFFF?text={{ urlencode(substr($product->name, 0, 20)) }}'">
+
+                            <span class="position-absolute top-0 end-0 m-2 badge glass-effect glass-success">
+                                {{ $product->tefa->code ?? 'TEFA' }}
+                            </span>
+                            <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark">
+                                <i class="fas fa-star me-1"></i> Unggulan
+                            </span>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ $product->name }}</h5>
+                            <p class="card-text flex-grow-1 small text-muted">
+                                {{ Str::limit($product->description, 60) }}
+                            </p>
+                            <div class="d-flex justify-content-end align-items-center mt-auto">
+                                <a href="{{ route('products.show', $product->slug) }}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    Detail <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
+                @endforeach
             </div>
-            @endforeach
-        </div>
+        @endif
     </div>
 </section>
 
@@ -185,7 +258,7 @@
         <div class="row">
             <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
                 <h2 class="display-6 fw-bold text-primary mb-4">Hubungi Kami</h2>
-                <p class="lead mb-4">Ada pertanyaan tentang produk atau layanan kami? Jangan ragu untuk menghubungi kami.</p>
+                <p class="lead mb-4">Ada pertanyaan tentang layanan atau layanan kami? Jangan ragu untuk menghubungi kami.</p>
 
                 <div class="row g-3">
                     <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
@@ -275,7 +348,7 @@
                                 </div>
                                 <div class="col-12">
                                     <label for="subject" class="form-label">Subjek</label>
-                                    <input type="text" class="form-control" id="subject" placeholder="Contoh: Pesan Produk" required>
+                                    <input type="text" class="form-control" id="subject" placeholder="Contoh: Pesan Layanan" required>
                                 </div>
                                 <div class="col-12">
                                     <label for="message" class="form-label">Pesan</label>
@@ -463,6 +536,26 @@
         transform: translateY(-2px);
     }
 
+    #heroBackgroundSlider {
+        background-image: none !important;
+    }
+
+    #heroBackgroundSlider .hero-bg-layer {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0;
+        transition: opacity 900ms ease-in-out;
+        will-change: opacity;
+        z-index: 0;
+    }
+
+    #heroBackgroundSlider .hero-bg-layer.is-active {
+        opacity: 1;
+    }
+
     /* === PERBAIKAN CAROUSEL === */
     .carousel-caption {
         bottom: 5% !important;
@@ -567,6 +660,43 @@
         z-index: 1;
     }
 
+    #featuredServicesCarousel {
+        padding-bottom: 42px;
+    }
+
+    #featuredServicesCarousel .carousel-inner {
+        border-radius: 0;
+        overflow: visible;
+    }
+
+    #featuredServicesCarousel .carousel-item {
+        height: auto;
+        transition: transform .6s ease;
+    }
+
+    #featuredServicesCarousel .featured-control {
+        width: 42px;
+        height: 42px;
+        top: 45%;
+        transform: translateY(-50%);
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.35);
+    }
+
+    #featuredServicesCarousel .featured-control:hover {
+        background: rgba(0, 0, 0, 0.55);
+    }
+
+    #featuredServicesCarousel .featured-indicators {
+        bottom: 0;
+    }
+
+    #featuredServicesCarousel .featured-indicators [data-bs-target] {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+    }
+
     /* === PERBAIKAN RESPONSIVE === */
     @media (max-width: 992px) {
         #heroCarousel .carousel-item {
@@ -614,8 +744,79 @@
 
 @push('scripts')
 <script>
+    function initHeroBackgroundSlider() {
+        const heroSection = document.getElementById('heroBackgroundSlider');
+        if (!heroSection) {
+            return;
+        }
+
+        const layerA = heroSection.querySelector('[data-hero-layer="a"]');
+        const layerB = heroSection.querySelector('[data-hero-layer="b"]');
+        if (!layerA || !layerB) {
+            return;
+        }
+
+        let images = [];
+        try {
+            images = JSON.parse(heroSection.dataset.carouselImages || '[]');
+        } catch (error) {
+            images = [];
+        }
+
+        if (!Array.isArray(images)) {
+            images = [];
+        }
+
+        if (window.__heroBackgroundSliderInterval) {
+            clearInterval(window.__heroBackgroundSliderInterval);
+        }
+
+        const setLayerBackground = (layer, imageUrl) => {
+            layer.style.backgroundImage = imageUrl ? `url('${imageUrl}')` : 'none';
+        };
+
+        const firstImage = images[0] || '';
+        setLayerBackground(layerA, firstImage);
+        layerA.classList.add('is-active');
+        layerB.classList.remove('is-active');
+
+        if (images.length <= 1) {
+            return;
+        }
+
+        let currentIndex = 0;
+        let activeLayer = layerA;
+        let standbyLayer = layerB;
+
+        window.__heroBackgroundSliderInterval = setInterval(function() {
+            const nextIndex = (currentIndex + 1) % images.length;
+            const nextImage = images[nextIndex];
+
+            const doTransition = () => {
+                setLayerBackground(standbyLayer, nextImage);
+
+                requestAnimationFrame(() => {
+                    standbyLayer.classList.add('is-active');
+                    activeLayer.classList.remove('is-active');
+                });
+
+                currentIndex = nextIndex;
+                const previousActive = activeLayer;
+                activeLayer = standbyLayer;
+                standbyLayer = previousActive;
+            };
+
+            const preloader = new Image();
+            preloader.onload = doTransition;
+            preloader.onerror = doTransition;
+            preloader.src = nextImage;
+        }, 5000);
+    }
+
     // ===== CONTACT FORM =====
     $(document).ready(function() {
+        initHeroBackgroundSlider();
+
         $('#contactForm').on('submit', function(e) {
             e.preventDefault();
 
@@ -742,19 +943,11 @@
             };
         }
 
-        // ===== CAROUSEL INFO =====
-        // Update badge dengan info slide aktif
-        $('#heroCarousel').on('slid.bs.carousel', function() {
-            var activeIndex = $(this).find('.carousel-item.active').index();
-            var totalItems = $(this).find('.carousel-item').length;
-            $('.carousel-info-badge').text(`Slide ${activeIndex + 1}/${totalItems} | 16:9`);
-        });
+    });
 
-        // Inisialisasi tooltip untuk badge rasio
-        var tooltip = new bootstrap.Tooltip(document.querySelector('.carousel-info-badge'), {
-            title: 'Rasio carousel: 16:9 (Lebar:Tinggi) - Rekomendasi ukuran gambar: 1920x1080px',
-            placement: 'top'
-        });
+    document.addEventListener('turbo:load', function() {
+        initHeroBackgroundSlider();
     });
 </script>
 @endpush
+

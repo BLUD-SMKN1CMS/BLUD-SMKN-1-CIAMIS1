@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', $product->name . ' - ' . config('app.name'))
 
@@ -9,7 +9,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('products.all') }}">Produk</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('products.all') }}">Layanan</a></li>
                 @if($product->tefa)
                 <li class="breadcrumb-item"><a href="{{ route('tefa.show', $product->tefa->slug) }}">{{ $product->tefa->name }}</a></li>
                 @endif
@@ -26,11 +26,6 @@
             <!-- Product Images -->
             <div class="col-lg-6">
                 <div class="product-images">
-                    <div class="main-image-wrapper">
-                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="main-product-image" id="mainImage">
-                    </div>
-
-                    <!-- Thumbnail Gallery -->
                     @php
                     $images = [];
                     if($product->image) $images[] = $product->image_url;
@@ -39,10 +34,23 @@
                     if($product->image_4) $images[] = $product->image_4_url;
                     @endphp
 
+                    <div class="main-image-wrapper">
+                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="main-product-image" id="mainImage">
+                    </div>
+
+                    @if(count($images) > 1)
+                    <div class="image-dots" id="imageDots">
+                        @foreach($images as $key => $imgUrl)
+                        <button type="button" class="image-dot {{ $key == 0 ? 'active' : '' }}" onclick="changeImageByIndex({{ $key }})" aria-label="Foto {{ $key + 1 }}"></button>
+                        @endforeach
+                    </div>
+                    @endif
+
+                    <!-- Thumbnail Gallery -->
                     @if(count($images) > 1)
                     <div class="thumbnail-gallery">
                         @foreach($images as $key => $imgUrl)
-                        <div class="thumbnail-item {{ $key == 0 ? 'active' : '' }}" onclick="changeImage(this, '{{ $imgUrl }}')">
+                        <div class="thumbnail-item {{ $key == 0 ? 'active' : '' }}" onclick="changeImage(this, '{{ $imgUrl }}', {{ $key }})">
                             <img src="{{ $imgUrl }}" alt="{{ $product->name }}">
                         </div>
                         @endforeach
@@ -83,42 +91,41 @@
 </div>
 
 <!-- Related Products Section -->
-@if($relatedProducts && $relatedProducts->count() > 0)
+@if($relatedServices && $relatedServices->count() > 0)
 <div class="related-products-section">
     <div class="container">
         <div class="section-header">
             <h2>Layanan Terkait</h2>
-            <p>Produk lainnya dari {{ $product->tefa->name ?? 'kategori yang sama' }}</p>
+            <p>Layanan lainnya dari jurusan {{ $product->tefa->name ?? 'yang sama' }}</p>
         </div>
 
         <div class="row g-4">
-            @foreach($relatedProducts as $relatedProduct)
+            @foreach($relatedServices as $relatedService)
             <div class="col-md-6 col-lg-3">
-                <a href="{{ route('products.show', $relatedProduct->slug) }}" class="product-card-link">
+                <a href="{{ $relatedService->url }}" class="product-card-link">
                     <div class="product-card">
                         <div class="product-card-image">
-                            <img src="{{ $relatedProduct->image_url }}" alt="{{ $relatedProduct->name }}">
-                            @if($relatedProduct->is_featured)
+                            <img src="{{ $relatedService->image_url }}" alt="{{ $relatedService->name }}">
+                            @if($relatedService->is_featured)
                             <div class="product-badge featured">Unggulan</div>
                             @endif
                         </div>
                         <div class="product-card-content">
-                            <h3 class="product-card-title">{{ $relatedProduct->name }}</h3>
+                            <h3 class="product-card-title">{{ $relatedService->name }}</h3>
                         </div>
                     </div>
                 </a>
             </div>
+            @endforeach
         </div>
-        @endforeach
     </div>
-</div>
 </div>
 @endif
 
 <style>
     /* Breadcrumb Section */
     .breadcrumb-section {
-        background: linear-gradient(120deg, #0f172a 0%, #1e3a8a 50%, #0ea5e9 100%);
+        background: var(--primary-blue);
         padding: 1.25rem 0;
         margin-bottom: 0;
         position: relative;
@@ -129,7 +136,7 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.12), transparent 40%);
+        background: rgba(255, 255, 255, 0.04);
         pointer-events: none;
     }
 
@@ -163,31 +170,34 @@
     /* Product Detail Section */
     .product-detail-section {
         padding: 3.5rem 0 4rem;
-        background:
-            radial-gradient(circle at top right, rgba(14, 165, 233, 0.12), transparent 40%),
-            linear-gradient(180deg, #f6fbff 0%, #eef6ff 100%);
+        background: #f0f7ff;
     }
 
     /* Product Images */
     .product-images {
         position: sticky;
         top: 100px;
+        display: flex;
+        flex-direction: column;
     }
 
     .main-image-wrapper {
         position: relative;
-        background: #eaf2ff;
+        background: #eef5fd;
         border-radius: 24px;
         overflow: hidden;
         border: 1px solid rgba(74, 144, 226, 0.2);
         box-shadow: 0 20px 45px rgba(30, 58, 138, 0.18);
         margin-bottom: 1rem;
+        height: clamp(280px, 30vw, 400px);
     }
 
     .main-product-image {
         width: 100%;
-        height: auto;
+        height: 100%;
         display: block;
+        object-fit: cover;
+        object-position: center;
         transition: transform 0.5s ease, opacity 0.2s ease;
     }
 
@@ -218,24 +228,48 @@
     }
 
     .thumbnail-gallery {
-        display: flex;
-        gap: 1rem;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.9rem;
         margin-top: 1rem;
     }
 
+    .image-dots {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.45rem;
+        margin: 0.1rem 0 0.75rem;
+    }
+
+    .image-dot {
+        width: 9px;
+        height: 9px;
+        border: 0;
+        border-radius: 999px;
+        background: #c5d1df;
+        padding: 0;
+        transition: all 0.2s ease;
+    }
+
+    .image-dot.active {
+        width: 20px;
+        background: var(--primary-blue);
+    }
+
     .thumbnail-item {
-        width: 80px;
-        height: 80px;
-        border-radius: 14px;
+        width: 100%;
+        height: 96px;
+        border-radius: 12px;
         overflow: hidden;
         cursor: pointer;
-        border: 3px solid transparent;
+        border: 2px solid transparent;
         transition: all 0.3s ease;
-        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
     }
 
     .thumbnail-item.active {
-        border-color: #1d4ed8;
+        border-color: var(--primary-blue);
     }
 
     .thumbnail-item img {
@@ -275,7 +309,7 @@
     }
 
     .tefa-badge {
-        background: linear-gradient(135deg, #1d4ed8 0%, #0ea5e9 100%);
+        background: var(--primary-blue);
         color: white;
     }
 
@@ -286,8 +320,8 @@
     }
 
     .category-badge {
-        background: #eff6ff;
-        color: #1e3a8a;
+        background: #eef5fd;
+        color: var(--dark-blue);
         border: 1px solid #bfdbfe;
     }
 
@@ -307,7 +341,7 @@
     .current-price {
         font-size: 2.5rem;
         font-weight: 700;
-        color: #0992C2;
+        color: var(--primary-blue);
     }
 
     .stock-info {
@@ -339,13 +373,13 @@
         padding: 1.5rem;
         border: 1px solid rgba(14, 165, 233, 0.22);
         border-radius: 16px;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(239, 246, 255, 0.95) 100%);
+        background: #ffffff;
     }
 
     .product-description h3 {
         font-size: 1.15rem;
         font-weight: 700;
-        color: #1d4ed8;
+        color: var(--primary-blue);
         margin-bottom: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.04em;
@@ -383,7 +417,7 @@
     /* Related Products Section */
     .related-products-section {
         padding: 5rem 0;
-        background: linear-gradient(180deg, #ffffff 0%, #f3f8ff 100%);
+        background: #f0f7ff;
     }
 
     .section-header {
@@ -485,7 +519,7 @@
     .product-card-price {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #0992C2;
+        color: var(--primary-blue);
         margin-bottom: 1rem;
     }
 
@@ -514,6 +548,10 @@
             margin-bottom: 2rem;
         }
 
+        .main-image-wrapper {
+            height: 340px;
+        }
+
         .product-info {
             padding: 1.5rem;
         }
@@ -528,6 +566,14 @@
     }
 
     @media (max-width: 767px) {
+        .main-image-wrapper {
+            height: 240px;
+        }
+
+        .thumbnail-gallery {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
         .product-features {
             grid-template-columns: 1fr;
         }
@@ -556,7 +602,7 @@
 </style>
 
 <script>
-    function changeImage(element, src) {
+    function changeImage(element, src, index = null) {
         // Update main image
         const mainImage = document.getElementById('mainImage');
         mainImage.style.opacity = '0';
@@ -571,6 +617,24 @@
             item.classList.remove('active');
         });
         element.classList.add('active');
+
+        if (index !== null) {
+            document.querySelectorAll('.image-dot').forEach((dot, dotIndex) => {
+                dot.classList.toggle('active', dotIndex === index);
+            });
+        }
+    }
+
+    function changeImageByIndex(index) {
+        const thumbnails = document.querySelectorAll('.thumbnail-item');
+        const target = thumbnails[index];
+        if (!target) return;
+
+        const targetImage = target.querySelector('img');
+        if (!targetImage) return;
+
+        changeImage(target, targetImage.src, index);
     }
 </script>
 @endsection
+

@@ -65,8 +65,23 @@
 <!-- Service Details -->
 <section id="service-details" class="py-5 mt-5">
     <div class="container">
+        @php
+            $servicePhotoUrls = collect();
+
+            if (!empty($service->image)) {
+                $servicePhotoUrls->push(asset('storage/' . ltrim($service->image, '/')));
+            }
+
+            $servicePhotoUrls = $servicePhotoUrls
+                ->concat(collect($service->gallery_image_urls ?? []))
+                ->filter(fn($url) => is_string($url) && trim($url) !== '')
+                ->unique()
+                ->values();
+
+            $hasSidebarMedia = $servicePhotoUrls->isNotEmpty() || !empty($service->panorama_image_url);
+        @endphp
         <div class="row g-4">
-            <div class="col-lg-8">
+            <div class="col-lg-{{ $hasSidebarMedia ? '8' : '12' }}">
                 <div class="service-content" style="background: white; border-radius: 20px; padding: 40px; box-shadow: 0 5px 30px rgba(0,0,0,0.08);">
                     <h2 class="fw-bold mb-4" style="color: #2d3748;">Deskripsi Layanan</h2>
                     <p style="font-size: 1.1rem; line-height: 1.8; color: #4a5568;">
@@ -142,24 +157,54 @@
                 </div>
             </div>
 
+            @if($hasSidebarMedia)
             <div class="col-lg-4">
                 <div class="service-content" style="background: white; border-radius: 20px; padding: 20px; box-shadow: 0 5px 30px rgba(0,0,0,0.08); position: sticky; top: 100px;">
-                    <h3 class="fw-bold mb-3" style="color: #2d3748;">Foto 360 Derajat</h3>
+                    @if($servicePhotoUrls->isNotEmpty())
+                        <h3 class="fw-bold mb-3" style="color: #2d3748;">Foto Layanan</h3>
+                        @if($servicePhotoUrls->count() > 1)
+                            <div id="servicePhotoCarousel" class="carousel slide {{ $service->panorama_image_url ? 'mb-4' : 'mb-0' }}" data-bs-ride="false" data-bs-interval="false">
+                                <div class="carousel-indicators mb-0">
+                                    @foreach($servicePhotoUrls as $index => $servicePhotoUrl)
+                                        <button type="button" data-bs-target="#servicePhotoCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}" aria-current="{{ $index === 0 ? 'true' : 'false' }}" aria-label="Slide {{ $index + 1 }}"></button>
+                                    @endforeach
+                                </div>
+
+                                <div class="carousel-inner rounded" style="border: 1px solid #e2e8f0; border-radius: 12px; height: 220px;">
+                                    @foreach($servicePhotoUrls as $index => $servicePhotoUrl)
+                                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}" style="height: 220px;">
+                                            <img src="{{ $servicePhotoUrl }}" alt="Foto layanan {{ $service->name }}" style="width: 100%; height: 220px; object-fit: cover;">
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <button class="carousel-control-prev" type="button" data-bs-target="#servicePhotoCarousel" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#servicePhotoCarousel" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        @else
+                            <div class="{{ $service->panorama_image_url ? 'mb-4' : 'mb-0' }}">
+                                <img src="{{ $servicePhotoUrls->first() }}" alt="Foto layanan {{ $service->name }}" style="width: 100%; height: 220px; border-radius: 12px; object-fit: cover; border: 1px solid #e2e8f0;">
+                            </div>
+                        @endif
+                    @endif
 
                     @if($service->panorama_image_url)
+                        <h3 class="fw-bold mb-3" style="color: #2d3748;">Foto 360 Derajat</h3>
                         <div id="panorama-viewer" style="width: 100%; height: 360px; border-radius: 14px; overflow: hidden;"></div>
                         <p class="small text-muted mt-3 mb-0">
                             <i class="fas fa-info-circle me-1"></i>
                             Geser gambar untuk melihat sudut 360°.
                         </p>
-                    @else
-                        <div class="d-flex flex-column align-items-center justify-content-center text-center" style="height: 360px; border: 1px dashed #cbd5e0; border-radius: 14px; background: #f8fafc;">
-                            <i class="fas fa-panorama fa-2x mb-2" style="color: #94a3b8;"></i>
-                            <p class="mb-0 text-muted">Foto 360 belum tersedia.</p>
-                        </div>
                     @endif
                 </div>
             </div>
+            @endif
         </div>
     </div>
 </section>

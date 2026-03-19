@@ -24,6 +24,7 @@ class Tefa extends Model
         'services',
         'logo',
         'banner',
+        'slider_images',
         'contact_person',
         'contact_number',
         'contact_email',
@@ -37,6 +38,7 @@ class Tefa extends Model
         'order' => 'integer',
         'services' => 'array',
         'job_prospects' => 'array',
+        'slider_images' => 'array',
     ];
 
     // Relasi ke Products
@@ -75,5 +77,17 @@ class Tefa extends Model
     public function getBannerUrlAttribute()
     {
         return $this->banner ? asset($this->banner) : asset('assets/teachingfactorysmea.png');
+    }
+
+    public function getSliderImageUrlsAttribute()
+    {
+        $images = collect($this->slider_images ?? [])
+            ->filter(fn($path) => is_string($path) && trim($path) !== '')
+            ->values();
+
+        return $images
+            ->map(fn($path) => asset(ltrim($path, '/')))
+            ->values()
+            ->all();
     }
 }

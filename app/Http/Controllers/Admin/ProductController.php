@@ -14,6 +14,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
+        /** @var \App\Models\Admin $admin */
         $admin = Auth::guard('admin')->user();
         $query = Product::with('tefa')->orderBy('created_at', 'desc');
 
@@ -25,7 +26,15 @@ class ProductController extends Controller
             $query->where('tefa_id', $request->tefa_id);
         }
 
-        $products = $query->get();
+        if ($request->filled('status') && in_array($request->status, ['draft', 'active', 'inactive'])) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('is_featured') && in_array($request->is_featured, ['0', '1'])) {
+            $query->where('is_featured', $request->is_featured === '1');
+        }
+
+        $products = $query->paginate(10)->withQueryString();
 
         // Untuk dropdown filter: superadmin lihat semua TEFA, admin-tefa hanya miliknya
         $tefas = $admin->isAdminTefa()
@@ -81,8 +90,8 @@ class ProductController extends Controller
             'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ], [
-            'name.required' => 'Nama produk wajib diisi',
-            'name.unique' => 'Nama produk sudah ada',
+            'name.required' => 'Nama layanan wajib diisi',
+            'name.unique' => 'Nama layanan sudah ada',
             'price.min' => 'Harga tidak boleh minus',
             'stock.min' => 'Stok tidak boleh minus',
             'unit.required' => 'Satuan wajib diisi', // Add unit message
@@ -169,7 +178,7 @@ class ProductController extends Controller
             Product::create($data);
 
             return redirect()->route($this->getRoutePrefix() . '.products.index')
-                ->with('success', '✅ Produk berhasil ditambahkan!');
+                ->with('success', '✅ Layanan berhasil ditambahkan!');
         } catch (\Exception $e) {
             \Log::error('Error creating product: ' . $e->getMessage());
 
@@ -180,7 +189,7 @@ class ProductController extends Controller
 
             return redirect()->back()
                 ->withInput()
-                ->withErrors(['error' => 'Gagal menyimpan produk. Error: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Gagal menyimpan layanan. Error: ' . $e->getMessage()]);
         }
     }
 
@@ -191,7 +200,7 @@ class ProductController extends Controller
 
         // Admin-tefa hanya bisa lihat product untuk TEFA miliknya
         if ($admin->isAdminTefa() && $product->tefa_id !== $admin->tefa_id) {
-            abort(403, 'Anda tidak memiliki akses ke produk ini');
+            abort(403, 'Anda tidak memiliki akses ke layanan ini');
         }
 
         return view('admin.products.show', compact('product'));
@@ -204,7 +213,7 @@ class ProductController extends Controller
 
         // Admin-tefa hanya bisa edit product untuk TEFA miliknya
         if ($admin->isAdminTefa() && $product->tefa_id !== $admin->tefa_id) {
-            abort(403, 'Anda tidak memiliki akses ke produk ini');
+            abort(403, 'Anda tidak memiliki akses ke layanan ini');
         }
 
         // Dropdown TEFA: superadmin lihat semua, admin-tefa hanya miliknya
@@ -222,7 +231,7 @@ class ProductController extends Controller
 
         // Admin-tefa hanya bisa update product untuk TEFA miliknya
         if ($admin->isAdminTefa() && $product->tefa_id !== $admin->tefa_id) {
-            abort(403, 'Anda tidak memiliki akses ke produk ini');
+            abort(403, 'Anda tidak memiliki akses ke layanan ini');
         }
 
         // Jika admin-tefa, force tefa_id sesuai miliknya
@@ -255,7 +264,7 @@ class ProductController extends Controller
             'image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'image_4' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ], [
-            'name.unique' => 'Nama produk sudah ada',
+            'name.unique' => 'Nama layanan sudah ada',
             'price.min' => 'Harga tidak boleh minus',
             'stock.min' => 'Stok tidak boleh minus',
             'image.mimes' => 'Format gambar harus: jpeg, png, jpg, gif, atau webp',
@@ -335,7 +344,7 @@ class ProductController extends Controller
             $product->update($data);
 
             return redirect()->route($this->getRoutePrefix() . '.products.index')
-                ->with('success', '✅ Produk berhasil diperbarui!');
+                ->with('success', '✅ Layanan berhasil diperbarui!');
         } catch (\Exception $e) {
             \Log::error('Error updating product: ' . $e->getMessage());
 
@@ -348,7 +357,7 @@ class ProductController extends Controller
 
             return redirect()->back()
                 ->withInput()
-                ->withErrors(['error' => 'Gagal memperbarui produk. Error: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Gagal memperbarui layanan. Error: ' . $e->getMessage()]);
         }
     }
 
@@ -360,7 +369,7 @@ class ProductController extends Controller
 
             // Admin-tefa hanya bisa delete product untuk TEFA miliknya
             if ($admin->isAdminTefa() && $product->tefa_id !== $admin->tefa_id) {
-                abort(403, 'Anda tidak memiliki akses ke produk ini');
+                abort(403, 'Anda tidak memiliki akses ke layanan ini');
             }
 
             // Simpan path gambar untuk dihapus
@@ -383,12 +392,31 @@ class ProductController extends Controller
             }
 
             return redirect()->route($this->getRoutePrefix() . '.products.index')
-                ->with('success', '✅ Produk berhasil dihapus!');
+                ->with('success', '✅ Layanan berhasil dihapus!');
         } catch (\Exception $e) {
             \Log::error('Error deleting product: ' . $e->getMessage());
 
             return redirect()->back()
-                ->withErrors(['error' => 'Gagal menghapus produk. Error: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Gagal menghapus layanan. Error: ' . $e->getMessage()]);
         }
+    }
+
+    public function toggleFeatured(Request $request, $product)
+    {
+        $admin = Auth::guard('admin')->user();
+        $targetProduct = Product::findOrFail($product);
+
+        if ($admin->isAdminTefa() && $targetProduct->tefa_id !== $admin->tefa_id) {
+            abort(403, 'Anda tidak memiliki akses ke layanan ini');
+        }
+
+        $validated = $request->validate([
+            'is_featured' => 'nullable|boolean',
+        ]);
+
+        $targetProduct->is_featured = (bool) ($validated['is_featured'] ?? false);
+        $targetProduct->save();
+
+        return redirect()->back()->with('success', '✅ Status unggulan berhasil diperbarui!');
     }
 }

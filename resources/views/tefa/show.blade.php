@@ -1,17 +1,27 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', $tefa->name . ' - ' . config('app.name'))
 
 @section('content')
 <section class="tefa-header-section">
     <div class="container">
-        <div class="tefa-header-badge">
-            <i class="fas fa-bookmark me-2"></i>Detail Jurusan
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="tefa-main-title">{{ $tefa->name }}</h1>
+                @if($tefa->description)
+                <p class="tefa-main-description">{{ $tefa->description }}</p>
+                @endif
+            </div>
+            <div class="col-lg-4 d-flex justify-content-center mt-3 mt-lg-0">
+                @if($tefa->logo)
+                <img src="{{ asset($tefa->logo) }}" alt="Icon {{ $tefa->name }}" style="width: 180px; height: 180px; object-fit: contain; border-radius: 16px; border: 1px solid rgba(15, 23, 42, 0.12); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16); background: #ffffff; padding: 10px;">
+                @elseif($tefa->icon)
+                <div style="font-size: 100px; line-height: 1; color: #4e73df; display:flex; align-items:center; justify-content:center; width:180px; height:180px; border-radius:16px; background:#eef3ff; border: 1px solid rgba(15, 23, 42, 0.12); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16);">
+                    <i class="{{ $tefa->icon }}"></i>
+                </div>
+                @endif
+            </div>
         </div>
-        <h1 class="tefa-main-title">{{ $tefa->name }}</h1>
-        @if($tefa->description)
-        <p class="tefa-main-description">{{ $tefa->description }}</p>
-        @endif
     </div>
 </section>
 
@@ -30,12 +40,22 @@
 <section class="tefa-spotlight-section">
     <div class="container">
         @php
-        $sliderImages = collect([$tefa->banner_url, $tefa->logo_url])->unique()->values();
+        $sliderImages = collect($tefa->slider_image_urls ?? [])
+            ->filter(fn($url) => is_string($url) && trim($url) !== '')
+            ->values();
+
+        if ($sliderImages->isEmpty()) {
+            $sliderImages = collect([$tefa->banner_url, $tefa->logo_url])
+                ->filter(fn($url) => is_string($url) && trim($url) !== '')
+                ->unique()
+                ->values();
+        }
         @endphp
-        <div class="row g-4 align-items-stretch">
+        <div class="row g-4 align-items-start">
             <div class="col-lg-8">
+                <!-- Slider Card -->
                 <div class="spotlight-main-card">
-                    <div id="tefaVisualSlider" class="carousel slide spotlight-slider" data-bs-ride="carousel" data-bs-interval="5000">
+                    <div id="tefaVisualSlider" class="carousel slide carousel-fade spotlight-slider" data-bs-ride="carousel" data-bs-interval="5000">
                         <div class="carousel-inner">
                             @foreach($sliderImages as $index => $sliderImage)
                             <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
@@ -52,6 +72,10 @@
                         </button>
                         @endif
                     </div>
+                </div>
+
+                <!-- About Content Card -->
+                <div class="spotlight-about-card">
                     <div class="spotlight-content">
                         <h2>Tentang {{ $tefa->name }}</h2>
                         @if($tefa->about)
@@ -105,60 +129,38 @@
     </div>
 </section>
 
-<section class="all-services-section">
-    <div class="container">
-        <div class="section-headline">
-            <h2>Semua Layanan {{ $tefa->name }}</h2>
-            <p>Daftar lengkap layanan jurusan, baik yang unggulan maupun non-unggulan.</p>
-        </div>
+@php
+    $videoUrl = trim((string) ($tefa->video_url ?? ''));
+    $embedVideoUrl = null;
 
-        @if($allServices->isEmpty())
-        <div class="all-services-empty">
-            <i class="fas fa-tools"></i>
-            <h3>Layanan Belum Tersedia</h3>
-            <p>Data layanan untuk jurusan ini belum tersedia saat ini.</p>
+    if ($videoUrl !== '') {
+        if (preg_match('/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/', $videoUrl, $matches)) {
+            $embedVideoUrl = 'https://www.youtube.com/embed/' . $matches[1];
+        } elseif (preg_match('/vimeo\.com\/(?:video\/)?(\d+)/', $videoUrl, $matches)) {
+            $embedVideoUrl = 'https://player.vimeo.com/video/' . $matches[1];
+        }
+    }
+@endphp
+
+@if($embedVideoUrl)
+<section class="tefa-video-section">
+    <div class="container">
+        <div class="section-headline mb-3">
+            <h2>Video Profil {{ $tefa->name }}</h2>
         </div>
-        @else
-        <div class="row g-4">
-            @foreach($allServices as $service)
-            <div class="col-md-6 col-xl-4">
-                @if(!empty($service->link_url))
-                <a href="{{ $service->link_url }}" class="all-service-card">
-                    <div class="all-service-media">
-                        @if($service->image)
-                        <img src="{{ $service->image_url }}" alt="{{ $service->name }}">
-                        @else
-                        <div class="all-service-icon-fallback">
-                            <i class="{{ $service->icon ?: 'fas fa-cubes' }}"></i>
-                        </div>
-                        @endif
-                    </div>
-                    <div class="all-service-content">
-                        <h3>{{ $service->name }}</h3>
-                        <p>{{ Str::limit(strip_tags($service->description), 110) }}</p>
-                        <span class="all-service-link">Lihat Detail <i class="fas fa-arrow-right ms-2"></i></span>
-                    </div>
-                </a>
-                @else
-                <div class="all-service-card all-service-card-static">
-                    <div class="all-service-media">
-                        <div class="all-service-icon-fallback">
-                            <i class="{{ $service->icon ?: 'fas fa-cubes' }}"></i>
-                        </div>
-                    </div>
-                    <div class="all-service-content">
-                        <h3>{{ $service->name }}</h3>
-                        <p>{{ Str::limit(strip_tags($service->description), 110) }}</p>
-                        <span class="all-service-link text-muted">Data layanan jurusan</span>
-                    </div>
-                </div>
-                @endif
+        <div class="tefa-video-card">
+            <div class="tefa-video-frame-wrap">
+                <iframe
+                    src="{{ $embedVideoUrl }}"
+                    title="Video Profil {{ $tefa->name }}"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+                </iframe>
             </div>
-            @endforeach
         </div>
-        @endif
     </div>
 </section>
+@endif
 
 @if($tefa->vision || $tefa->mission)
 <section class="visi-misi-section">
@@ -224,7 +226,7 @@
 @if($products->count() > 0)
 <section class="products-section">
     <div class="container">
-        <h2 class="section-title">Produk Jurusan</h2>
+        <h2 class="section-title">Layanan Jurusan</h2>
         <div class="row g-4">
             @foreach($products as $product)
             <div class="col-md-6 col-lg-4">
@@ -265,24 +267,66 @@
 </section>
 @endif
 
+<section class="all-services-section">
+    <div class="container">
+        <div class="section-headline">
+            <h2>Semua Layanan {{ $tefa->name }}</h2>
+            <p>Daftar lengkap layanan jurusan, baik yang unggulan maupun non-unggulan.</p>
+        </div>
+
+        @if($allServices->isEmpty())
+        <div class="all-services-empty">
+            <i class="fas fa-tools"></i>
+            <h3>Layanan Belum Tersedia</h3>
+            <p>Data layanan untuk jurusan ini belum tersedia saat ini.</p>
+        </div>
+        @else
+        <div class="row g-4">
+            @foreach($allServices as $service)
+            <div class="col-md-6 col-xl-4">
+                @if(!empty($service->link_url))
+                <a href="{{ $service->link_url }}" class="all-service-card">
+                    <div class="all-service-media">
+                        @if($service->image)
+                        <img src="{{ $service->image_url }}" alt="{{ $service->name }}">
+                        @else
+                        <div class="all-service-icon-fallback">
+                            <i class="{{ $service->icon ?: 'fas fa-cubes' }}"></i>
+                        </div>
+                        @endif
+                    </div>
+                    <div class="all-service-content">
+                        <h3>{{ $service->name }}</h3>
+                        <p>{{ Str::limit(strip_tags($service->description), 110) }}</p>
+                        <span class="all-service-link">Lihat Detail <i class="fas fa-arrow-right ms-2"></i></span>
+                    </div>
+                </a>
+                @else
+                <div class="all-service-card all-service-card-static">
+                    <div class="all-service-media">
+                        <div class="all-service-icon-fallback">
+                            <i class="{{ $service->icon ?: 'fas fa-cubes' }}"></i>
+                        </div>
+                    </div>
+                    <div class="all-service-content">
+                        <h3>{{ $service->name }}</h3>
+                        <p>{{ Str::limit(strip_tags($service->description), 110) }}</p>
+                        <span class="all-service-link text-muted">Data layanan jurusan</span>
+                    </div>
+                </div>
+                @endif
+            </div>
+            @endforeach
+        </div>
+        @endif
+    </div>
+</section>
+
 <style>
     .tefa-header-section {
         padding: 3.2rem 0 2rem;
         background: radial-gradient(circle at top left, #eaf5ff 0%, #f7fbff 45%, #ffffff 100%);
         border-bottom: 1px solid #e6edf4;
-    }
-
-    .tefa-header-badge {
-        display: inline-flex;
-        align-items: center;
-        font-size: 0.82rem;
-        font-weight: 700;
-        color: #0b5f75;
-        background: #e8f4f8;
-        border: 1px solid #d4eaef;
-        border-radius: 999px;
-        padding: 0.4rem 0.8rem;
-        margin-bottom: 0.9rem;
     }
 
     .tefa-main-title {
@@ -322,7 +366,7 @@
     }
 
     .tefa-spotlight-section {
-        padding: 2.5rem 0;
+        padding: 3rem 0;
         background: #ffffff;
     }
 
@@ -332,13 +376,48 @@
         border-radius: 18px;
         overflow: hidden;
         box-shadow: 0 12px 30px rgba(17, 45, 74, 0.08);
+        height: auto;
+    }
+
+    .spotlight-about-card {
+        background: #ffffff;
+        border: 1px solid #e9eef3;
+        border-radius: 18px;
+        box-shadow: 0 12px 30px rgba(17, 45, 74, 0.08);
+        overflow: hidden;
+        margin-top: 1rem;
+    }
+
+    .spotlight-slider {
+        padding: 0;
+        margin: 0;
+        background: transparent;
+        height: 390px;
+        position: relative;
+    }
+
+    .spotlight-slider .carousel-inner,
+    .spotlight-slider .carousel-item {
+        background: transparent;
         height: 100%;
     }
 
     .spotlight-slider .carousel-item img {
         width: 100%;
-        height: 390px;
+        height: 100%;
         object-fit: cover;
+        display: block;
+    }
+
+    .spotlight-slider.carousel-fade .carousel-item {
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    .spotlight-slider .carousel-control-prev,
+    .spotlight-slider .carousel-control-next {
+        top: 50%;
+        bottom: auto;
+        transform: translateY(-50%);
     }
 
     .spotlight-content {
@@ -449,7 +528,7 @@
     }
 
     .all-services-section {
-        padding: 2.8rem 0 4rem;
+        padding: 3rem 0;
         background: linear-gradient(180deg, #f7fafd 0%, #ffffff 65%);
     }
 
@@ -573,8 +652,38 @@
         font-weight: 700;
     }
 
+    .tefa-video-section {
+        padding: 3rem 0;
+        background: #ffffff;
+    }
+
+    .tefa-video-card {
+        background: #ffffff;
+        border: 1px solid #e5ecf2;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(19, 41, 61, 0.08);
+        padding: 1rem;
+    }
+
+    .tefa-video-frame-wrap {
+        position: relative;
+        width: 100%;
+        padding-top: 56.25%;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #e9eef4;
+    }
+
+    .tefa-video-frame-wrap iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
     .visi-misi-section {
-        padding: 4rem 0;
+        padding: 3rem 0;
         background: #f8f9fa;
     }
 
@@ -631,7 +740,7 @@
     }
 
     .vm-content ul li::before {
-        content: '•';
+        content: 'â€¢';
         position: absolute;
         left: 0;
         color: #0d6675;
@@ -639,45 +748,51 @@
     }
 
     .prospek-kerja-section {
-        padding: 4rem 0;
-        background: linear-gradient(135deg, #0a4d5c 0%, #0d6675 100%);
+        padding: 3rem 0;
+        background: #f8f9fa;
     }
 
     .prospek-kerja-section .section-title {
-        color: white;
+        color: #1a1a2e;
     }
 
     .prospek-card {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 10px;
-        padding: 2rem;
+        background: #ffffff;
+        border: 1px solid #e5ecf2;
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(23, 40, 63, 0.06);
+        padding: 1.1rem 1rem;
         height: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
     }
 
     .prospek-icon {
-        width: 50px;
-        height: 50px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        background: #e8f4f8;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 1rem;
+        margin-bottom: 0;
+        flex-shrink: 0;
     }
 
     .prospek-icon i {
-        color: white;
+        color: #0f6b82;
     }
 
     .prospek-title {
         font-size: 1.05rem;
-        color: white;
+        color: #1f2f42;
+        font-weight: 700;
         margin: 0;
     }
 
     .products-section {
-        padding: 4rem 0;
+        padding: 3rem 0;
         background: #f8f9fa;
     }
 
@@ -758,8 +873,12 @@
             padding: 2.4rem 0 1.4rem;
         }
 
-        .spotlight-slider .carousel-item img {
+        .spotlight-slider {
             height: 310px;
+        }
+
+        .spotlight-slider .carousel-item img {
+            height: 100%;
         }
 
         .featured-services-card {
@@ -772,12 +891,29 @@
             font-size: 1.55rem;
         }
 
+        .tefa-spotlight-section,
+        .tefa-video-section,
+        .all-services-section,
+        .products-section,
+        .visi-misi-section,
+        .prospek-kerja-section {
+            padding: 2.4rem 0;
+        }
+
+        .spotlight-about-card {
+            margin-top: 0.85rem;
+        }
+
+        .spotlight-slider {
+            height: 230px;
+        }
+
         .tefa-main-description {
             font-size: 0.93rem;
         }
 
         .spotlight-slider .carousel-item img {
-            height: 230px;
+            height: 100%;
         }
 
         .spotlight-content {
@@ -792,11 +928,8 @@
             height: 165px;
         }
 
-        .products-section,
-        .visi-misi-section,
-        .prospek-kerja-section {
-            padding: 3rem 0;
-        }
+
     }
 </style>
 @endsection
+

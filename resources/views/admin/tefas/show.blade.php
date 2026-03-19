@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+﻿@extends('admin.layouts.app')
 
 @section('title', 'Detail TEFA')
 
@@ -84,7 +84,7 @@
                             <form action="{{ route($routePrefix . '.tefas.destroy', $tefa->id) }}" method="POST">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-block"
-                                    onclick="return confirm('Hapus TEFA ini? Semua produk di dalamnya juga akan dihapus!')">
+                                    onclick="return confirm('Hapus TEFA ini? Semua layanan di dalamnya juga akan dihapus!')">
                                     <i class="fas fa-trash"></i> Hapus TEFA
                                 </button>
                             </form>

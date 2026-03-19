@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'Semua Layanan')
 
@@ -31,10 +31,10 @@
             </select>
         </div>
         <div class="col-md-4">
-            <label for="search" class="form-label">Cari Produk</label>
+            <label for="search" class="form-label">Cari Layanan</label>
             <div class="input-group">
                 <input type="text" name="search" id="search" class="form-control"
-                    placeholder="Cari produk..." value="{{ request('search') }}">
+                    placeholder="Cari layanan..." value="{{ request('search') }}">
                 <button type="submit" class="btn btn-primary">Cari</button>
             </div>
         </div>
@@ -42,7 +42,7 @@
 
     @if($products->isEmpty())
     <div class="alert alert-info">
-        Tidak ditemukan produk.
+        Tidak ditemukan layanan.
     </div>
     @else
     <div class="row">

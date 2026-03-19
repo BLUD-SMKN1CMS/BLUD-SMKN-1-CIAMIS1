@@ -11,7 +11,7 @@
             </a>
         </div>
 
-        @if (session('success')) 
+        @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show">
                 {{ session('success') }}
                 <button type="button" class="close" data-dismiss="alert">×</button>
@@ -38,7 +38,7 @@
                         <tbody>
                             @forelse($tefas as $tefa)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ ($tefas->currentPage() - 1) * $tefas->perPage() + $loop->iteration }}</td>
                                 <td>{{ $tefa->name }}</td>
                                 <td><span class="badge badge-primary">{{ $tefa->code }}</span></td>
                                 <td>
@@ -100,6 +100,12 @@
                         </tbody>
                     </table>
                 </div>
+
+                @if($tefas->hasPages())
+                <div class="mt-3 d-flex justify-content-center">
+                    {{ $tefas->links('vendor.pagination.admin-pill') }}
+                </div>
+                @endif
             </div>
         </div>
     </div>

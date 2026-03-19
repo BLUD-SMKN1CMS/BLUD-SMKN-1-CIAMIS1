@@ -15,6 +15,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        /** @var \App\Models\Admin $admin */
         $admin = Auth::guard('admin')->user();
 
         // Jika admin-tefa, filter hanya untuk TEFA miliknya
@@ -33,9 +34,7 @@ class DashboardController extends Controller
                     $q->where('id', $admin->tefa_id);
                 });
             })->where('status', 'active')->count(),
-            'total_services' => $admin->isAdminTefa()
-                ? Service::where('tefa_id', $admin->tefa_id)->where('status', 'available')->count()
-                : Service::where('status', 'available')->count(),
+            'total_services' => Service::where('status', 'available')->count(),
             'total_contacts' => Contact::where('status', 'new')->count(),
         ];
 
@@ -52,14 +51,10 @@ class DashboardController extends Controller
             ? Product::where('tefa_id', $admin->tefa_id)->latest()->take(5)->get()
             : collect();
 
-        $recentServices = $admin->isAdminTefa()
-            ? Service::where('tefa_id', $admin->tefa_id)->latest()->take(5)->get()
-            : collect();
-
         // Return view sesuai role
         if ($admin->isAdminTefa()) {
             $myTefa = Tefa::find($admin->tefa_id);
-            return view('admin.dashboard.admin-tefa', compact('stats', 'recentContacts', 'myTefa', 'recentProducts', 'recentServices'));
+            return view('admin.dashboard.admin-tefa', compact('stats', 'recentContacts', 'myTefa', 'recentProducts'));
         }
 
         // Return view DENGAN LAYOUT ADMIN (superadmin)

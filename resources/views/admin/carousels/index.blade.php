@@ -140,7 +140,7 @@
                             carousel
                         </div>
                         <nav aria-label="Pagination">
-                            {{ $carousels->links('pagination::bootstrap-5') }}
+                            {{ $carousels->links('vendor.pagination.admin-pill') }}
                         </nav>
                     </div>
 

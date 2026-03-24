@@ -93,7 +93,6 @@ class ServiceController extends Controller
     public function edit($id)
     {
         $this->authorizeSuperAdmin();
-
         $service = Service::findOrFail($id);
 
         return view('admin.services.edit', compact('service'));
@@ -102,7 +101,6 @@ class ServiceController extends Controller
     public function update(Request $request, $id)
     {
         $this->authorizeSuperAdmin();
-
         $service = Service::findOrFail($id);
 
         $request->validate([

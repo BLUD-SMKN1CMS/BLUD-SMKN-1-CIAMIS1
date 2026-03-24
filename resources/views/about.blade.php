@@ -111,7 +111,7 @@
     <!-- Quote -->
     <div class="text-center py-5" data-aos="zoom-in">
         <blockquote class="blockquote">
-            <p class="mb-4 h3 fst-italic">"SMK Bisa! SMK Hebat! Siap Kerja, Santun, Mandiri, Kreatif!"</p>
+            <p class="mb-4 h3 fst-italic">"SMKN Hebat! SMK Bisa! SMKN 1 Ciamis Yakin Bisa"</p>
             <footer class="blockquote-footer">Motto SMKN 1 Ciamis</footer>
         </blockquote>
     </div>

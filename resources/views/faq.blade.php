@@ -82,6 +82,7 @@
                     </div>
                 </div>
 
+<<<<<<< Updated upstream
                 <!-- Kategori: Pengiriman & Pengembalian -->
                 <div class="faq-category mb-4" data-aos="fade-up" data-aos-delay="200">
                     <h3 class="fw-bold text-primary mb-3"><i class="fas fa-truck me-2"></i>Pengiriman & Kebijakan</h3>
@@ -113,6 +114,8 @@
                     </div>
                 </div>
 
+=======
+>>>>>>> Stashed changes
                  <!-- Kategori: Layanan Sewa -->
                  <div class="faq-category mb-4" data-aos="fade-up" data-aos-delay="300">
                     <h3 class="fw-bold text-primary mb-3"><i class="fas fa-handshake me-2"></i>Syarat & Ketentuan Sewa</h3>

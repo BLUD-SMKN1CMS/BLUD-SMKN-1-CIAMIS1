@@ -24,7 +24,8 @@
     <script src="https://unpkg.com/@hotwired/turbo@8.0.12/dist/turbo.es2017-umd.js" data-turbo-track="reload"></script>
     <script>
         if (window.Turbo && Turbo.session) {
-            Turbo.session.drive = true;
+            // Admin uses many page-specific JS handlers; full reload is more stable.
+            Turbo.session.drive = false;
             Turbo.session.formMode = 'off';
         }
     </script>
@@ -177,6 +178,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            min-width: 0;
         }
 
         /* ===== FILAMENT TOPBAR ===== */
@@ -259,6 +261,13 @@
             border-radius: 8px;
             padding: 6px;
             min-width: 200px;
+            z-index: 1200;
+        }
+
+        /* Pastikan dropdown aksi di dalam tabel tidak terpotong container. */
+        .table-responsive {
+            overflow-x: auto;
+            overflow-y: visible;
         }
 
         .dropdown-item {
@@ -633,8 +642,27 @@
             font-size: 0.85rem;
         }
 
+        .sidebar-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            z-index: 995;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+
+        .sidebar-backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
         /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
+            body.sidebar-open {
+                overflow: hidden;
+            }
+
             .sidebar {
                 transform: translateX(-100%);
                 width: 280px;
@@ -649,33 +677,59 @@
             }
 
             .topbar {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
+                padding: 14px 16px 14px 64px;
             }
 
             .topbar-right {
-                width: 100%;
                 justify-content: flex-end;
             }
 
             .content-area {
-                padding: 20px;
+                padding: 16px;
+                overflow-x: auto;
+            }
+
+            .topbar-left h1 {
+                font-size: 1.15rem;
+            }
+
+            .admin-footer {
+                padding: 12px 16px;
+                font-size: 0.78rem;
             }
 
             .mobile-menu-toggle {
                 display: block !important;
                 position: fixed;
-                top: 20px;
-                left: 20px;
+                top: 12px;
+                left: 12px;
                 z-index: 1001;
                 background: var(--primary-color);
                 color: white;
                 border: none;
-                width: 45px;
-                height: 45px;
+                width: 40px;
+                height: 40px;
                 border-radius: 8px;
-                font-size: 1.2rem;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .topbar {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .topbar-right {
+                margin-left: auto;
+            }
+
+            .content-area {
+                padding: 12px;
             }
         }
 
@@ -933,6 +987,8 @@
         </div>
     </nav>
 
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
     <!-- Main Content -->
     <div class="main-content">
         <!-- Topbar -->
@@ -1035,24 +1091,85 @@
 
     <!-- Custom Scripts -->
     <script>
-        // Wait for page to load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Hide page loader
-            setTimeout(function() {
-                document.getElementById('pageLoader').style.display = 'none';
-            }, 500);
-
-            // Mobile menu toggle
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const sidebar = document.getElementById('sidebar');
-
-            if (mobileMenuToggle) {
-                mobileMenuToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('show');
-                });
+        function setupAdminGlobalHandlers() {
+            if (window.__adminGlobalHandlersBound) {
+                return;
             }
 
-            // Auto-hide alerts after 5 seconds
+            document.addEventListener('click', function(event) {
+                const toggle = event.target.closest('.nav-dropdown-toggle');
+                if (toggle) {
+                    event.preventDefault();
+                    const parent = toggle.closest('.nav-dropdown');
+                    if (!parent) return;
+
+                    document.querySelectorAll('.nav-dropdown').forEach(function(dropdown) {
+                        if (dropdown !== parent) {
+                            dropdown.classList.remove('active');
+                        }
+                    });
+
+                    parent.classList.toggle('active');
+                    return;
+                }
+
+                const sidebar = document.getElementById('sidebar');
+                const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+                const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+                if (!sidebar || !mobileMenuToggle) return;
+
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnMenuToggle = mobileMenuToggle.contains(event.target);
+
+                if (window.innerWidth <= 992 &&
+                    !isClickInsideSidebar &&
+                    !isClickOnMenuToggle &&
+                    sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                    document.body.classList.remove('sidebar-open');
+                    if (sidebarBackdrop) {
+                        sidebarBackdrop.classList.remove('show');
+                    }
+                }
+            });
+
+            window.__adminGlobalHandlersBound = true;
+        }
+
+        function initAdminPage() {
+            const loader = document.getElementById('pageLoader');
+            if (loader) {
+                setTimeout(function() {
+                    loader.style.display = 'none';
+                }, 300);
+            }
+
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+            if (mobileMenuToggle && sidebar) {
+                mobileMenuToggle.onclick = function() {
+                    sidebar.classList.toggle('show');
+                    const isOpen = sidebar.classList.contains('show');
+
+                    if (window.innerWidth <= 992) {
+                        document.body.classList.toggle('sidebar-open', isOpen);
+                        if (sidebarBackdrop) {
+                            sidebarBackdrop.classList.toggle('show', isOpen);
+                        }
+                    }
+                };
+            }
+
+            if (sidebarBackdrop) {
+                sidebarBackdrop.onclick = function() {
+                    if (!sidebar) return;
+                    sidebar.classList.remove('show');
+                    sidebarBackdrop.classList.remove('show');
+                    document.body.classList.remove('sidebar-open');
+                };
+            }
+
             setTimeout(function() {
                 document.querySelectorAll('.alert-admin').forEach(alert => {
                     const bsAlert = new bootstrap.Alert(alert);
@@ -1060,26 +1177,26 @@
                 });
             }, 5000);
 
-            // Initialize DataTables if table exists
-            if ($.fn.DataTable.isDataTable('.table-admin')) {
+            if ($.fn.DataTable && $.fn.DataTable.isDataTable('.table-admin')) {
                 $('.table-admin').DataTable().destroy();
             }
 
-            $('.table-admin').DataTable({
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
-                },
-                pageLength: 10,
-                responsive: true,
-                order: [
-                    [0, 'asc']
-                ],
-                dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
-                    '<"row"<"col-sm-12"tr>>' +
-                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>'
-            });
+            if ($('.table-admin').length && $.fn.DataTable) {
+                $('.table-admin').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
+                    },
+                    pageLength: 10,
+                    responsive: true,
+                    order: [
+                        [0, 'asc']
+                    ],
+                    dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+                        '<"row"<"col-sm-12"tr>>' +
+                        '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>'
+                });
+            }
 
-            // Confirm delete with SweetAlert
             window.confirmDelete = function(event, message = 'Apakah Anda yakin ingin menghapus data ini?') {
                 event.preventDefault();
 
@@ -1099,24 +1216,36 @@
                 });
             };
 
-            // Image preview
-            window.previewImage = function(input, previewId) {
-                const preview = document.getElementById(previewId);
-                const file = input.files[0];
+            if (typeof window.previewImage !== 'function') {
+                window.previewImage = function(input, previewId) {
+                    const resolvedPreviewId = previewId || 'mainPreview';
+                    const preview = document.getElementById(resolvedPreviewId);
+                    if (!preview || !input || !input.files) return;
 
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        preview.src = e.target.result;
-                        preview.style.display = 'block';
+                    const file = input.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            preview.src = e.target.result;
+                            preview.style.display = 'block';
+
+                            const placeholder = document.getElementById('placeholderContent');
+                            if (placeholder) {
+                                placeholder.classList.add('d-none');
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        preview.style.display = 'none';
+
+                        const placeholder = document.getElementById('placeholderContent');
+                        if (placeholder) {
+                            placeholder.classList.remove('d-none');
+                        }
                     }
-                    reader.readAsDataURL(file);
-                } else {
-                    preview.style.display = 'none';
-                }
-            };
+                };
+            }
 
-            // Show toast notification
             window.showToast = function(type, message) {
                 const toast = $(`
                     <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -1133,55 +1262,26 @@
                 const bsToast = new bootstrap.Toast(toast[0]);
                 bsToast.show();
 
-                // Remove after hide
                 toast.on('hidden.bs.toast', function() {
                     $(this).remove();
                 });
             };
 
-            // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function(event) {
-                const isClickInsideSidebar = sidebar.contains(event.target);
-                const isClickOnMenuToggle = mobileMenuToggle.contains(event.target);
-
-                if (window.innerWidth <= 768 &&
-                    !isClickInsideSidebar &&
-                    !isClickOnMenuToggle &&
-                    sidebar.classList.contains('show')) {
-                    sidebar.classList.remove('show');
-                }
-            });
-
-            // Dropdown menu toggle
-            document.querySelectorAll('.nav-dropdown-toggle').forEach(function(toggle) {
-                toggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const parent = this.closest('.nav-dropdown');
-
-                    // Close other dropdowns
-                    document.querySelectorAll('.nav-dropdown').forEach(function(dropdown) {
-                        if (dropdown !== parent) {
-                            dropdown.classList.remove('active');
-                        }
-                    });
-
-                    // Toggle current dropdown
-                    parent.classList.toggle('active');
-                });
-            });
-
-            // Keep dropdown open if one of its items is active
             document.querySelectorAll('.nav-dropdown').forEach(function(dropdown) {
                 if (dropdown.querySelector('.nav-dropdown-menu .nav-link.active')) {
                     dropdown.classList.add('active');
                 }
             });
 
-            // Initialize all dropdowns manually
             const dropdownElementList = document.querySelectorAll('[data-bs-toggle="dropdown"]');
-            const dropdownList = [...dropdownElementList].map(dropdownToggleEl => new bootstrap.Dropdown(
-                dropdownToggleEl));
-        });
+            [...dropdownElementList].forEach(dropdownToggleEl => {
+                new bootstrap.Dropdown(dropdownToggleEl);
+            });
+        }
+
+        setupAdminGlobalHandlers();
+        document.addEventListener('DOMContentLoaded', initAdminPage);
+        document.addEventListener('turbo:load', initAdminPage);
     </script>
 
     @stack('scripts')

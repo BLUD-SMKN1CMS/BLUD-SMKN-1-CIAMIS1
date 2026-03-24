@@ -108,6 +108,10 @@
             transform: scale(1.08) rotate(2deg);
         }
 
+        .dropdown-menu {
+            z-index: 1200;
+        }
+
         @media (max-width: 991.98px) {
             .navbar-brand img {
                 height: 38px;

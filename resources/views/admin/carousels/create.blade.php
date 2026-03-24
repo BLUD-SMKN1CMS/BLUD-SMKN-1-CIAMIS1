@@ -80,7 +80,7 @@
                                             </div>
                                             
                                             <!-- Image Preview -->
-                                            <img id="mainPreview" src="#" alt="Preview" class="w-100 h-100 position-absolute top-0 start-0" style="display: none; object-fit: cover;">
+                                            <img id="mainPreview" src="#" alt="Preview" class="w-100 h-100 position-absolute top-0" style="display: none; object-fit: cover; left: 0;">
                                         </div>
                                         <small class="text-muted mt-2 d-block">Preview rasio 16:9</small>
                                     </div>
@@ -89,7 +89,7 @@
                                     <div class="alert alert-info mt-3">
                                         <i class="fas fa-info-circle me-2"></i>
                                         <strong>Rasio 16:9</strong><br>
-                                        Ukuran disarankan: <strong>1920×1080px</strong><br>
+                                        Ukuran akan <strong>auto-cut ke 1920×1080px</strong><br>
                                         Format: JPG, PNG, GIF (max 5MB)
                                     </div>
                                 </div>
@@ -125,20 +125,6 @@
                 preview.src = e.target.result;
                 preview.style.display = 'block';
                 placeholder.classList.add('d-none');
-                
-                // Check image dimensions
-                const img = new Image();
-                img.onload = function() {
-                    const ratio = img.width / img.height;
-                    const targetRatio = 16/9;
-                    const tolerance = 0.1; // Allow some flexibility
-                    
-                    if (Math.abs(ratio - targetRatio) > tolerance) {
-                        // Optional: Show warning or just log it
-                        console.log('Ratio warning: ' + ratio);
-                    }
-                };
-                img.src = e.target.result;
             };
             
             reader.readAsDataURL(input.files[0]);

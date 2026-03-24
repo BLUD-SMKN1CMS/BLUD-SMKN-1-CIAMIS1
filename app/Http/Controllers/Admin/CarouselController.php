@@ -6,10 +6,78 @@ use App\Http\Controllers\Controller;
 use App\Models\Carousel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Facades\Image;
 
 class CarouselController extends Controller
 {
+    /**
+     * Process uploaded carousel image to fixed 16:9 ratio (1920x1080).
+     */
+    private function processCarouselImage($image): string
+    {
+        $filename = 'carousel_' . time() . '_' . uniqid() . '.jpg';
+        $path = 'carousels/' . $filename;
+        $targetWidth = 1920;
+        $targetHeight = 1080;
+
+        $imageInfo = getimagesize($image->getRealPath());
+        if (!$imageInfo) {
+            throw new \RuntimeException('Gambar tidak valid.');
+        }
+
+        [$srcWidth, $srcHeight] = $imageInfo;
+        $mime = $imageInfo['mime'] ?? 'image/jpeg';
+
+        $source = imagecreatefromstring(file_get_contents($image->getRealPath()));
+        if (!$source) {
+            throw new \RuntimeException('Gagal membaca file gambar.');
+        }
+
+        // Hitung area crop tengah agar rasio source menjadi 16:9.
+        $targetRatio = $targetWidth / $targetHeight;
+        $sourceRatio = $srcWidth / $srcHeight;
+
+        if ($sourceRatio > $targetRatio) {
+            $cropHeight = $srcHeight;
+            $cropWidth = (int) round($srcHeight * $targetRatio);
+            $srcX = (int) round(($srcWidth - $cropWidth) / 2);
+            $srcY = 0;
+        } else {
+            $cropWidth = $srcWidth;
+            $cropHeight = (int) round($srcWidth / $targetRatio);
+            $srcX = 0;
+            $srcY = (int) round(($srcHeight - $cropHeight) / 2);
+        }
+
+        $canvas = imagecreatetruecolor($targetWidth, $targetHeight);
+        if (in_array($mime, ['image/png', 'image/gif'], true)) {
+            imagefill($canvas, 0, 0, imagecolorallocate($canvas, 255, 255, 255));
+        }
+
+        imagecopyresampled(
+            $canvas,
+            $source,
+            0,
+            0,
+            $srcX,
+            $srcY,
+            $targetWidth,
+            $targetHeight,
+            $cropWidth,
+            $cropHeight
+        );
+
+        ob_start();
+        imagejpeg($canvas, null, 85);
+        $binary = ob_get_clean();
+
+        imagedestroy($source);
+        imagedestroy($canvas);
+
+        Storage::disk('public')->put($path, $binary);
+
+        return $path;
+    }
+
     /**
      * Display a listing of carousels.
      */
@@ -42,31 +110,9 @@ class CarouselController extends Controller
         // Handle image upload with 16:9 validation
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            
-            // Check image dimensions (should be 16:9 ratio)
-            list($width, $height) = getimagesize($image->getPathname());
-            $ratio = $width / $height;
-            
-            // Allow small tolerance for 16:9 ratio (1.777)
-            if (abs($ratio - 16/9) > 0.1) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors([
-                        'image' => 'Rasio gambar harus 16:9. Ukuran yang disarankan: 1920x1080px'
-                    ]);
-            }
 
-            // Generate unique filename
-            $filename = 'carousel_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            
-            // Store in carousels directory
-            $path = $image->storeAs('carousels', $filename, 'public');
-            
-            // Create thumbnail (optional)
-            // $thumbnail = Image::make($image->getRealPath())->resize(300, 169);
-            // Storage::disk('public')->put('carousels/thumbs/' . $filename, $thumbnail->stream());
-            
-            $validated['image'] = $path;
+            // Auto crop image to 16:9 (1920x1080) for consistent carousel display.
+            $validated['image'] = $this->processCarouselImage($image);
         }
 
         // Set default order if not provided
@@ -121,32 +167,14 @@ class CarouselController extends Controller
         // Handle image upload if new image provided
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            
-            // Check image dimensions (should be 16:9 ratio)
-            list($width, $height) = getimagesize($image->getPathname());
-            $ratio = $width / $height;
-            
-            // Allow small tolerance for 16:9 ratio (1.777)
-            if (abs($ratio - 16/9) > 0.1) {
-                return redirect()->back()
-                    ->withInput()
-                    ->withErrors([
-                        'image' => 'Rasio gambar harus 16:9. Ukuran yang disarankan: 1920x1080px'
-                    ]);
-            }
 
             // Delete old image if exists
             if ($carousel->image && Storage::disk('public')->exists($carousel->image)) {
                 Storage::disk('public')->delete($carousel->image);
             }
 
-            // Generate unique filename
-            $filename = 'carousel_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-            
-            // Store in carousels directory
-            $path = $image->storeAs('carousels', $filename, 'public');
-            
-            $validated['image'] = $path;
+            // Auto crop image to 16:9 (1920x1080) for consistent carousel display.
+            $validated['image'] = $this->processCarouselImage($image);
         } else {
             // Keep existing image
             unset($validated['image']);

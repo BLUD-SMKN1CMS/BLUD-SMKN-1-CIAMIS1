@@ -96,7 +96,7 @@
                                 <div class="alert alert-info mt-3">
                                     <i class="fas fa-info-circle me-2"></i>
                                     <strong>Rasio 16:9</strong><br>
-                                    Ukuran disarankan: <strong>1920×1080px</strong>
+                                    Gambar akan <strong>auto-cut ke 1920×1080px</strong>
                                 </div>
                             </div>
                         </div>
@@ -143,19 +143,6 @@
             reader.onload = function(e) {
                 preview.src = e.target.result;
                 previewDiv.style.display = 'block';
-                
-                // Check image dimensions
-                const img = new Image();
-                img.onload = function() {
-                    const ratio = img.width / img.height;
-                    const targetRatio = 16/9;
-                    const tolerance = 0.1;
-                    
-                    if (Math.abs(ratio - targetRatio) > tolerance) {
-                        alert('⚠️ Peringatan: Rasio gambar bukan 16:9! Disarankan: 1920×1080px');
-                    }
-                };
-                img.src = e.target.result;
             };
             
             reader.readAsDataURL(input.files[0]);

@@ -947,9 +947,6 @@
                         <a class="nav-link" href="{{ request()->routeIs('home') ? '#layanan-section' : url('/#layanan-section') }}">Layanan</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ request()->routeIs('home') ? '#layanan-section' : url('/#layanan-section') }}">Layanan</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="{{ request()->routeIs('home') ? '#kontak-section' : url('/#kontak-section') }}">Kontak</a>
                     </li>
                 </ul>

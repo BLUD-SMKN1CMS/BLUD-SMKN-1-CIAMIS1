@@ -40,7 +40,7 @@
                         </thead>
                         <tbody>
                             @forelse($contacts as $contact)
-                            <tr class="{{ $contact->status == 'unread' ? 'table-warning' : '' }}">
+                            <tr class="{{ $contact->status == 'new' ? 'table-warning' : '' }}">
                                 <td>
                                     <input type="checkbox" class="contact-checkbox" value="{{ $contact->id }}">
                                 </td>
@@ -50,7 +50,7 @@
                                 <td>{{ Str::limit($contact->subject, 30) }}</td>
                                 <td>
                                     <span class="badge
-                                        @if($contact->status == 'unread') badge-danger
+                                        @if($contact->status == 'new') badge-danger
                                         @elseif($contact->status == 'read') badge-warning
                                         @elseif($contact->status == 'replied') badge-success
                                         @else badge-secondary @endif">

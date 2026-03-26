@@ -82,40 +82,6 @@
                     </div>
                 </div>
 
-<<<<<<< Updated upstream
-                <!-- Kategori: Pengiriman & Pengembalian -->
-                <div class="faq-category mb-4" data-aos="fade-up" data-aos-delay="200">
-                    <h3 class="fw-bold text-primary mb-3"><i class="fas fa-truck me-2"></i>Pengiriman & Kebijakan</h3>
-                    
-                    <div class="accordion-item shadow-sm border-0 mb-3 rounded overflow-hidden">
-                        <h2 class="accordion-header" id="headingFive">
-                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                                Berapa lama proses pengiriman barang?
-                            </button>
-                        </h2>
-                        <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body text-muted">
-                                Untuk layanan ready stock, pengiriman dilakukan H+1 setelah pembayaran terkonfirmasi. Estimasi sampai tergantung ekspedisi yang dipilih (JNE, J&T, SiCepat). Untuk layanan pre-order, waktu pengerjaan akan diinfokan oleh admin.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="accordion-item shadow-sm border-0 mb-3 rounded overflow-hidden">
-                        <h2 class="accordion-header" id="headingSix">
-                            <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-                                Apakah barang bisa dikembalikan (Retur)?
-                            </button>
-                        </h2>
-                        <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body text-muted">
-                                Kami menerima retur jika barang yang diterima rusak, cacat produksi, atau tidak sesuai pesanan. Wajib menyertakan video unboxing maksimal 1x24 jam setelah barang diterima. Biaya kirim retur ditanggung pembeli kecuali kesalahan dari pihak kami.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-=======
->>>>>>> Stashed changes
                  <!-- Kategori: Layanan Sewa -->
                  <div class="faq-category mb-4" data-aos="fade-up" data-aos-delay="300">
                     <h3 class="fw-bold text-primary mb-3"><i class="fas fa-handshake me-2"></i>Syarat & Ketentuan Sewa</h3>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Carousel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class CarouselController extends Controller
@@ -14,6 +15,10 @@ class CarouselController extends Controller
      */
     private function processCarouselImage($image): string
     {
+        if (!function_exists('imagecreatefromstring') || !function_exists('imagecopyresampled')) {
+            throw new \RuntimeException('Ekstensi GD tidak tersedia di server.');
+        }
+
         $filename = 'carousel_' . time() . '_' . uniqid() . '.jpg';
         $path = 'carousels/' . $filename;
         $targetWidth = 1920;
@@ -27,7 +32,12 @@ class CarouselController extends Controller
         [$srcWidth, $srcHeight] = $imageInfo;
         $mime = $imageInfo['mime'] ?? 'image/jpeg';
 
-        $source = imagecreatefromstring(file_get_contents($image->getRealPath()));
+        $rawContent = file_get_contents($image->getRealPath());
+        if ($rawContent === false) {
+            throw new \RuntimeException('Gagal membaca konten file gambar.');
+        }
+
+        $source = imagecreatefromstring($rawContent);
         if (!$source) {
             throw new \RuntimeException('Gagal membaca file gambar.');
         }
@@ -70,12 +80,25 @@ class CarouselController extends Controller
         imagejpeg($canvas, null, 85);
         $binary = ob_get_clean();
 
-        imagedestroy($source);
-        imagedestroy($canvas);
-
         Storage::disk('public')->put($path, $binary);
 
         return $path;
+    }
+
+    /**
+     * Simpan gambar carousel dengan fallback jika proses crop gagal.
+     */
+    private function saveCarouselImage($image): string
+    {
+        try {
+            return $this->processCarouselImage($image);
+        } catch (\Throwable $e) {
+            Log::warning('Carousel image processing failed, fallback to original upload.', [
+                'message' => $e->getMessage(),
+            ]);
+
+            return $image->store('carousels', 'public');
+        }
     }
 
     /**
@@ -111,8 +134,8 @@ class CarouselController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
 
-            // Auto crop image to 16:9 (1920x1080) for consistent carousel display.
-            $validated['image'] = $this->processCarouselImage($image);
+            // Auto crop image to 16:9 (1920x1080), fallback ke file asli jika gagal.
+            $validated['image'] = $this->saveCarouselImage($image);
         }
 
         // Set default order if not provided
@@ -138,7 +161,12 @@ class CarouselController extends Controller
      */
     public function show(string $id)
     {
-        $carousel = Carousel::findOrFail($id);
+        $carousel = Carousel::find($id);
+        if (!$carousel) {
+            return redirect()->route('superadmin.carousels.index')
+                ->with('error', 'Carousel tidak ditemukan.');
+        }
+
         return view('admin.carousels.show', compact('carousel'));
     }
 
@@ -147,7 +175,12 @@ class CarouselController extends Controller
      */
     public function edit(string $id)
     {
-        $carousel = Carousel::findOrFail($id);
+        $carousel = Carousel::find($id);
+        if (!$carousel) {
+            return redirect()->route('superadmin.carousels.index')
+                ->with('error', 'Carousel tidak ditemukan.');
+        }
+
         return view('admin.carousels.edit', compact('carousel'));
     }
 
@@ -156,7 +189,11 @@ class CarouselController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $carousel = Carousel::findOrFail($id);
+        $carousel = Carousel::find($id);
+        if (!$carousel) {
+            return redirect()->route('superadmin.carousels.index')
+                ->with('error', 'Carousel tidak ditemukan.');
+        }
 
         $validated = $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
@@ -168,13 +205,14 @@ class CarouselController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
 
-            // Delete old image if exists
+            // Simpan gambar baru dulu, baru hapus gambar lama jika sukses.
+            $newImagePath = $this->saveCarouselImage($image);
+
             if ($carousel->image && Storage::disk('public')->exists($carousel->image)) {
                 Storage::disk('public')->delete($carousel->image);
             }
 
-            // Auto crop image to 16:9 (1920x1080) for consistent carousel display.
-            $validated['image'] = $this->processCarouselImage($image);
+            $validated['image'] = $newImagePath;
         } else {
             // Keep existing image
             unset($validated['image']);
@@ -191,7 +229,11 @@ class CarouselController extends Controller
      */
     public function destroy(string $id)
     {
-        $carousel = Carousel::findOrFail($id);
+        $carousel = Carousel::find($id);
+        if (!$carousel) {
+            return redirect()->route('superadmin.carousels.index')
+                ->with('error', 'Carousel tidak ditemukan.');
+        }
 
         // Delete image file if exists
         if ($carousel->image && Storage::disk('public')->exists($carousel->image)) {

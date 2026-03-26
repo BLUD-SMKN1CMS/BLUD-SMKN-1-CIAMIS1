@@ -936,7 +936,9 @@
                         <i class="fas fa-envelope"></i>
                         <span>Pesan Masuk</span>
                         @php
-                        $unreadCount = \App\Models\Contact::where('status', 'new')->count();
+                        $unreadCount = \App\Models\Contact::where('status', 'new')
+                            ->orWhereNull('status')
+                            ->count();
                         @endphp
                         @if ($unreadCount > 0)
                         <span class="badge-counter">{{ $unreadCount }}</span>

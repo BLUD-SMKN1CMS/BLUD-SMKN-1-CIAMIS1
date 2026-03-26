@@ -67,10 +67,10 @@
                         <div class="form-group">
                             <label>Status *</label>
                             <select name="status" class="form-control" required>
-                                <option value="unread" {{ $contact->status == 'unread' ? 'selected' : '' }}>Belum Dibaca</option>
+                                <option value="new" {{ $contact->status == 'new' ? 'selected' : '' }}>Belum Dibaca</option>
                                 <option value="read" {{ $contact->status == 'read' ? 'selected' : '' }}>Sudah Dibaca</option>
                                 <option value="replied" {{ $contact->status == 'replied' ? 'selected' : '' }}>Sudah Dibalas</option>
-                                <option value="archived" {{ $contact->status == 'archived' ? 'selected' : '' }}>Diarsipkan</option>
+                                <option value="spam" {{ $contact->status == 'spam' ? 'selected' : '' }}>Spam</option>
                             </select>
                         </div>
                     </div>

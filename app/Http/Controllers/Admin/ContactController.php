@@ -21,7 +21,7 @@ class ContactController extends Controller
         $contact = Contact::findOrFail($id);
 
         // Tandai sebagai dibaca jika belum
-        if (!$contact->status || $contact->status == 'unread') {
+        if (!$contact->status || $contact->status === 'new') {
             $contact->update(['status' => 'read']);
         }
 
@@ -39,7 +39,7 @@ class ContactController extends Controller
         $contact = Contact::findOrFail($id);
 
         $request->validate([
-            'status' => 'required|in:unread,read,replied,archived'
+            'status' => 'required|in:new,read,replied,spam'
         ]);
 
         $contact->update($request->only('status'));

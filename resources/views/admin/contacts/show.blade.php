@@ -35,7 +35,7 @@
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
                     <h6 class="m-0 font-weight-bold text-primary">Pesan dari: {{ $contact->name }}</h6>
                     <span class="badge 
-                        @if($contact->status == 'unread') badge-danger
+                        @if($contact->status == 'new') badge-danger
                         @elseif($contact->status == 'read') badge-warning
                         @elseif($contact->status == 'replied') badge-success
                         @else badge-secondary @endif">
@@ -93,10 +93,10 @@
                         <div class="form-group">
                             <label>Ubah Status</label>
                             <select name="status" class="form-control" onchange="this.form.submit()">
-                                <option value="unread" {{ $contact->status == 'unread' ? 'selected' : '' }}>Belum Dibaca</option>
+                                <option value="new" {{ $contact->status == 'new' ? 'selected' : '' }}>Belum Dibaca</option>
                                 <option value="read" {{ $contact->status == 'read' ? 'selected' : '' }}>Sudah Dibaca</option>
                                 <option value="replied" {{ $contact->status == 'replied' ? 'selected' : '' }}>Sudah Dibalas</option>
-                                <option value="archived" {{ $contact->status == 'archived' ? 'selected' : '' }}>Diarsipkan</option>
+                                <option value="spam" {{ $contact->status == 'spam' ? 'selected' : '' }}>Spam</option>
                             </select>
                         </div>
                     </form>

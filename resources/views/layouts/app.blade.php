@@ -1344,12 +1344,15 @@
         let clickCount = 0;
         let clickTimer;
 
-        secretTriggers.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.addEventListener('click', function(e) {
-                    // Prevent default behavior if needed (though div/p usually don't have any)
+        function initSecretLoginTrigger() {
+            secretTriggers.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el || el.dataset.secretBound === '1') {
+                    return;
+                }
 
+                el.dataset.secretBound = '1';
+                el.addEventListener('click', function() {
                     clickCount++;
 
                     // Reset timer on each click
@@ -1389,8 +1392,11 @@
                         clickCount = 0;
                     }, 500);
                 });
-            }
-        });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initSecretLoginTrigger);
+        document.addEventListener('turbo:load', initSecretLoginTrigger);
     </script>
 
     @stack('scripts')

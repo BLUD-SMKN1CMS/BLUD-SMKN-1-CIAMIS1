@@ -263,12 +263,17 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
 <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    function initializePanorama() {
         // Initialize panorama viewer using uploaded 360 image.
         const viewerContainer = document.getElementById('panorama-viewer');
         if (viewerContainer && window.pannellum) {
             try {
-                pannellum.viewer('panorama-viewer', {
+                // Destroy existing viewer instance if exists
+                if (window.pannellumViewer) {
+                    window.pannellumViewer.destroy();
+                }
+
+                window.pannellumViewer = pannellum.viewer('panorama-viewer', {
                     type: 'equirectangular',
                     panorama: "{{ $service->panorama_image_url }}",
                     autoLoad: true,
@@ -278,12 +283,19 @@
                     hfov: 110,
                 });
             } catch (error) {
+                console.error('Pannellum initialization error:', error);
                 viewerContainer.innerHTML = `<img src="{{ $service->panorama_image_url }}" alt="Foto 360" style="width:100%;height:100%;object-fit:cover;">`;
             }
         } else if (viewerContainer) {
             viewerContainer.innerHTML = `<img src="{{ $service->panorama_image_url }}" alt="Foto 360" style="width:100%;height:100%;object-fit:cover;">`;
         }
-    });
+    }
+
+    // Initialize on first page load
+    document.addEventListener('DOMContentLoaded', initializePanorama);
+
+    // Re-initialize when Turbo navigates to this page
+    document.addEventListener('turbo:load', initializePanorama);
 </script>
 @endif
 

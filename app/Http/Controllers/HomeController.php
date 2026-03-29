@@ -50,7 +50,11 @@ class HomeController extends Controller
                 ->limit(6)
                 ->get();
 
-            // 7. Settings
+            // 7. Footer Data
+            $footerServices = Service::where('status', 'available')->limit(3)->get();
+            $footerTefas = Tefa::where('is_active', true)->orderBy('order')->get();
+
+            // 8. Settings
             $settings = Setting::getAllGrouped();
 
             $contactInfo = [
@@ -64,7 +68,7 @@ class HomeController extends Controller
                 'opening_hours_sunday' => $settings['hours']['opening_hours_sunday'] ?? 'Minggu & Hari Libur Nasional: Tutup',
             ];
 
-            // 8. Social media
+            // 9. Social media
             $socialMedia = [
                 'facebook' => $settings['social']['facebook_url'] ?? '#',
                 'instagram' => $settings['social']['instagram_url'] ?? '#',
@@ -82,8 +86,12 @@ class HomeController extends Controller
                 'secondary_button_url' => $settings['landing']['landing_secondary_button_url'] ?? '#kontak-section',
             ];
 
-            // 9. DEBUG: Log untuk verifikasi
+            // 10. DEBUG: Log untuk verifikasi
             Log::info('=== HOME PAGE LOADED ===');
+            Log::info('TEFA Count: ' . $tefas->count());
+            Log::info('Featured Products Count: ' . $featuredProducts->count());
+            Log::info('Services Count: ' . $services->count());
+
             foreach ($featuredProducts as $product) {
                 Log::info("Product: {$product->name}", [
                     'id' => $product->id,
@@ -101,7 +109,9 @@ class HomeController extends Controller
                 'services',
                 'contactInfo',
                 'socialMedia',
-                'landingSettings'
+                'landingSettings',
+                'footerServices',
+                'footerTefas'
             ));
 
         } catch (\Exception $e) {
@@ -134,6 +144,8 @@ class HomeController extends Controller
                     'secondary_button_text' => 'Pelajari Lebih Lanjut',
                     'secondary_button_url' => '#kontak-section',
                 ],
+                'footerServices' => collect(),
+                'footerTefas' => collect(),
             ]);
         }
     }

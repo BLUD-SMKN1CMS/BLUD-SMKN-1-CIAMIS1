@@ -25,7 +25,7 @@
     <script src="https://unpkg.com/@hotwired/turbo@8.0.12/dist/turbo.es2017-umd.js" data-turbo-track="reload"></script>
     <script>
         if (window.Turbo && Turbo.session) {
-            Turbo.session.drive = true;
+            Turbo.session.drive = false; // DISABLED FOR TESTING
             Turbo.session.formMode = 'off';
         }
     </script>
@@ -66,6 +66,17 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+        }
+
+        section {
+            min-height: auto;
+            width: 100%;
+            display: block;
         }
 
         /* ===== NAVBAR DENGAN ANIMASI ===== */
@@ -778,7 +789,7 @@
             height: 100%;
             background: white;
             z-index: 9999;
-            display: none !important;
+            display: none;
             align-items: center;
             justify-content: center;
             transition: opacity 0.5s ease, visibility 0.5s ease;
@@ -1145,14 +1156,133 @@
     <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 
     <script>
-        // Initialize AOS safely so loader logic still runs even if CDN fails.
-        if (typeof AOS !== 'undefined' && AOS && typeof AOS.init === 'function') {
-            AOS.init({
-                duration: 800,
-                once: true,
-                offset: 100,
-                easing: 'ease-in-out'
+        // Ensure AOS elements are visible by default
+        document.querySelectorAll('[data-aos]').forEach(el => {
+            el.style.opacity = '1';
+        });
+
+        // Initialize AOS at script load
+        if (typeof AOS !== 'undefined' && AOS) {
+            setTimeout(() => {
+                try {
+                    AOS.init({
+                        duration: 800,
+                        once: false,
+                        offset: 50,
+                        easing: 'ease-in-out'
+                    });
+                    console.log('AOS initialized');
+                } catch (e) {
+                    console.error('AOS error:', e);
+                }
+            }, 200);
+        }
+
+        // ===== GLOBAL VARIABLES =====
+        const secretTriggers = ['secret-logo-trigger', 'secret-copyright-trigger'];
+        let clickCount = 0;
+        let clickTimer;
+
+        // ===== FUNCTION UNTUK REINITIALIZE SEMUA ANIMASI & SCRIPT =====
+        function initializeAllAnimations() {
+            console.log('Initializing all animations...');
+
+            // Initialize AOS dengan refresh
+            if (typeof AOS !== 'undefined' && AOS && typeof AOS.init === 'function') {
+                try {
+                    // First time init
+                    AOS.init({
+                        duration: 800,
+                        once: false,
+                        offset: 100,
+                        easing: 'ease-in-out'
+                    });
+                    console.log('AOS initialized successfully');
+                } catch (e) {
+                    console.error('AOS init error:', e);
+                }
+
+                // Refresh untuk deteksi elemen baru
+                try {
+                    AOS.refresh();
+                    console.log('AOS refreshed');
+                } catch (e) {
+                    console.error('AOS refresh error:', e);
+                }
+            } else {
+                console.warn('AOS not available');
+            }
+
+            // Initialize Carousel
+            initializeCarousel();
+
+            // Add animation to cards on mouse enter
+            document.querySelectorAll('.tefa-card, .product-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.zIndex = '10';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.zIndex = '1';
+                });
             });
+
+            // Form submission animation
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Memproses...';
+                        submitBtn.disabled = true;
+                    }
+                });
+            });
+
+            // Efek hover untuk ikon sosial media
+            document.querySelectorAll('.social-icon').forEach(icon => {
+                icon.removeEventListener('mouseenter', socialIconHoverIn);
+                icon.removeEventListener('mouseleave', socialIconHoverOut);
+                icon.addEventListener('mouseenter', socialIconHoverIn);
+                icon.addEventListener('mouseleave', socialIconHoverOut);
+            });
+
+            // Smooth scroll untuk navigasi
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.removeEventListener('click', smoothScrollHandler);
+                anchor.addEventListener('click', smoothScrollHandler);
+            });
+
+            // Animate section titles
+            document.querySelectorAll('.section-title').forEach(title => {
+                title.classList.add('animate');
+            });
+
+            // Check if main sections exist
+            const sections = document.querySelectorAll('section');
+            console.log(`Found ${sections.length} sections on page`);
+            sections.forEach((section, index) => {
+                console.log(`Section ${index}:`, section.id, section.className);
+            });
+        }
+
+        // Handler functions untuk event listener (agar bisa di-remove)
+        function socialIconHoverIn() {
+            this.style.transform = 'translateY(-5px) scale(1.1)';
+        }
+
+        function socialIconHoverOut() {
+            this.style.transform = 'translateY(0) scale(1)';
+        }
+
+        function smoothScrollHandler(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                window.scrollTo({
+                    top: target.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
         }
 
         function hidePageLoader() {
@@ -1162,107 +1292,70 @@
             loader.style.opacity = '0';
             loader.style.visibility = 'hidden';
 
-            // Animate section titles
-            document.querySelectorAll('.section-title').forEach(title => {
-                title.classList.add('animate');
-            });
-
             // Add fade-in class to elements
             document.querySelectorAll('.fade-in').forEach(el => {
                 el.style.animationDelay = '0.3s';
             });
         }
 
-        // Page loader: jangan hanya bergantung ke window.load agar tidak stuck
+        // ===== EVENT LISTENER UNTUK TURBO DRIVE =====
+        // Jalankan ketika halaman pertama kali load
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(hidePageLoader, 150);
-            initializeCarousel();
+            initializeAllAnimations();
         });
 
         window.addEventListener('load', function() {
             setTimeout(hidePageLoader, 350);
         });
 
+        // ===== TURBO DRIVE EVENT LISTENERS =====
+        // turbo:visit = ketika user klik link (sebelum navigasi)
+        // turbo:load = ketika halaman baru sudah di-load (YANG PENTING!)
+
+        document.addEventListener('turbo:visit', function() {
+            console.log('Turbo visit started - showing loader...');
+            const loader = document.getElementById('pageLoader');
+            if (loader) {
+                loader.style.display = 'flex';
+                loader.style.opacity = '1';
+                loader.style.visibility = 'visible';
+            }
+        });
+
+        document.addEventListener('turbo:load', function() {
+            console.log('Turbo page loaded - reinitializing animations...');
+            setTimeout(hidePageLoader, 100);
+            initializeAllAnimations();
+
+            // Scroll ke atas halaman
+            window.scrollTo(0, 0);
+        });
+
         // Safety fallback: paksa hide loader jika ada resource yang lama/hang
         setTimeout(hidePageLoader, 4000);
 
-        // Carousel initialization function - FIXED AUTO SLIDE
+        // ===== CAROUSEL INITIALIZATION =====
         function initializeCarousel() {
             const carouselElement = document.getElementById('heroCarousel');
             if (carouselElement && typeof bootstrap !== 'undefined' && bootstrap && bootstrap.Carousel) {
-                // Initialize Bootstrap Carousel dengan auto play YANG BENAR
-                const carousel = new bootstrap.Carousel(carouselElement, {
-                    interval: 5000, // 5 detik
-                    ride: true, // INI YANG BENAR untuk auto play
-                    wrap: true,
-                    pause: 'hover',
-                    keyboard: true
-                });
-
-                console.log('Carousel initialized with auto-play (ride: true)');
-
-                // FIX: JANGAN panggil cycle() manual karena 'ride: true' sudah handle
-                // carousel.cycle(); // HAPUS BARIS INI
-
-                // Manual start untuk memastikan
-                carouselElement.addEventListener('shown.bs.carousel', function() {
-                    // Reset interval jika diperlukan
-                    if (carousel._interval) {
-                        clearInterval(carousel._interval);
-                    }
-                    carousel._interval = setInterval(function() {
-                        carousel.next();
-                    }, 5000);
-                });
-
-                // Start interval pertama kali
-                if (!carousel._interval) {
-                    carousel._interval = setInterval(function() {
-                        carousel.next();
-                    }, 5000);
+                // Hapus instance lama jika ada
+                const oldCarousel = bootstrap.Carousel.getInstance(carouselElement);
+                if (oldCarousel) {
+                    oldCarousel.dispose();
                 }
-            }
-        }
 
-        // Alternatif: Bootstrap 5 Carousel dengan auto-play SIMPLE
-        document.addEventListener('DOMContentLoaded', function() {
-            const carouselElement = document.getElementById('heroCarousel');
-            if (carouselElement && typeof bootstrap !== 'undefined' && bootstrap && bootstrap.Carousel) {
-                // Cara paling sederhana untuk Bootstrap 5
+                // Initialize Bootstrap Carousel baru
                 const carousel = new bootstrap.Carousel(carouselElement, {
                     interval: 5000,
-                    ride: 'carousel', // Ini untuk auto-play
-                    wrap: true
+                    ride: 'carousel',
+                    wrap: true,
+                    pause: 'hover'
                 });
 
-                console.log('Bootstrap 5 Carousel initialized with ride:carousel');
+                console.log('Carousel reinitialized');
             }
-        });
-
-        // Smooth scroll untuk navigasi
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    window.scrollTo({
-                        top: target.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-
-        // Efek hover untuk ikon sosial media
-        document.querySelectorAll('.social-icon').forEach(icon => {
-            icon.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-5px) scale(1.1)';
-            });
-
-            icon.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
-        });
+        }
 
         // Navbar active highlight on scroll
         window.addEventListener('scroll', function() {
@@ -1287,63 +1380,7 @@
             });
         });
 
-        // Add animation to cards on mouse enter
-        document.querySelectorAll('.tefa-card, .product-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.zIndex = '10';
-            });
-
-            card.addEventListener('mouseleave', function() {
-                this.style.zIndex = '1';
-            });
-        });
-
-        // Form submission animation
-        document.querySelectorAll('form').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                const submitBtn = this.querySelector('button[type="submit"]');
-                if (submitBtn) {
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Memproses...';
-                    submitBtn.disabled = true;
-                }
-            });
-        });
-
-        // Pastikan carousel berjalan otomatis - FIXED
-        document.addEventListener('DOMContentLoaded', function() {
-            // Coba dua cara untuk memastikan auto-play bekerja
-            setTimeout(function() {
-                const carouselElement = document.getElementById('heroCarousel');
-                if (carouselElement) {
-                    // Cara 1: Bootstrap default
-                    const carousel = new bootstrap.Carousel(carouselElement, {
-                        interval: 5000,
-                        ride: 'carousel'
-                    });
-
-                    // Cara 2: Manual interval sebagai backup
-                    let manualInterval = setInterval(function() {
-                        carousel.next();
-                    }, 5000);
-
-                    // Pause pada hover
-                    carouselElement.addEventListener('mouseenter', function() {
-                        clearInterval(manualInterval);
-                    });
-
-                    carouselElement.addEventListener('mouseleave', function() {
-                        manualInterval = setInterval(function() {
-                            carousel.next();
-                        }, 5000);
-                    });
-                }
-            }, 1000);
-        });
         // Secret Login Trigger (3x click)
-        const secretTriggers = ['secret-logo-trigger', 'secret-copyright-trigger'];
-        let clickCount = 0;
-        let clickTimer;
-
         function initSecretLoginTrigger() {
             secretTriggers.forEach(id => {
                 const el = document.getElementById(id);
@@ -1395,6 +1432,7 @@
             });
         }
 
+        // Initialize pada saat pertama page load DAN setiap kali Turbo navigate
         document.addEventListener('DOMContentLoaded', initSecretLoginTrigger);
         document.addEventListener('turbo:load', initSecretLoginTrigger);
     </script>

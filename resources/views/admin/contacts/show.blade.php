@@ -39,7 +39,7 @@
                         @elseif($contact->status == 'read') badge-warning
                         @elseif($contact->status == 'replied') badge-success
                         @else badge-secondary @endif">
-                        {{ strtoupper($contact->status) }}
+                        {{ \App\Helpers\StatusHelper::getContactStatusLabel($contact->status) }}
                     </span>
                 </div>
                 <div class="card-body">

@@ -41,7 +41,7 @@
                             <td>
                                 <span
                                     class="badge {{ $service->status == 'available' ? 'badge-success' : 'badge-secondary' }}">
-                                    {{ strtoupper($service->status) }}
+                                    {{ \App\Helpers\StatusHelper::getServiceStatusLabel($service->status) }}
                                 </span>
                             </td>
                             <td class="text-center">
@@ -60,7 +60,7 @@
                                             <button type="button" class="dropdown-item btn-view-service"
                                                 data-name="{{ $service->name }}"
                                                 data-slug="{{ $service->slug }}"
-                                                data-status="{{ strtoupper($service->status) }}"
+                                                data-status="{{ \App\Helpers\StatusHelper::getServiceStatusLabel($service->status) }}"
                                                 data-created="{{ $service->created_at->format('d M Y H:i') }}">
                                                 <i class="fas fa-eye me-2 text-info"></i> Lihat
                                             </button>

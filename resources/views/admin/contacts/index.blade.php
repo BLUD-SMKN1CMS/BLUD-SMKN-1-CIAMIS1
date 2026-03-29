@@ -54,7 +54,7 @@
                                         @elseif($contact->status == 'read') badge-warning
                                         @elseif($contact->status == 'replied') badge-success
                                         @else badge-secondary @endif">
-                                        {{ strtoupper($contact->status) }}
+                                        {{ \App\Helpers\StatusHelper::getContactStatusLabel($contact->status) }}
                                     </span>
                                 </td>
                                 <td>{{ $contact->created_at->format('d M Y') }}</td>

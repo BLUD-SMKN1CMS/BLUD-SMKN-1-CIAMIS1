@@ -102,7 +102,7 @@
                                     <div class="fw-semibold">{{ $product->name }}</div>
                                 </div>
                                 <span class="badge {{ $product->status == 'active' ? 'bg-success' : 'bg-secondary' }}">
-                                    {{ strtoupper($product->status) }}
+                                    {{ \App\Helpers\StatusHelper::getProductStatusLabel($product->status) }}
                                 </span>
                             </div>
                         </div>

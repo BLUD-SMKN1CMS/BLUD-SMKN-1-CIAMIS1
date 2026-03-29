@@ -44,7 +44,7 @@
                             <th>Status</th>
                             <td>
                                 <span class="badge {{ $service->status == 'available' ? 'badge-success' : 'badge-secondary' }}">
-                                    {{ strtoupper($service->status) }}
+                                    {{ \App\Helpers\StatusHelper::getServiceStatusLabel($service->status) }}
                                 </span>
                             </td>
                         </tr>

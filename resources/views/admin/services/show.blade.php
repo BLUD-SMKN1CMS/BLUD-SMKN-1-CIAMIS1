@@ -79,10 +79,10 @@
                         <h5>Foto 360 Derajat</h5>
                         <div class="border p-3 rounded bg-light">
                             @if($service->panorama_image_url)
-                                <img src="{{ $service->panorama_image_url }}" alt="Foto 360 {{ $service->name }}" class="img-fluid rounded border mb-2" style="max-height: 220px; object-fit: cover;">
-                                <div class="small text-muted">File: {{ basename($service->panorama_image) }}</div>
+                            <img src="{{ $service->panorama_image_url }}" alt="Foto 360 {{ $service->name }}" class="img-fluid rounded border mb-2" style="max-height: 220px; object-fit: cover;">
+                            <div class="small text-muted">File: {{ basename($service->panorama_image) }}</div>
                             @else
-                                <span class="text-muted">Belum diisi</span>
+                            <span class="text-muted">Belum diisi</span>
                             @endif
                         </div>
                     </div>
@@ -99,7 +99,7 @@
                     <form action="{{ route($routePrefix . '.services.destroy', $service->id) }}" method="POST" class="mb-3">
                         @csrf @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-block"
-                            onclick="return confirm('Hapus layanan ini?')">
+                            onclick="confirmDelete(event, 'Hapus layanan {{ addslashes($service->name) }}? Tindakan ini tidak dapat dibatalkan.')">
                             <i class="fas fa-trash"></i> Hapus Layanan
                         </button>
                     </form>

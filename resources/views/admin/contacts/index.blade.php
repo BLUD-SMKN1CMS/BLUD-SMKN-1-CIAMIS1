@@ -52,7 +52,7 @@
                                     <span class="badge
                                         @if($contact->status == 'new') badge-danger
                                         @elseif($contact->status == 'read') badge-warning
-                                        @elseif($contact->status == 'replied') badge-success
+                                        @elseif($contact->status == 'replied') badge-primary
                                         @else badge-secondary @endif">
                                         {{ \App\Helpers\StatusHelper::getContactStatusLabel($contact->status) }}
                                     </span>
@@ -148,6 +148,27 @@
 
     .table-warning {
         background-color: #fff3cd !important;
+    }
+
+    .badge-danger {
+        background-color: #dc3545 !important;
+        color: white !important;
+    }
+
+    .badge-warning {
+        background-color: #ffc107 !important;
+        color: white !important;
+    }
+
+    .badge-primary {
+        background-color: #0d6efd !important;
+        color: white !important;
+        font-weight: 600;
+    }
+
+    .badge-secondary {
+        background-color: #6c757d !important;
+        color: white !important;
     }
 </style>
 @endpush

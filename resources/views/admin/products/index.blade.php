@@ -15,7 +15,7 @@
         <div class="card-header py-3 d-flex align-items-center justify-content-between">
             <h6 class="m-0 font-weight-bold text-primary">Daftar Layanan</h6>
             @php
-                $hasActiveFilters = request()->filled('status') || request()->filled('is_featured') || request()->filled('tefa_id');
+            $hasActiveFilters = request()->filled('status') || request()->filled('is_featured') || request()->filled('tefa_id');
             @endphp
             <div class="d-flex align-items-center gap-2">
                 <span class="badge badge-success">
@@ -57,7 +57,7 @@
                                 <select name="tefa_id" id="tefa_id" class="form-control">
                                     <option value="">Semua TEFA</option>
                                     @foreach($tefas as $tefa)
-                                        <option value="{{ $tefa->id }}" {{ (string) request('tefa_id') === (string) $tefa->id ? 'selected' : '' }}>{{ $tefa->name }}</option>
+                                    <option value="{{ $tefa->id }}" {{ (string) request('tefa_id') === (string) $tefa->id ? 'selected' : '' }}>{{ $tefa->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -203,17 +203,16 @@
                                             <hr class="dropdown-divider">
                                         </li>
                                         <li>
-                                            <!-- FIXED: Form Delete yang benar -->
                                             <form action="{{ route($routePrefix . '.products.destroy', $product->id) }}"
-                                                method="POST" id="delete-form-{{ $product->id }}"
-                                                onsubmit="return confirm('Hapus layanan {{ $product->name }}?')">
+                                                method="POST" class="dropdown-item p-0">
                                                 @csrf
                                                 @method('DELETE')
+                                                <button type="submit"
+                                                    class="dropdown-item text-danger text-decoration-none w-100 text-start"
+                                                    onclick="confirmDelete(event, 'Hapus layanan {{ addslashes($product->name) }}? Tindakan ini tidak dapat dibatalkan.')">
+                                                    <i class="fas fa-trash me-2"></i> Hapus
+                                                </button>
                                             </form>
-                                            <button type="submit" form="delete-form-{{ $product->id }}"
-                                                class="dropdown-item text-danger text-decoration-none w-100 text-start">
-                                                <i class="fas fa-trash me-2"></i> Hapus
-                                            </button>
                                         </li>
                                     </ul>
                                 </div>
@@ -381,8 +380,20 @@
             const currentStatus = $(this).data('status');
             const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
 
-            if (confirm(
-                    `Ubah status layanan menjadi ${newStatus === 'active' ? 'AKTIF' : 'NONAKTIF'}?`)) {
+            Swal.fire({
+                title: 'Ubah Status Layanan',
+                text: `Ubah status layanan menjadi ${newStatus === 'active' ? 'AKTIF' : 'NONAKTIF'}?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#2563eb',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Ubah',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (!result.isConfirmed) {
+                    return;
+                }
+
                 $.ajax({
                     url: `/admin/products/${productId}/toggle-status`,
                     method: 'POST',
@@ -398,7 +409,7 @@
                         showToast('Gagal mengubah status!', 'error');
                     }
                 });
-            }
+            });
         });
 
         // Featured toggle
@@ -407,7 +418,20 @@
             const isFeatured = $(this).data('featured');
             const newFeatured = isFeatured ? 0 : 1;
 
-            if (confirm(`${newFeatured ? 'Jadikan' : 'Hapus dari'} layanan unggulan?`)) {
+            Swal.fire({
+                title: 'Ubah Layanan Unggulan',
+                text: `${newFeatured ? 'Jadikan' : 'Hapus dari'} layanan unggulan?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#2563eb',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Lanjutkan',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (!result.isConfirmed) {
+                    return;
+                }
+
                 $.ajax({
                     url: `/admin/products/${productId}/toggle-featured`,
                     method: 'POST',
@@ -423,9 +447,8 @@
                         showToast('Gagal mengubah status unggulan!', 'error');
                     }
                 });
-            }
+            });
         });
     });
 </script>
 @endpush
-

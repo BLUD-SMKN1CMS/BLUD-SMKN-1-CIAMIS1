@@ -8,17 +8,12 @@
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div>
                 <h1 class="dashboard-title mb-1">
-                    Dashboard Admin TEFA
                     @if($myTefa)
-                    <span class="badge bg-primary ms-2 align-middle">{{ $myTefa->name }}</span>
+                    Selamat Datang Admin {{ $myTefa->name }}
+                    @else
+                    Selamat Datang {{ Auth::guard('admin')->user()->name }}
                     @endif
                 </h1>
-                <p class="dashboard-subtitle mb-0">
-                    Selamat datang, <strong>{{ Auth::guard('admin')->user()->name }}</strong>
-                    @if($myTefa)
-                    · Kelola data jurusan Anda dengan cepat dan rapi
-                    @endif
-                </p>
             </div>
         </div>
     </div>

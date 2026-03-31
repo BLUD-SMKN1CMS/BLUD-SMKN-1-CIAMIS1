@@ -34,7 +34,7 @@ class ServiceController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
             'facilities' => 'nullable|string',
             'terms_conditions' => 'nullable|string',
             'price_per_hour' => 'nullable|numeric|min:0',
@@ -105,7 +105,7 @@ class ServiceController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
             'facilities' => 'nullable|string',
             'terms_conditions' => 'nullable|string',
             'price_per_hour' => 'nullable|numeric|min:0',

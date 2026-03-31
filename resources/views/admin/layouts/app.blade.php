@@ -937,8 +937,8 @@
                         <span>Pesan Masuk</span>
                         @php
                         $unreadCount = \App\Models\Contact::where('status', 'new')
-                            ->orWhereNull('status')
-                            ->count();
+                        ->orWhereNull('status')
+                        ->count();
                         @endphp
                         @if ($unreadCount > 0)
                         <span class="badge-counter">{{ $unreadCount }}</span>
@@ -1028,37 +1028,11 @@
         <!-- Content Area -->
         <main class="content-area">
             <!-- Session Messages -->
-            @if (session('success'))
-            <div class="alert-admin alert-success">
-                <i class="fas fa-check-circle"></i>
-                {{ session('success') }}
-                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-            </div>
-            @endif
-
-            @if (session('error'))
-            <div class="alert-admin alert-danger">
-                <i class="fas fa-exclamation-circle"></i>
-                {{ session('error') }}
-                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-            </div>
-            @endif
-
-            @if (session('warning'))
-            <div class="alert-admin alert-warning">
-                <i class="fas fa-exclamation-triangle"></i>
-                {{ session('warning') }}
-                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-            </div>
-            @endif
-
-            @if (session('info'))
-            <div class="alert-admin alert-info">
-                <i class="fas fa-info-circle"></i>
-                {{ session('info') }}
-                <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert"></button>
-            </div>
-            @endif
+            <div id="flashMessageData" class="d-none"
+                data-success="{{ session('success', '') }}"
+                data-error="{{ session('error', '') }}"
+                data-warning="{{ session('warning', '') }}"
+                data-info="{{ session('info', '') }}"></div>
 
             <!-- Page Content -->
             @yield('content')
@@ -1217,6 +1191,60 @@
                     }
                 });
             };
+
+            const flashMessageData = document.getElementById('flashMessageData');
+            if (flashMessageData) {
+                const cleanFlashMessage = function(message) {
+                    return (message || '')
+                        .replace(/^[\s✅✔☑️]+/u, '')
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                };
+
+                const flashQueue = [{
+                        key: 'success',
+                        title: 'Berhasil',
+                        icon: 'success'
+                    },
+                    {
+                        key: 'error',
+                        title: 'Terjadi Kesalahan',
+                        icon: 'error'
+                    },
+                    {
+                        key: 'warning',
+                        title: 'Perhatian',
+                        icon: 'warning'
+                    },
+                    {
+                        key: 'info',
+                        title: 'Informasi',
+                        icon: 'info'
+                    }
+                ];
+
+                const currentFlash = flashQueue.find(item => cleanFlashMessage(flashMessageData.dataset[item.key]));
+                if (currentFlash) {
+                    document.querySelectorAll('.alert.alert-dismissible, .alert-admin').forEach(function(alertEl) {
+                        alertEl.classList.remove('show');
+                        alertEl.classList.add('d-none');
+                    });
+
+                    Swal.fire({
+                        icon: currentFlash.icon,
+                        title: currentFlash.title,
+                        text: cleanFlashMessage(flashMessageData.dataset[currentFlash.key]),
+                        toast: false,
+                        position: 'center',
+                        timer: 1000,
+                        timerProgressBar: false,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: true,
+                        showCloseButton: false
+                    });
+                }
+            }
 
             if (typeof window.previewImage !== 'function') {
                 window.previewImage = function(input, previewId) {

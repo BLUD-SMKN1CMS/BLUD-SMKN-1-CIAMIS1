@@ -11,9 +11,10 @@ use Illuminate\Support\Facades\Storage;
 class CarouselController extends Controller
 {
     /**
-     * Process uploaded carousel image to fixed 16:9 ratio (1920x1080).
+     * Process uploaded carousel image with optional manual crop.
+     * If crop data is provided, use it; otherwise, auto-crop to 16:9.
      */
-    private function processCarouselImage($image): string
+    private function processCarouselImage($image, $cropData = null): string
     {
         if (!function_exists('imagecreatefromstring') || !function_exists('imagecopyresampled')) {
             throw new \RuntimeException('Ekstensi GD tidak tersedia di server.');
@@ -42,20 +43,35 @@ class CarouselController extends Controller
             throw new \RuntimeException('Gagal membaca file gambar.');
         }
 
-        // Hitung area crop tengah agar rasio source menjadi 16:9.
-        $targetRatio = $targetWidth / $targetHeight;
-        $sourceRatio = $srcWidth / $srcHeight;
+        // Determine crop area: manual or auto
+        if ($cropData && $cropData['hasManualCrop']) {
+            // Manual crop from user input
+            $srcX = max(0, (int) $cropData['cropX']);
+            $srcY = max(0, (int) $cropData['cropY']);
+            $cropWidth = max(1, (int) $cropData['cropWidth']);
+            $cropHeight = max(1, (int) $cropData['cropHeight']);
 
-        if ($sourceRatio > $targetRatio) {
-            $cropHeight = $srcHeight;
-            $cropWidth = (int) round($srcHeight * $targetRatio);
-            $srcX = (int) round(($srcWidth - $cropWidth) / 2);
-            $srcY = 0;
+            // Clamp to image bounds
+            $srcX = min($srcX, $srcWidth - 1);
+            $srcY = min($srcY, $srcHeight - 1);
+            $cropWidth = min($cropWidth, $srcWidth - $srcX);
+            $cropHeight = min($cropHeight, $srcHeight - $srcY);
         } else {
-            $cropWidth = $srcWidth;
-            $cropHeight = (int) round($srcWidth / $targetRatio);
-            $srcX = 0;
-            $srcY = (int) round(($srcHeight - $cropHeight) / 2);
+            // Auto-crop: center crop to 16:9 ratio
+            $targetRatio = $targetWidth / $targetHeight;
+            $sourceRatio = $srcWidth / $srcHeight;
+
+            if ($sourceRatio > $targetRatio) {
+                $cropHeight = $srcHeight;
+                $cropWidth = (int) round($srcHeight * $targetRatio);
+                $srcX = (int) round(($srcWidth - $cropWidth) / 2);
+                $srcY = 0;
+            } else {
+                $cropWidth = $srcWidth;
+                $cropHeight = (int) round($srcWidth / $targetRatio);
+                $srcX = 0;
+                $srcY = (int) round(($srcHeight - $cropHeight) / 2);
+            }
         }
 
         $canvas = imagecreatetruecolor($targetWidth, $targetHeight);
@@ -86,12 +102,13 @@ class CarouselController extends Controller
     }
 
     /**
-     * Simpan gambar carousel dengan fallback jika proses crop gagal.
+     * Simpan gambar carousel dengan optional manual crop data.
+     * Fallback ke auto-crop jika proses gagal.
      */
-    private function saveCarouselImage($image): string
+    private function saveCarouselImage($image, $cropData = null): string
     {
         try {
-            return $this->processCarouselImage($image);
+            return $this->processCarouselImage($image, $cropData);
         } catch (\Throwable $e) {
             Log::warning('Carousel image processing failed, fallback to original upload.', [
                 'message' => $e->getMessage(),
@@ -128,14 +145,34 @@ class CarouselController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
             'status' => 'required|in:active,inactive',
             'order' => 'nullable|integer',
+            'crop_x' => 'nullable|numeric',
+            'crop_y' => 'nullable|numeric',
+            'crop_width' => 'nullable|numeric',
+            'crop_height' => 'nullable|numeric',
+            'crop_scale_x' => 'nullable|numeric',
+            'crop_scale_y' => 'nullable|numeric',
         ]);
 
-        // Handle image upload with 16:9 validation
+        // Handle image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
 
-            // Auto crop image to 16:9 (1920x1080), fallback ke file asli jika gagal.
-            $validated['image'] = $this->saveCarouselImage($image);
+            // Prepare crop data if available
+            $cropData = null;
+            if ($request->filled('crop_x') || $request->filled('crop_y') || $request->filled('crop_width') || $request->filled('crop_height')) {
+                $cropData = [
+                    'hasManualCrop' => true,
+                    'cropX' => $request->input('crop_x', 0),
+                    'cropY' => $request->input('crop_y', 0),
+                    'cropWidth' => $request->input('crop_width', 0),
+                    'cropHeight' => $request->input('crop_height', 0),
+                    'scaleX' => $request->input('crop_scale_x', 1),
+                    'scaleY' => $request->input('crop_scale_y', 1),
+                ];
+            }
+
+            // Process with manual crop or auto-crop
+            $validated['image'] = $this->saveCarouselImage($image, $cropData);
         }
 
         // Set default order if not provided
@@ -143,6 +180,9 @@ class CarouselController extends Controller
             $maxOrder = Carousel::max('order') ?? 0;
             $validated['order'] = $maxOrder + 1;
         }
+
+        // Remove crop data from validated array (not needed in DB)
+        unset($validated['crop_x'], $validated['crop_y'], $validated['crop_width'], $validated['crop_height'], $validated['crop_scale_x'], $validated['crop_scale_y']);
 
         // Keep text fields internal because carousel is now image-focused in admin UI.
         $validated['title'] = 'Carousel Image ' . now()->format('YmdHis');
@@ -199,14 +239,34 @@ class CarouselController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
             'status' => 'required|in:active,inactive',
             'order' => 'nullable|integer',
+            'crop_x' => 'nullable|numeric',
+            'crop_y' => 'nullable|numeric',
+            'crop_width' => 'nullable|numeric',
+            'crop_height' => 'nullable|numeric',
+            'crop_scale_x' => 'nullable|numeric',
+            'crop_scale_y' => 'nullable|numeric',
         ]);
 
         // Handle image upload if new image provided
         if ($request->hasFile('image')) {
             $image = $request->file('image');
 
+            // Prepare crop data if available
+            $cropData = null;
+            if ($request->filled('crop_x') || $request->filled('crop_y') || $request->filled('crop_width') || $request->filled('crop_height')) {
+                $cropData = [
+                    'hasManualCrop' => true,
+                    'cropX' => $request->input('crop_x', 0),
+                    'cropY' => $request->input('crop_y', 0),
+                    'cropWidth' => $request->input('crop_width', 0),
+                    'cropHeight' => $request->input('crop_height', 0),
+                    'scaleX' => $request->input('crop_scale_x', 1),
+                    'scaleY' => $request->input('crop_scale_y', 1),
+                ];
+            }
+
             // Simpan gambar baru dulu, baru hapus gambar lama jika sukses.
-            $newImagePath = $this->saveCarouselImage($image);
+            $newImagePath = $this->saveCarouselImage($image, $cropData);
 
             if ($carousel->image && Storage::disk('public')->exists($carousel->image)) {
                 Storage::disk('public')->delete($carousel->image);
@@ -217,6 +277,9 @@ class CarouselController extends Controller
             // Keep existing image
             unset($validated['image']);
         }
+
+        // Remove crop data from validated array (not needed in DB)
+        unset($validated['crop_x'], $validated['crop_y'], $validated['crop_width'], $validated['crop_height'], $validated['crop_scale_x'], $validated['crop_scale_y']);
 
         $carousel->update($validated);
 

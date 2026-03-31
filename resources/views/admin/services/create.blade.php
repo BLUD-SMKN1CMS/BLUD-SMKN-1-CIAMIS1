@@ -30,8 +30,11 @@
 
                 <div class="form-group">
                     <label>Deskripsi</label>
-                    <textarea name="description" class="form-control" rows="3"
+                    <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="3" required
                         placeholder="Deskripsi lengkap layanan...">{{ old('description') }}</textarea>
+                    @error('description')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-group">

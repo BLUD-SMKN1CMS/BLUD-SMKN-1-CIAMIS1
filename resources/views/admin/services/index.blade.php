@@ -74,7 +74,7 @@
                                                 @csrf @method('DELETE')
                                                 <button type="submit"
                                                     class="dropdown-item text-danger text-decoration-none w-100 text-start"
-                                                    onclick="return confirm('Hapus layanan ini?')">
+                                                    onclick="confirmDelete(event, 'Hapus layanan {{ addslashes($service->name) }}? Tindakan ini tidak dapat dibatalkan.')">
                                                     <i class="fas fa-trash me-2"></i> Hapus
                                                 </button>
                                             </form>

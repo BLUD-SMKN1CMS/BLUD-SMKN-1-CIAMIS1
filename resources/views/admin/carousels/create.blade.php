@@ -18,7 +18,7 @@
         <div class="card-body">
             <form action="{{ route($routePrefix . '.carousels.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                
+
                 <div class="row">
                     <div class="col-md-8">
                         <div class="alert alert-info">
@@ -30,26 +30,62 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-                                    <select class="form-control @error('status') is-invalid @enderror" 
-                                            id="status" name="status" required>
+                                    <select class="form-control @error('status') is-invalid @enderror"
+                                        id="status" name="status" required>
                                         <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Aktif</option>
                                         <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Nonaktif</option>
                                     </select>
                                     @error('status')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="order" class="form-label">Urutan</label>
-                                    <input type="number" class="form-control @error('order') is-invalid @enderror" 
-                                           id="order" name="order" value="{{ old('order') }}" 
-                                           min="1" placeholder="Kosongkan untuk urutan terakhir">
+                                    <input type="number" class="form-control @error('order') is-invalid @enderror"
+                                        id="order" name="order" value="{{ old('order') }}"
+                                        min="1" placeholder="Kosongkan untuk urutan terakhir">
                                     @error('order')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                     <small class="text-muted">Angka kecil = muncul lebih awal</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Manual Crop Section -->
+                        <div class="card mt-4 border-info">
+                            <div class="card-header bg-info text-white">
+                                <h6 class="mb-0"><i class="fas fa-crop me-2"></i>Manual Crop Gambar</h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-3 text-muted">Pilih area gambar yang ingin ditampilkan. Rasio tetap 16:9.</p>
+
+                                <div id="cropContainer" style="max-height: 400px; position: relative; background: #f8f9fa; margin-bottom: 15px; display: none;">
+                                    <img id="cropImage" src="#" alt="Crop Image" style="max-width: 100%; max-height: 400px;">
+                                </div>
+
+                                <div class="mb-3" id="cropButtonsContainer" style="display: none;">
+                                    <button type="button" class="btn btn-sm btn-info me-2" onclick="resetCrop()">
+                                        <i class="fas fa-undo me-1"></i>Reset Crop
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-success" onclick="applyCrop()">
+                                        <i class="fas fa-check me-1"></i>Terapkan Crop
+                                    </button>
+                                </div>
+
+                                <!-- Hidden inputs untuk menyimpan crop data -->
+                                <input type="hidden" id="cropX" name="crop_x" value="">
+                                <input type="hidden" id="cropY" name="crop_y" value="">
+                                <input type="hidden" id="cropWidth" name="crop_width" value="">
+                                <input type="hidden" id="cropHeight" name="crop_height" value="">
+                                <input type="hidden" id="cropScaleX" name="crop_scale_x" value="1">
+                                <input type="hidden" id="cropScaleY" name="crop_scale_y" value="1">
+
+                                <div class="alert alert-light border-info" id="cropStatus">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <small>Upload gambar terlebih dahulu untuk menggunakan fitur crop</small>
                                 </div>
                             </div>
                         </div>
@@ -63,13 +99,13 @@
                             <div class="card-body">
                                 <div class="mb-3">
                                     <label for="image" class="form-label">Gambar Carousel <span class="text-danger">*</span></label>
-                                    <input type="file" class="form-control @error('image') is-invalid @enderror" 
-                                           id="image" name="image" accept="image/*" required
-                                           onchange="previewImage(this)">
+                                    <input type="file" class="form-control @error('image') is-invalid @enderror"
+                                        id="image" name="image" accept="image/*" required
+                                        onchange="previewImage(this)">
                                     @error('image')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                    
+
                                     <!-- Image Preview Container -->
                                     <div class="text-center mt-4">
                                         <div class="ratio ratio-16x9 border rounded bg-light overflow-hidden position-relative">
@@ -78,19 +114,11 @@
                                                 <i class="fas fa-image fa-3x text-muted mb-3"></i>
                                                 <p class="text-muted mb-0">Preview akan muncul di sini</p>
                                             </div>
-                                            
+
                                             <!-- Image Preview -->
                                             <img id="mainPreview" src="#" alt="Preview" class="w-100 h-100 position-absolute top-0" style="display: none; object-fit: cover; left: 0;">
                                         </div>
                                         <small class="text-muted mt-2 d-block">Preview rasio 16:9</small>
-                                    </div>
-                                    
-                                    <!-- Ratio Info -->
-                                    <div class="alert alert-info mt-3">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        <strong>Rasio 16:9</strong><br>
-                                        Ukuran akan <strong>auto-cut ke 1920×1080px</strong><br>
-                                        Format: JPG, PNG, GIF (max 5MB)
                                     </div>
                                 </div>
                             </div>
@@ -113,27 +141,105 @@
 @endsection
 
 @push('scripts')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
 <script>
+    let cropper = null;
+    let originalImageData = null;
+
     function previewImage(input) {
         const preview = document.getElementById('mainPreview');
         const placeholder = document.getElementById('placeholderContent');
-        
+        const cropContainer = document.getElementById('cropContainer');
+        const cropImage = document.getElementById('cropImage');
+        const cropButtonsContainer = document.getElementById('cropButtonsContainer');
+        const cropStatus = document.getElementById('cropStatus');
+
         if (input.files && input.files[0]) {
             const reader = new FileReader();
-            
+
             reader.onload = function(e) {
+                // Show main preview
                 preview.src = e.target.result;
                 preview.style.display = 'block';
                 placeholder.classList.add('d-none');
+
+                // Setup cropper
+                cropImage.src = e.target.result;
+                cropContainer.style.display = 'block';
+                cropButtonsContainer.style.display = 'block';
+
+                // Destroy existing cropper if any
+                if (cropper) {
+                    cropper.destroy();
+                }
+
+                // Initialize new cropper
+                cropper = new Cropper(cropImage, {
+                    viewMode: 1,
+                    autoCropArea: 1,
+                    aspectRatio: 16 / 9,
+                    guides: true,
+                    highlight: true,
+                    cropBoxMovable: true,
+                    cropBoxResizable: true,
+                    toggleDragModeOnDblclick: true,
+                    responsive: true,
+                    restore: true,
+                    background: true,
+                });
+
+                // Update status
+                cropStatus.innerHTML = '<i class="fas fa-check-circle me-2" style="color: #17a2b8;"></i><small><strong>Crop ready:</strong> Tarik dan sesuaikan area crop sesuai kebutuhan</small>';
             };
-            
+
             reader.readAsDataURL(input.files[0]);
         } else {
             preview.style.display = 'none';
             preview.src = '#';
             placeholder.classList.remove('d-none');
+            cropContainer.style.display = 'none';
+            cropButtonsContainer.style.display = 'none';
+            cropStatus.innerHTML = '<i class="fas fa-info-circle me-2"></i><small>Upload gambar terlebih dahulu untuk menggunakan fitur crop</small>';
+
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
         }
     }
 
+    function resetCrop() {
+        if (cropper) {
+            cropper.reset();
+            document.getElementById('cropStatus').innerHTML = '<i class="fas fa-info-circle me-2"></i><small>Crop area direset ke ukuran asli</small>';
+        }
+    }
+
+    function applyCrop() {
+        if (!cropper) {
+            alert('Silakan upload gambar terlebih dahulu');
+            return;
+        }
+
+        const canvas = cropper.getCroppedCanvas();
+        const cropData = cropper.getData();
+        const imageData = cropper.getImageData();
+
+        // Store crop data in hidden inputs
+        document.getElementById('cropX').value = Math.round(cropData.x);
+        document.getElementById('cropY').value = Math.round(cropData.y);
+        document.getElementById('cropWidth').value = Math.round(cropData.width);
+        document.getElementById('cropHeight').value = Math.round(cropData.height);
+        document.getElementById('cropScaleX').value = imageData.scaleX;
+        document.getElementById('cropScaleY').value = imageData.scaleY;
+
+        // Update main preview with cropped image
+        const mainPreview = document.getElementById('mainPreview');
+        mainPreview.src = canvas.toDataURL();
+
+        // Show success message
+        document.getElementById('cropStatus').innerHTML = '<i class="fas fa-check-circle me-2" style="color: #28a745;"></i><small><strong>Crop diterapkan!</strong> Klik Simpan untuk menyimpan perubahan</small>';
+    }
 </script>
-@endpush

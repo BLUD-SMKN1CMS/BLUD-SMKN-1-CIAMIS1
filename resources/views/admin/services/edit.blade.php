@@ -22,105 +22,108 @@
                         @csrf
                         @method('PUT')
 
-                <div class="form-group">
-                    <label>Nama Layanan *</label>
-                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-                        value="{{ old('name', $service->name) }}" required>
-                    @error('name')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label>Deskripsi</label>
-                    <textarea name="description" class="form-control" rows="3">{{ old('description', $service->description) }}</textarea>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 form-group">
-                        <label>Harga per Jam</label>
-                        <input type="number" step="0.01" min="0" name="price_per_hour" class="form-control @error('price_per_hour') is-invalid @enderror"
-                            value="{{ old('price_per_hour', $service->price_per_hour) }}" placeholder="Contoh: 50000">
-                        @error('price_per_hour')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label>Harga per Hari</label>
-                        <input type="number" step="0.01" min="0" name="price_per_day" class="form-control @error('price_per_day') is-invalid @enderror"
-                            value="{{ old('price_per_day', $service->price_per_day) }}" placeholder="Contoh: 300000">
-                        @error('price_per_day')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 form-group">
-                        <label>Kapasitas</label>
-                        <input type="number" min="0" name="capacity" class="form-control @error('capacity') is-invalid @enderror"
-                            value="{{ old('capacity', $service->capacity) }}" placeholder="Contoh: 100">
-                        @error('capacity')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-md-6 form-group">
-                        <label>Satuan</label>
-                        <input type="text" name="unit" class="form-control @error('unit') is-invalid @enderror"
-                            value="{{ old('unit', $service->unit) }}" placeholder="Contoh: orang / unit / kursi">
-                        @error('unit')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Foto Layanan (Bisa Lebih dari 1)</label>
-                    <input type="file" id="galleryImagesInput" name="gallery_images[]" class="form-control @error('gallery_images') is-invalid @enderror @error('gallery_images.*') is-invalid @enderror"
-                        accept="image/*" multiple>
-                    @error('gallery_images')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                    @error('gallery_images.*')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                    <small class="text-muted">Pilih beberapa foto sekaligus untuk ditambahkan. Foto lama bisa dihapus per-item di panel preview kanan.</small>
-                </div>
-
-                <div class="form-group">
-                    <label>Fasilitas & Keunggulan</label>
-                    <textarea name="facilities" class="form-control" rows="5"
-                        placeholder="Satu baris satu item. Format opsional: Judul|Deskripsi">{{ old('facilities', $service->facilities) }}</textarea>
-                    <small class="text-muted">Contoh baris: Aman & Terpercaya|Dijamin keamanan dan kualitasnya</small>
-                </div>
-
-                <div class="form-group">
-                    <label>Syarat & Ketentuan</label>
-                    <textarea name="terms_conditions" class="form-control" rows="5"
-                        placeholder="Satu baris satu syarat">{{ old('terms_conditions', $service->terms_conditions) }}</textarea>
-                    <small class="text-muted">Contoh baris: Melakukan pemesanan minimal 3 hari sebelumnya</small>
-                </div>
-
-                <div class="form-group">
-                    <label>Pilih Icon</label>
-                    <div class="input-group">
-                        <input type="text" name="icon" class="form-control" id="iconInput"
-                            value="{{ old('icon', $service->icon ?? 'fas fa-concierge-bell') }}"
-                            placeholder="fas fa-concierge-bell" readonly>
-                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#iconModal">
-                            <i class="fas fa-icons"></i> Pilih Icon
-                        </button>
-                    </div>
-                    <small class="text-muted">Klik tombol untuk memilih icon dari daftar</small>
-
-                    <!-- Icon Preview -->
-                    <div class="mt-2" id="iconPreview">
-                        <div class="border rounded p-3 text-center">
-                            <i class="{{ old('icon', $service->icon ?? 'fas fa-concierge-bell') }} fa-2x mb-2 text-primary"></i>
-                            <p class="mb-0 small text-muted" id="iconName">{{ old('icon', $service->icon ?? 'fas fa-concierge-bell') }}</p>
+                        <div class="form-group">
+                            <label>Nama Layanan *</label>
+                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                                value="{{ old('name', $service->name) }}" required>
+                            @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                    </div>
-                </div>
+
+                        <div class="form-group">
+                            <label>Deskripsi</label>
+                            <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="3" required>{{ old('description', $service->description) }}</textarea>
+                            @error('description')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label>Harga per Jam</label>
+                                <input type="number" step="0.01" min="0" name="price_per_hour" class="form-control @error('price_per_hour') is-invalid @enderror"
+                                    value="{{ old('price_per_hour', $service->price_per_hour) }}" placeholder="Contoh: 50000">
+                                @error('price_per_hour')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Harga per Hari</label>
+                                <input type="number" step="0.01" min="0" name="price_per_day" class="form-control @error('price_per_day') is-invalid @enderror"
+                                    value="{{ old('price_per_day', $service->price_per_day) }}" placeholder="Contoh: 300000">
+                                @error('price_per_day')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <label>Kapasitas</label>
+                                <input type="number" min="0" name="capacity" class="form-control @error('capacity') is-invalid @enderror"
+                                    value="{{ old('capacity', $service->capacity) }}" placeholder="Contoh: 100">
+                                @error('capacity')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Satuan</label>
+                                <input type="text" name="unit" class="form-control @error('unit') is-invalid @enderror"
+                                    value="{{ old('unit', $service->unit) }}" placeholder="Contoh: orang / unit / kursi">
+                                @error('unit')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Foto Layanan (Bisa Lebih dari 1)</label>
+                            <input type="file" id="galleryImagesInput" name="gallery_images[]" class="form-control @error('gallery_images') is-invalid @enderror @error('gallery_images.*') is-invalid @enderror"
+                                accept="image/*" multiple>
+                            @error('gallery_images')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            @error('gallery_images.*')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="text-muted">Pilih beberapa foto sekaligus untuk ditambahkan. Foto lama bisa dihapus per-item di panel preview kanan.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Fasilitas & Keunggulan</label>
+                            <textarea name="facilities" class="form-control" rows="5"
+                                placeholder="Satu baris satu item. Format opsional: Judul|Deskripsi">{{ old('facilities', $service->facilities) }}</textarea>
+                            <small class="text-muted">Contoh baris: Aman & Terpercaya|Dijamin keamanan dan kualitasnya</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Syarat & Ketentuan</label>
+                            <textarea name="terms_conditions" class="form-control" rows="5"
+                                placeholder="Satu baris satu syarat">{{ old('terms_conditions', $service->terms_conditions) }}</textarea>
+                            <small class="text-muted">Contoh baris: Melakukan pemesanan minimal 3 hari sebelumnya</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Pilih Icon</label>
+                            <div class="input-group">
+                                <input type="text" name="icon" class="form-control" id="iconInput"
+                                    value="{{ old('icon', $service->icon ?? 'fas fa-concierge-bell') }}"
+                                    placeholder="fas fa-concierge-bell" readonly>
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#iconModal">
+                                    <i class="fas fa-icons"></i> Pilih Icon
+                                </button>
+                            </div>
+                            <small class="text-muted">Klik tombol untuk memilih icon dari daftar</small>
+
+                            <!-- Icon Preview -->
+                            <div class="mt-2" id="iconPreview">
+                                <div class="border rounded p-3 text-center">
+                                    <i class="{{ old('icon', $service->icon ?? 'fas fa-concierge-bell') }} fa-2x mb-2 text-primary"></i>
+                                    <p class="mb-0 small text-muted" id="iconName">{{ old('icon', $service->icon ?? 'fas fa-concierge-bell') }}</p>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="form-group">
                             <label>Foto 360 Derajat (Opsional)</label>
@@ -132,13 +135,13 @@
                             <small class="text-muted">Upload file baru untuk mengganti foto 360 saat ini.</small>
                         </div>
 
-                <div class="form-group">
-                    <label>Status</label>
-                    <select name="status" class="form-control">
-                        <option value="available" {{ $service->status == 'available' ? 'selected' : '' }}>Tersedia</option>
-                        <option value="unavailable" {{ $service->status == 'unavailable' ? 'selected' : '' }}>Tidak Tersedia</option>
-                    </select>
-                </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select name="status" class="form-control">
+                                <option value="available" {{ $service->status == 'available' ? 'selected' : '' }}>Tersedia</option>
+                                <option value="unavailable" {{ $service->status == 'unavailable' ? 'selected' : '' }}>Tidak Tersedia</option>
+                            </select>
+                        </div>
 
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">
@@ -155,33 +158,34 @@
 
         <div class="col-lg-4">
             <div class="services-preview-sticky">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Preview 360 Derajat</h6>
-                </div>
-                <div class="card-body">
-                    @if($service->panorama_image_url)
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Preview 360 Derajat</h6>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" id="initialPanoramaUrl" value="{{ $service->panorama_image_url }}">
+                        @if($service->panorama_image_url)
                         <div id="admin-panorama-viewer" style="height: 360px; border-radius: 12px; overflow: hidden;"></div>
                         <small class="text-muted d-block mt-2">
                             <i class="fas fa-info-circle me-1"></i>Geser untuk melihat sudut 360°.
                         </small>
-                    @else
+                        @else
                         <div id="admin-panorama-fallback" class="d-flex flex-column align-items-center justify-content-center text-center"
                             style="height: 360px; border: 1px dashed #cbd5e0; border-radius: 12px; background: #f8fafc;">
                             <i class="fas fa-panorama fa-2x mb-2 text-muted"></i>
                             <p class="mb-0 text-muted">Belum ada foto 360.</p>
                         </div>
-                    @endif
+                        @endif
+                    </div>
                 </div>
-            </div>
 
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Preview Foto Layanan</h6>
-                </div>
-                <div class="card-body">
-                    <div id="admin-gallery-preview" class="admin-gallery-preview">
-                        @if($service->image)
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Preview Foto Layanan</h6>
+                    </div>
+                    <div class="card-body">
+                        <div id="admin-gallery-preview" class="admin-gallery-preview">
+                            @if($service->image)
                             <div class="admin-gallery-card" data-main-image="true">
                                 <img src="{{ asset('storage/' . ltrim($service->image, '/')) }}" alt="Foto utama {{ $service->name }}" class="admin-gallery-item">
                                 <div class="form-check mt-2">
@@ -191,9 +195,9 @@
                                     </label>
                                 </div>
                             </div>
-                        @endif
+                            @endif
 
-                        @foreach(($service->gallery_images ?? []) as $galleryImagePath)
+                            @foreach(($service->gallery_images ?? []) as $galleryImagePath)
                             <div class="admin-gallery-card" data-gallery-path="{{ $galleryImagePath }}">
                                 <img src="{{ asset('storage/' . ltrim($galleryImagePath, '/')) }}" alt="Foto layanan {{ $service->name }}" class="admin-gallery-item">
                                 <div class="form-check mt-2">
@@ -203,20 +207,20 @@
                                     </label>
                                 </div>
                             </div>
-                        @endforeach
-                    </div>
+                            @endforeach
+                        </div>
 
-                    @if(!$service->image && empty($service->gallery_images))
+                        @if(!$service->image && empty($service->gallery_images))
                         <div id="admin-gallery-empty" class="d-flex flex-column align-items-center justify-content-center text-center"
                             style="height: 200px; border: 1px dashed #cbd5e0; border-radius: 12px; background: #f8fafc;">
                             <i class="fas fa-images fa-2x mb-2 text-muted"></i>
                             <p class="mb-0 text-muted">Belum ada foto layanan.</p>
                         </div>
-                    @endif
+                        @endif
 
-                    <div id="admin-gallery-new-preview" class="admin-gallery-preview mt-3"></div>
+                        <div id="admin-gallery-new-preview" class="admin-gallery-preview mt-3"></div>
+                    </div>
                 </div>
-            </div>
             </div>
         </div>
     </div>
@@ -271,7 +275,7 @@
 
 @push('styles')
 @if($service->panorama_image_url)
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
 @endif
 <style>
     .icon-grid {
@@ -448,11 +452,12 @@
             iconModal.show();
         });
 
-        @if($service->panorama_image_url)
-        if (window.pannellum && document.getElementById('admin-panorama-viewer')) {
+        const initialPanoramaUrl = ($('#initialPanoramaUrl').val() || '').trim();
+
+        if (initialPanoramaUrl && window.pannellum && document.getElementById('admin-panorama-viewer')) {
             pannellum.viewer('admin-panorama-viewer', {
                 type: 'equirectangular',
-                panorama: "{{ $service->panorama_image_url }}",
+                panorama: initialPanoramaUrl,
                 autoLoad: true,
                 showZoomCtrl: true,
                 showFullscreenCtrl: true,
@@ -460,7 +465,6 @@
                 hfov: 110,
             });
         }
-        @endif
 
         // Live preview for newly selected panorama image.
         $('#panoramaInput').on('change', function(e) {

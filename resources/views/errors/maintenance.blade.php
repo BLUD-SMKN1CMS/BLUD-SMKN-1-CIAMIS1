@@ -4,7 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website Sedang Dalam Perbaikan</title>
+    @php
+        $statusCode = (int) ($status ?? 500);
+        $isNotFound = $statusCode === 404;
+        $pageTitle = $isNotFound ? 'Halaman Tidak Tersedia' : 'Website Sedang Dalam Perbaikan';
+        $message = $isNotFound
+            ? 'Maaf, halaman yang Anda cari tidak tersedia atau mungkin sudah dipindahkan.'
+            : 'Mohon maaf atas ketidaknyamanannya. Tim kami sedang melakukan pemeliharaan agar layanan website kembali normal dan lebih stabil.';
+    @endphp
+
+    <title>{{ $pageTitle }}</title>
     <style>
         :root {
             --primary: #0992C2;
@@ -110,12 +119,9 @@
 <body>
     <div class="card">
         <span class="badge">INFORMASI SISTEM</span>
-        <h1>Website Sedang Dalam Perbaikan</h1>
-        <p>
-            Mohon maaf atas ketidaknyamanannya. Tim kami sedang melakukan pemeliharaan
-            agar layanan website kembali normal dan lebih stabil.
-        </p>
-        <div class="status">Kode Status: {{ $status ?? 500 }}</div>
+        <h1>{{ $pageTitle }}</h1>
+        <p>{{ $message }}</p>
+        <div class="status">Kode Status: {{ $statusCode }}</div>
         <div class="actions">
             <a class="btn btn-primary" href="{{ url('/') }}">Kembali ke Beranda</a>
             <a class="btn btn-outline" href="javascript:location.reload()">Coba Lagi</a>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\Tefa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +18,13 @@ class ProfileController extends Controller
     public function edit()
     {
         $admin = Auth::guard('admin')->user();
-        return view('admin.profile.edit', compact('admin'));
+        $adminTefa = null;
+
+        if ($admin && $admin->isAdminTefa() && $admin->tefa_id) {
+            $adminTefa = Tefa::find($admin->tefa_id);
+        }
+
+        return view('admin.profile.edit', compact('admin', 'adminTefa'));
     }
 
     /**
@@ -30,6 +37,9 @@ class ProfileController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:admins,email,' . $admin->id,
+            'tefa_contact_phone' => 'nullable|string|max:50',
+            'tefa_contact_email' => 'nullable|email|max:255',
+            'tefa_whatsapp_number' => 'nullable|string|max:30',
         ]);
 
         if ($validator->fails()) {
@@ -42,6 +52,27 @@ class ProfileController extends Controller
             'name' => $request->name,
             'email' => $request->email,
         ]);
+
+        // Simpan pengaturan kontak halaman jurusan khusus admin TEFA.
+        if ($admin->isAdminTefa() && $admin->tefa_id) {
+            $tefa = Tefa::find($admin->tefa_id);
+
+            if ($tefa) {
+                $rawWhatsapp = (string) $request->input('tefa_whatsapp_number', '');
+                $normalizedWhatsapp = preg_replace('/\D+/', '', $rawWhatsapp);
+
+                // Normalisasi: 08xx -> 628xx untuk link wa.me
+                if ($normalizedWhatsapp !== '' && str_starts_with($normalizedWhatsapp, '0')) {
+                    $normalizedWhatsapp = '62' . substr($normalizedWhatsapp, 1);
+                }
+
+                $tefa->update([
+                    'contact_number' => $request->input('tefa_contact_phone'),
+                    'contact_email' => $request->input('tefa_contact_email'),
+                    'whatsapp_url' => $normalizedWhatsapp !== '' ? 'https://wa.me/' . $normalizedWhatsapp : null,
+                ]);
+            }
+        }
 
         return redirect()->route($this->getRoutePrefix() . '.profile.edit')
             ->with('success', 'Profil berhasil diperbarui!');

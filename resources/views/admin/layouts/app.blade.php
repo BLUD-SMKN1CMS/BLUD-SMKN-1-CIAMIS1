@@ -76,6 +76,14 @@
             border-right: 1px solid var(--gray-200);
             overflow-y: auto;
             transition: all 0.3s ease;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            display: none;
         }
 
         .sidebar-header {
@@ -464,6 +472,147 @@
 
         .table-admin tr:hover {
             background: var(--gray-50);
+        }
+
+        /* ===== UNIFIED TABLE UI (reference style) ===== */
+        .content-area .card .table-responsive {
+            border: 1px solid #e8edf3;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        .content-area .card .table {
+            margin-bottom: 0;
+            border-collapse: collapse;
+            background: #fff;
+            border: 0;
+        }
+
+        .content-area .card .table thead th {
+            background: #f7f9fc;
+            color: #374151;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: none;
+            letter-spacing: 0;
+            border-top: 0;
+            border-bottom: 1px solid #e6ebf2;
+            border-left: 0;
+            border-right: 0;
+            padding: 11px 12px;
+            vertical-align: middle;
+        }
+
+        .content-area .card .table tbody td {
+            color: #4b5563;
+            font-size: 0.9rem;
+            padding: 10px 12px;
+            vertical-align: middle;
+            border-top: 0;
+            border-bottom: 1px solid #edf2f7;
+            border-left: 0;
+            border-right: 0;
+        }
+
+        .content-area .card .table tbody td small {
+            font-size: 0.82rem;
+        }
+
+        .content-area .card .table.table-bordered,
+        .content-area .card .table.table-bordered th,
+        .content-area .card .table.table-bordered td {
+            border-left: 0 !important;
+            border-right: 0 !important;
+        }
+
+        .content-area .card .table.table-bordered {
+            border-top: 0 !important;
+            border-bottom: 0 !important;
+            border-color: #edf2f7 !important;
+        }
+
+        .content-area .card .table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .content-area .card .table tbody tr:hover {
+            background: #fafcff;
+        }
+
+        .content-area .card .table a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        .content-area .card .table a:hover {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+
+        .content-area .card .table .badge {
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.72rem;
+            padding: 3px 8px;
+            border: 1px solid transparent;
+        }
+
+        .content-area .card .table .badge-success,
+        .content-area .card .table .badge.bg-success {
+            background: #eef8f1 !important;
+            color: #4caf6b !important;
+            border-color: #dcefe1 !important;
+        }
+
+        .content-area .card .table .badge-warning,
+        .content-area .card .table .badge.bg-warning {
+            background: #fff8e8 !important;
+            color: #d8a231 !important;
+            border-color: #f7e8bf !important;
+        }
+
+        .content-area .card .table .badge-danger,
+        .content-area .card .table .badge.bg-danger {
+            background: #fff0ef !important;
+            color: #e06a5f !important;
+            border-color: #f4dbd8 !important;
+        }
+
+        .content-area .card .table .badge-secondary,
+        .content-area .card .table .badge.bg-secondary {
+            background: #f3f4f6 !important;
+            color: #6b7280 !important;
+            border-color: #e5e7eb !important;
+        }
+
+        .content-area .card .table .dropdown-toggle::after {
+            display: none !important;
+        }
+
+        .content-area .card .table .btn-link.dropdown-toggle,
+        .content-area .card .table .action-kebab {
+            border: 0;
+            background: transparent;
+            color: #6b7280;
+            padding: 0.2rem 0.35rem;
+            line-height: 1;
+            border-radius: 4px;
+            text-decoration: none !important;
+            box-shadow: none !important;
+        }
+
+        .content-area .card .table .btn-link.dropdown-toggle:hover,
+        .content-area .card .table .action-kebab:hover {
+            color: #374151;
+            background: #f3f4f6;
+        }
+
+        .content-area .card .table .btn-link.dropdown-toggle:focus,
+        .content-area .card .table .btn-link.dropdown-toggle:focus-visible,
+        .content-area .card .table .action-kebab:focus,
+        .content-area .card .table .action-kebab:focus-visible {
+            outline: none;
+            box-shadow: none;
         }
 
         /* ===== FILAMENT FORMS ===== */

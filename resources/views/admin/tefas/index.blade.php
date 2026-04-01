@@ -12,10 +12,10 @@
         </div>
 
         @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show">
-                {{ session('success') }}
-                <button type="button" class="close" data-dismiss="alert">×</button>
-            </div>
+        <div class="alert alert-success alert-dismissible fade show">
+            {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert">×</button>
+        </div>
         @endif
         <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -23,25 +23,25 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" width="100%" cellspacing="0">
+                    <table class="table table-bordered" id="tefasTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th width="54" class="text-center">#</th>
                                 <th>Nama</th>
-                                <th>Kode</th>
-                                <th>Icon</th>
-                                <th>Status</th>
-                                <th>Order</th>
-                                <th width="100">Aksi</th>
+                                <th width="120">Kode</th>
+                                <th width="80" class="text-center">Icon</th>
+                                <th width="140">Status</th>
+                                <th width="90" class="text-center">Order</th>
+                                <th width="90" class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($tefas as $tefa)
                             <tr>
-                                <td>{{ ($tefas->currentPage() - 1) * $tefas->perPage() + $loop->iteration }}</td>
+                                <td class="text-center">{{ ($tefas->currentPage() - 1) * $tefas->perPage() + $loop->iteration }}</td>
                                 <td>{{ $tefa->name }}</td>
                                 <td><span class="badge badge-primary">{{ $tefa->code }}</span></td>
-                                <td>
+                                <td class="text-center">
                                     @if ($tefa->icon)
                                     <i class="{{ $tefa->icon }}"></i>
                                     @endif
@@ -51,10 +51,10 @@
                                         {{ $tefa->is_active ? 'Aktif' : 'Nonaktif' }}
                                     </span>
                                 </td>
-                                <td>{{ $tefa->order }}</td>
+                                <td class="text-center">{{ $tefa->order }}</td>
                                 <td class="text-center">
                                     <div class="dropdown">
-                                        <button class="btn btn-sm btn-link text-dark dropdown-toggle p-0" type="button"
+                                        <button class="btn btn-sm btn-link text-dark dropdown-toggle action-kebab" type="button"
                                             data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
                                             <i class="fas fa-ellipsis-v"></i>
                                         </button>
@@ -113,6 +113,46 @@
 
     @push('styles')
     <style>
+        #tefasTable {
+            table-layout: fixed;
+        }
+
+        #tefasTable th,
+        #tefasTable td {
+            vertical-align: middle;
+        }
+
+        #tefasTable th:nth-child(2),
+        #tefasTable td:nth-child(2) {
+            padding-left: 14px;
+        }
+
+        #tefasTable td:nth-child(7) .dropdown {
+            display: inline-flex;
+            justify-content: center;
+        }
+
+        .action-kebab {
+            border: 0;
+            background: transparent;
+            color: #6b7280;
+            padding: 0.2rem 0.35rem !important;
+            line-height: 1;
+            border-radius: 4px;
+            box-shadow: none !important;
+        }
+
+        .action-kebab:hover {
+            color: #374151;
+            background: #f3f4f6;
+        }
+
+        .action-kebab:focus,
+        .action-kebab:focus-visible {
+            outline: none;
+            box-shadow: none;
+        }
+
         .dropdown-toggle::after {
             display: none !important;
         }

@@ -8,12 +8,12 @@
 @section('content')
 <!-- Dynamic Modern Hero Section with Background Carousel -->
 @php
-    $carouselImages = $carousels
-        ->pluck('image')
-        ->filter()
-        ->map(fn($image) => asset('storage/' . $image))
-        ->values();
-    $heroBgImage = $carouselImages->first() ?? '';
+$carouselImages = $carousels
+->pluck('image')
+->filter()
+->map(fn($image) => asset('storage/' . $image))
+->values();
+$heroBgImage = $carouselImages->first() ?? '';
 @endphp
 
 <section id="heroBackgroundSlider"
@@ -100,107 +100,107 @@
         </div>
 
         @if($featuredProducts->isEmpty())
-            <div class="alert alert-info text-center mb-0">
-                <i class="fas fa-info-circle me-2"></i>Belum ada layanan unggulan.
-            </div>
+        <div class="alert alert-info text-center mb-0">
+            <i class="fas fa-info-circle me-2"></i>Belum ada layanan unggulan.
+        </div>
         @elseif($featuredProducts->count() > 8)
-            @php
-                $featuredChunks = $featuredProducts->chunk(8);
-            @endphp
-            <div id="featuredServicesCarousel" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
-                <div class="carousel-indicators featured-indicators">
-                    @foreach($featuredChunks as $chunkIndex => $chunk)
-                        <button type="button" data-bs-target="#featuredServicesCarousel" data-bs-slide-to="{{ $chunkIndex }}" class="{{ $chunkIndex === 0 ? 'active' : '' }}" aria-current="{{ $chunkIndex === 0 ? 'true' : 'false' }}" aria-label="Slide {{ $chunkIndex + 1 }}"></button>
-                    @endforeach
-                </div>
-
-                <div class="carousel-inner">
-                    @foreach($featuredChunks as $chunkIndex => $chunk)
-                        <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
-                            <div class="row">
-                                @foreach($chunk as $product)
-                                    <div class="col-md-3 col-sm-6 mb-4" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
-                                        <div class="product-card card shadow-sm h-100">
-                                            <div class="position-relative overflow-hidden">
-                                                <img src="{{ $product->image_url }}"
-                                                    class="card-img-top product-img"
-                                                    alt="{{ $product->name }}"
-                                                    loading="lazy"
-                                                    style="height: 200px; object-fit: cover;"
-                                                    onerror="this.src='https://via.placeholder.com/300x200/4A90E2/FFFFFF?text={{ urlencode(substr($product->name, 0, 20)) }}'">
-
-                                                <span class="position-absolute top-0 end-0 m-2 badge glass-effect glass-success">
-                                                    {{ $product->tefa->code ?? 'TEFA' }}
-                                                </span>
-                                                <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark">
-                                                    <i class="fas fa-star me-1"></i> Unggulan
-                                                </span>
-                                            </div>
-                                            <div class="card-body d-flex flex-column">
-                                                <h5 class="card-title">{{ $product->name }}</h5>
-                                                <p class="card-text flex-grow-1 small text-muted">
-                                                    {{ Str::limit($product->description, 60) }}
-                                                </p>
-                                                <div class="d-flex justify-content-end align-items-center mt-auto">
-                                                    <a href="{{ route('products.show', $product->slug) }}"
-                                                        class="btn btn-sm btn-outline-primary">
-                                                        Detail <i class="fas fa-arrow-right ms-1"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-
-                <button class="carousel-control-prev featured-control" type="button" data-bs-target="#featuredServicesCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next featured-control" type="button" data-bs-target="#featuredServicesCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
+        @php
+        $featuredChunks = $featuredProducts->chunk(8);
+        @endphp
+        <div id="featuredServicesCarousel" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
+            <div class="carousel-indicators featured-indicators">
+                @foreach($featuredChunks as $chunkIndex => $chunk)
+                <button type="button" data-bs-target="#featuredServicesCarousel" data-bs-slide-to="{{ $chunkIndex }}" class="{{ $chunkIndex === 0 ? 'active' : '' }}" aria-current="{{ $chunkIndex === 0 ? 'true' : 'false' }}" aria-label="Slide {{ $chunkIndex + 1 }}"></button>
+                @endforeach
             </div>
-        @else
-            <div class="row">
-                @foreach($featuredProducts as $product)
-                <div class="col-md-3 col-sm-6" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
-                    <div class="product-card card shadow-sm h-100">
-                        <div class="position-relative overflow-hidden">
-                            <img src="{{ $product->image_url }}"
-                                class="card-img-top product-img"
-                                alt="{{ $product->name }}"
-                                loading="lazy"
-                                style="height: 200px; object-fit: cover;"
-                                onerror="this.src='https://via.placeholder.com/300x200/4A90E2/FFFFFF?text={{ urlencode(substr($product->name, 0, 20)) }}'">
 
-                            <span class="position-absolute top-0 end-0 m-2 badge glass-effect glass-success">
-                                {{ $product->tefa->code ?? 'TEFA' }}
-                            </span>
-                            <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark">
-                                <i class="fas fa-star me-1"></i> Unggulan
-                            </span>
-                        </div>
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ $product->name }}</h5>
-                            <p class="card-text flex-grow-1 small text-muted">
-                                {{ Str::limit($product->description, 60) }}
-                            </p>
-                            <div class="d-flex justify-content-end align-items-center mt-auto">
-                                <a href="{{ route('products.show', $product->slug) }}"
-                                    class="btn btn-sm btn-outline-primary">
-                                    Detail <i class="fas fa-arrow-right ms-1"></i>
-                                </a>
+            <div class="carousel-inner">
+                @foreach($featuredChunks as $chunkIndex => $chunk)
+                <div class="carousel-item {{ $chunkIndex === 0 ? 'active' : '' }}">
+                    <div class="row">
+                        @foreach($chunk as $product)
+                        <div class="col-md-3 col-sm-6 mb-4" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
+                            <div class="product-card card shadow-sm h-100">
+                                <div class="position-relative overflow-hidden">
+                                    <img src="{{ $product->image_url }}"
+                                        class="card-img-top product-img"
+                                        alt="{{ $product->name }}"
+                                        loading="lazy"
+                                        style="height: 200px; object-fit: cover;"
+                                        onerror="this.src='https://via.placeholder.com/300x200/4A90E2/FFFFFF?text={{ urlencode(substr($product->name, 0, 20)) }}'">
+
+                                    <span class="position-absolute top-0 end-0 m-2 badge glass-effect glass-success">
+                                        {{ $product->tefa->code ?? 'TEFA' }}
+                                    </span>
+                                    <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark">
+                                        <i class="fas fa-star me-1"></i> Unggulan
+                                    </span>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">{{ $product->name }}</h5>
+                                    <p class="card-text flex-grow-1 small text-muted">
+                                        {{ Str::limit($product->description, 60) }}
+                                    </p>
+                                    <div class="d-flex justify-content-end align-items-center mt-auto">
+                                        <a href="{{ route('products.show', $product->slug) }}"
+                                            class="btn btn-sm btn-outline-primary">
+                                            Detail <i class="fas fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        @endforeach
                     </div>
                 </div>
                 @endforeach
             </div>
+
+            <button class="carousel-control-prev featured-control" type="button" data-bs-target="#featuredServicesCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next featured-control" type="button" data-bs-target="#featuredServicesCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        @else
+        <div class="row">
+            @foreach($featuredProducts as $product)
+            <div class="col-md-3 col-sm-6" data-aos="fade-up" data-aos-delay="{{ $loop->index * 50 }}">
+                <div class="product-card card shadow-sm h-100">
+                    <div class="position-relative overflow-hidden">
+                        <img src="{{ $product->image_url }}"
+                            class="card-img-top product-img"
+                            alt="{{ $product->name }}"
+                            loading="lazy"
+                            style="height: 200px; object-fit: cover;"
+                            onerror="this.src='https://via.placeholder.com/300x200/4A90E2/FFFFFF?text={{ urlencode(substr($product->name, 0, 20)) }}'">
+
+                        <span class="position-absolute top-0 end-0 m-2 badge glass-effect glass-success">
+                            {{ $product->tefa->code ?? 'TEFA' }}
+                        </span>
+                        <span class="position-absolute top-0 start-0 m-2 badge bg-warning text-dark">
+                            <i class="fas fa-star me-1"></i> Unggulan
+                        </span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ $product->name }}</h5>
+                        <p class="card-text flex-grow-1 small text-muted">
+                            {{ Str::limit($product->description, 60) }}
+                        </p>
+                        <div class="d-flex justify-content-end align-items-center mt-auto">
+                            <a href="{{ route('products.show', $product->slug) }}"
+                                class="btn btn-sm btn-outline-primary">
+                                Detail <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
         @endif
     </div>
 </section>
@@ -414,6 +414,10 @@
         align-items: center;
         justify-content: center;
         transition: all 0.4s ease;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
     }
 
     .tefa-logo img {
@@ -421,6 +425,11 @@
         height: 100%;
         object-fit: contain;
         transition: transform 0.4s ease;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
     }
 
     .tefa-logo i {
@@ -950,4 +959,3 @@
     });
 </script>
 @endpush
-

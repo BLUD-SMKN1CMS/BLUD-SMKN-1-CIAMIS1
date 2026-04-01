@@ -20,21 +20,21 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="servicesTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Icon</th>
+                            <th class="text-center" width="90">Icon</th>
                             <th>Nama Layanan</th>
                             <th>Status</th>
-                            <th width="100">Aksi</th>
+                            <th class="text-center" width="100">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($services as $service)
                         <tr>
                             <td>{{ ($services->currentPage() - 1) * $services->perPage() + $loop->iteration }}</td>
-                            <td class="text-center">
+                            <td class="text-center align-middle">
                                 <i class="{{ $service->icon ?? 'fas fa-concierge-bell' }} fa-lg text-primary"></i>
                             </td>
                             <td>{{ $service->name }}</td>
@@ -44,9 +44,9 @@
                                     {{ \App\Helpers\StatusHelper::getServiceStatusLabel($service->status) }}
                                 </span>
                             </td>
-                            <td class="text-center">
+                            <td class="text-center align-middle">
                                 <div class="dropdown">
-                                    <button class="btn btn-sm btn-link text-dark dropdown-toggle p-0" type="button"
+                                    <button class="btn btn-sm btn-link text-dark dropdown-toggle action-kebab" type="button"
                                         data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
                                         <i class="fas fa-ellipsis-v"></i>
                                     </button>
@@ -260,6 +260,85 @@
 
 @push('styles')
 <style>
+    #servicesTable {
+        table-layout: fixed;
+    }
+
+    #servicesTable th,
+    #servicesTable td {
+        vertical-align: middle;
+    }
+
+    #servicesTable th {
+        font-size: 0.9rem;
+    }
+
+    #servicesTable td {
+        font-size: 0.9rem;
+    }
+
+    #servicesTable td small {
+        font-size: 0.82rem;
+    }
+
+    #servicesTable th:nth-child(1),
+    #servicesTable td:nth-child(1) {
+        width: 56px;
+        text-align: center;
+    }
+
+    #servicesTable th:nth-child(2),
+    #servicesTable td:nth-child(2) {
+        width: 90px;
+        text-align: center;
+    }
+
+    #servicesTable th:nth-child(3),
+    #servicesTable td:nth-child(3) {
+        width: 42%;
+        text-align: left;
+        padding-left: 14px;
+    }
+
+    #servicesTable th:nth-child(4),
+    #servicesTable td:nth-child(4) {
+        width: 18%;
+        text-align: left;
+        padding-left: 12px;
+    }
+
+    #servicesTable th:nth-child(5),
+    #servicesTable td:nth-child(5) {
+        width: 80px;
+        text-align: center;
+    }
+
+    #servicesTable td:nth-child(5) .dropdown {
+        display: inline-flex;
+        justify-content: center;
+    }
+
+    .action-kebab {
+        border: 0;
+        background: transparent;
+        color: #6b7280;
+        padding: 0.2rem 0.35rem !important;
+        line-height: 1;
+        border-radius: 4px;
+        box-shadow: none !important;
+    }
+
+    .action-kebab:hover {
+        color: #374151;
+        background: #f3f4f6;
+    }
+
+    .action-kebab:focus,
+    .action-kebab:focus-visible {
+        outline: none;
+        box-shadow: none;
+    }
+
     .dropdown-toggle::after {
         display: none !important;
     }

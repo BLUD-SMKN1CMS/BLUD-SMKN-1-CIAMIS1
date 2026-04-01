@@ -78,23 +78,28 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
+                @php
+                $isAdminTefa = auth('admin')->user()?->isAdminTefa();
+                @endphp
                 <table class="table table-bordered" id="productsTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th width="40">#</th>
-                            <th width="80">Gambar</th>
-                            <th>Nama Layanan</th>
-                            <th>TEFA</th>
-                            <th width="100">Status</th>
-                            <th width="90">Unggulan</th>
-                            <th width="100">Aksi</th>
+                            <th class="col-no" width="40">#</th>
+                            <th class="col-image" width="80">Gambar</th>
+                            <th class="col-name">Nama Layanan</th>
+                            @if(!$isAdminTefa)
+                            <th class="col-tefa">TEFA</th>
+                            @endif
+                            <th class="col-status" width="100">Status</th>
+                            <th class="col-featured" width="90">Unggulan</th>
+                            <th class="col-action" width="100">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($products as $product)
                         <tr>
-                            <td>{{ ($products->currentPage() - 1) * $products->perPage() + $loop->iteration }}</td>
-                            <td>
+                            <td class="col-no">{{ ($products->currentPage() - 1) * $products->perPage() + $loop->iteration }}</td>
+                            <td class="col-image">
                                 @if($product->image)
                                 <img src="{{ $product->image_url }}"
                                     alt="{{ $product->name }}"
@@ -110,26 +115,27 @@
                                 </div>
                                 @endif
                             </td>
-                            <td>
+                            <td class="col-name">
                                 <strong>{{ $product->name }}</strong>
                                 @if ($product->category)
                                 <br>
                                 <small class="text-muted">{{ $product->category }}</small>
                                 @endif
                             </td>
+                            @if(!$isAdminTefa)
                             <td>
                                 @if ($product->tefa)
                                 <span class="badge badge-primary">
                                     <i class="fas {{ $product->tefa->icon ?? 'fa-school' }} mr-1"></i>
                                     {{ $product->tefa->code }}
                                 </span>
-                                <small
-                                    class="d-block text-muted">{{ Str::limit($product->tefa->name, 15) }}</small>
+                                <small class="d-block text-muted text-wrap">{{ $product->tefa->name }}</small>
                                 @else
                                 <span class="text-muted">-</span>
                                 @endif
                             </td>
-                            <td>
+                            @endif
+                            <td class="col-status">
                                 <span
                                     class="badge
                                     @if ($product->status == 'active') badge-success
@@ -144,7 +150,7 @@
                                     @endif
                                 </span>
                             </td>
-                            <td class="text-center">
+                            <td class="text-center col-featured">
                                 @if ($product->is_featured)
                                 <span class="badge bg-warning text-dark" title="Layanan Unggulan">
                                     <i class="fas fa-star mr-1"></i> Unggulan
@@ -155,7 +161,7 @@
                                 </span>
                                 @endif
                             </td>
-                            <td class="text-center">
+                            <td class="text-center col-action">
                                 <!-- DROPDOWN 3 TITIK -->
                                 <div class="dropdown">
                                     <button class="btn btn-sm btn-link text-dark dropdown-toggle p-0" type="button"
@@ -180,8 +186,8 @@
                                         </li>
                                         @if($product->status == 'active')
                                         <li>
-                                            <form action="{{ route($routePrefix . '.products.update', $product->id) }}" method="POST" id="toggle-status-inactive-{{ $product->id }}">
-                                                @csrf @method('PUT')
+                                            <form action="{{ route($routePrefix . '.products.toggle-status', $product->id) }}" method="POST" id="toggle-status-inactive-{{ $product->id }}">
+                                                @csrf
                                                 <input type="hidden" name="status" value="inactive">
                                             </form>
                                             <button type="submit" form="toggle-status-inactive-{{ $product->id }}" class="dropdown-item text-warning">
@@ -190,8 +196,8 @@
                                         </li>
                                         @else
                                         <li>
-                                            <form action="{{ route($routePrefix . '.products.update', $product->id) }}" method="POST" id="toggle-status-active-{{ $product->id }}">
-                                                @csrf @method('PUT')
+                                            <form action="{{ route($routePrefix . '.products.toggle-status', $product->id) }}" method="POST" id="toggle-status-active-{{ $product->id }}">
+                                                @csrf
                                                 <input type="hidden" name="status" value="active">
                                             </form>
                                             <button type="submit" form="toggle-status-active-{{ $product->id }}" class="dropdown-item text-success">
@@ -220,7 +226,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="text-center py-5">
+                            <td colspan="{{ $isAdminTefa ? 6 : 7 }}" class="text-center py-5">
                                 <div class="text-muted">
                                     <i class="fas fa-box-open fa-3x mb-4" style="opacity: 0.5;"></i>
                                     <p class="mb-4">Belum ada data layanan</p>
@@ -249,6 +255,81 @@
 
 @push('styles')
 <style>
+    #productsTable {
+        table-layout: fixed;
+    }
+
+    #productsTable th,
+    #productsTable td {
+        vertical-align: middle;
+    }
+
+    #productsTable th {
+        font-size: 0.9rem;
+    }
+
+    #productsTable td {
+        font-size: 0.9rem;
+    }
+
+    #productsTable td small {
+        font-size: 0.82rem;
+    }
+
+    #productsTable .col-no {
+        width: 48px;
+        text-align: center;
+    }
+
+    #productsTable .col-image {
+        width: 84px;
+    }
+
+    /* Nama Layanan: geser sedikit ke kanan */
+    #productsTable .col-name {
+        width: 24%;
+        padding-left: 18px;
+    }
+
+    /* TEFA: cukup lebar untuk nama panjang, tapi tidak berlebihan */
+    #productsTable .col-tefa {
+        width: 34%;
+    }
+
+    /* Status: tarik lebih ke kiri */
+    #productsTable .col-status {
+        width: 110px;
+        text-align: left;
+        padding-left: 8px;
+    }
+
+    #productsTable .col-featured {
+        width: 110px;
+        text-align: center;
+    }
+
+    #productsTable .col-action {
+        width: 74px;
+        text-align: center;
+    }
+
+    /* Hindari dropdown aksi terpotong di dalam area tabel */
+    .card-body>.table-responsive {
+        overflow-x: auto;
+        overflow-y: visible !important;
+        position: relative;
+    }
+
+    #productsTable td.col-action,
+    #productsTable td.col-action .dropdown {
+        position: static;
+    }
+
+    #productsTable .col-tefa small {
+        white-space: normal;
+        word-break: break-word;
+    }
+
     #productsTable tbody tr:hover {
         background-color: rgba(74, 144, 226, 0.05);
         transition: background-color 0.3s;
@@ -285,7 +366,7 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         border-radius: 8px;
         border: 1px solid #eee;
-        z-index: 1050 !important;
+        z-index: 2000 !important;
     }
 
     .dropdown-item {
@@ -395,7 +476,7 @@
                 }
 
                 $.ajax({
-                    url: `/admin/products/${productId}/toggle-status`,
+                    url: "{{ route($routePrefix . '.products.toggle-status', ':id') }}".replace(':id', productId),
                     method: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
@@ -433,7 +514,7 @@
                 }
 
                 $.ajax({
-                    url: `/admin/products/${productId}/toggle-featured`,
+                    url: "{{ route($routePrefix . '.products.toggle-featured', ':id') }}".replace(':id', productId),
                     method: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',

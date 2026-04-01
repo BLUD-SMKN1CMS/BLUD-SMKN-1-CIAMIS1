@@ -41,14 +41,14 @@
     <div class="container">
         @php
         $sliderImages = collect($tefa->slider_image_urls ?? [])
-            ->filter(fn($url) => is_string($url) && trim($url) !== '')
-            ->values();
+        ->filter(fn($url) => is_string($url) && trim($url) !== '')
+        ->values();
 
         if ($sliderImages->isEmpty()) {
-            $sliderImages = collect([$tefa->banner_url, $tefa->logo_url])
-                ->filter(fn($url) => is_string($url) && trim($url) !== '')
-                ->unique()
-                ->values();
+        $sliderImages = collect([$tefa->banner_url, $tefa->logo_url])
+        ->filter(fn($url) => is_string($url) && trim($url) !== '')
+        ->unique()
+        ->values();
         }
         @endphp
         <div class="row g-4 align-items-start">
@@ -130,16 +130,16 @@
 </section>
 
 @php
-    $videoUrl = trim((string) ($tefa->video_url ?? ''));
-    $embedVideoUrl = null;
+$videoUrl = trim((string) ($tefa->video_url ?? ''));
+$embedVideoUrl = null;
 
-    if ($videoUrl !== '') {
-        if (preg_match('/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/', $videoUrl, $matches)) {
-            $embedVideoUrl = 'https://www.youtube.com/embed/' . $matches[1];
-        } elseif (preg_match('/vimeo\.com\/(?:video\/)?(\d+)/', $videoUrl, $matches)) {
-            $embedVideoUrl = 'https://player.vimeo.com/video/' . $matches[1];
-        }
-    }
+if ($videoUrl !== '') {
+if (preg_match('/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/', $videoUrl, $matches)) {
+$embedVideoUrl = 'https://www.youtube.com/embed/' . $matches[1];
+} elseif (preg_match('/vimeo\.com\/(?:video\/)?(\d+)/', $videoUrl, $matches)) {
+$embedVideoUrl = 'https://player.vimeo.com/video/' . $matches[1];
+}
+}
 @endphp
 
 @if($embedVideoUrl)
@@ -319,6 +319,28 @@
             @endforeach
         </div>
         @endif
+    </div>
+</section>
+
+<section class="tefa-contact-cta">
+    <div class="container">
+        <div class="tefa-contact-card">
+            <h2>Ada Pertanyaan?</h2>
+            <p>Tim kami siap membantu Anda dengan senang hati</p>
+            <div class="tefa-contact-actions">
+                @if(!empty($tefaContactInfo['phone']))
+                <a href="tel:{{ preg_replace('/\s+/', '', (string) $tefaContactInfo['phone']) }}" class="contact-btn contact-btn-outline">
+                    <i class="fas fa-phone"></i> {{ $tefaContactInfo['phone'] }}
+                </a>
+                @endif
+
+                @if(!empty($tefaContactInfo['email']))
+                <a href="mailto:{{ $tefaContactInfo['email'] }}" class="contact-btn contact-btn-outline">
+                    <i class="fas fa-envelope"></i> Email
+                </a>
+                @endif
+            </div>
+        </div>
     </div>
 </section>
 
@@ -868,6 +890,75 @@
         justify-content: center;
     }
 
+    .tefa-contact-cta {
+        padding: 0.5rem 0 2.8rem;
+        background: linear-gradient(180deg, #f7fafd 0%, #ffffff 100%);
+    }
+
+    .tefa-contact-card {
+        background: linear-gradient(135deg, #4f8fd8 0%, #4383cb 100%);
+        border-radius: 18px;
+        padding: 2.4rem 1.5rem;
+        text-align: center;
+        color: #fff;
+    }
+
+    .tefa-contact-card h2 {
+        font-size: 2.1rem;
+        font-weight: 800;
+        margin-bottom: 0.35rem;
+        color: #fff;
+    }
+
+    .tefa-contact-card p {
+        margin-bottom: 1.3rem;
+        font-size: 1.05rem;
+        color: rgba(255, 255, 255, 0.95);
+    }
+
+    .tefa-contact-actions {
+        display: flex;
+        gap: 0.8rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .contact-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55rem;
+        border-radius: 999px;
+        padding: 0.72rem 1.5rem;
+        font-weight: 700;
+        text-decoration: none;
+        border: 2px solid rgba(255, 255, 255, 0.95);
+        transition: all 0.2s ease;
+        min-width: 170px;
+    }
+
+    .contact-btn-whatsapp {
+        background: #ffffff;
+        color: #111827;
+        border-color: #ffffff;
+    }
+
+    .contact-btn-whatsapp:hover {
+        color: #111827;
+        transform: translateY(-1px);
+    }
+
+    .contact-btn-outline {
+        background: transparent;
+        color: #ffffff;
+    }
+
+    .contact-btn-outline:hover {
+        background: rgba(255, 255, 255, 0.14);
+        color: #ffffff;
+        transform: translateY(-1px);
+    }
+
     @media (max-width: 991px) {
         .tefa-header-section {
             padding: 2.4rem 0 1.4rem;
@@ -928,8 +1019,21 @@
             height: 165px;
         }
 
+        .tefa-contact-card {
+            border-radius: 14px;
+            padding: 2rem 1rem;
+        }
+
+        .tefa-contact-card h2 {
+            font-size: 1.7rem;
+        }
+
+        .contact-btn {
+            width: 100%;
+            min-width: 0;
+        }
+
 
     }
 </style>
 @endsection
-

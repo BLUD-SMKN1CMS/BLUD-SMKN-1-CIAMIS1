@@ -28,16 +28,16 @@
     @endif
 
     @php
-        $tefaShowRouteName = $routePrefix . '.tefas.show';
-        $tefaEditRouteName = $routePrefix . '.tefas.edit';
-        $tefaCreateRouteName = $routePrefix . '.tefas.create';
-        $toggleFeaturedRouteName = $routePrefix . '.products.toggle-featured';
-        $isAdminTefa = auth('admin')->user()?->isAdminTefa();
+    $tefaShowRouteName = $routePrefix . '.tefas.show';
+    $tefaEditRouteName = $routePrefix . '.tefas.edit';
+    $tefaCreateRouteName = $routePrefix . '.tefas.create';
+    $toggleFeaturedRouteName = $routePrefix . '.products.toggle-featured';
+    $isAdminTefa = auth('admin')->user()?->isAdminTefa();
 
-        $hasTefaShowRoute = \Illuminate\Support\Facades\Route::has($tefaShowRouteName);
-        $hasTefaEditRoute = \Illuminate\Support\Facades\Route::has($tefaEditRouteName);
-        $hasTefaCreateRoute = \Illuminate\Support\Facades\Route::has($tefaCreateRouteName);
-        $hasToggleFeaturedRoute = \Illuminate\Support\Facades\Route::has($toggleFeaturedRouteName);
+    $hasTefaShowRoute = \Illuminate\Support\Facades\Route::has($tefaShowRouteName);
+    $hasTefaEditRoute = \Illuminate\Support\Facades\Route::has($tefaEditRouteName);
+    $hasTefaCreateRoute = \Illuminate\Support\Facades\Route::has($tefaCreateRouteName);
+    $hasToggleFeaturedRoute = \Illuminate\Support\Facades\Route::has($toggleFeaturedRouteName);
     @endphp
 
     <div class="row">
@@ -119,6 +119,7 @@
                                             @endif
                                         </td>
                                     </tr>
+                                    @if(!$isAdminTefa)
                                     <tr>
                                         <th class="bg-light">TEFA</th>
                                         <td>
@@ -129,10 +130,10 @@
                                             </span>
                                             {{ $product->tefa->name }}
                                             @if($hasTefaShowRoute)
-                                                <a href="{{ route($tefaShowRouteName, $product->tefa->id) }}"
-                                                    class="btn btn-sm btn-outline-primary ml-2">
-                                                    <i class="fas fa-external-link-alt"></i>
-                                                </a>
+                                            <a href="{{ route($tefaShowRouteName, $product->tefa->id) }}"
+                                                class="btn btn-sm btn-outline-primary ml-2">
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
                                             @endif
                                             @else
                                             <span class="text-danger">
@@ -142,6 +143,7 @@
                                             @endif
                                         </td>
                                     </tr>
+                                    @endif
 
                                     <tr>
                                         <th class="bg-light">Kategori</th>
@@ -168,22 +170,22 @@
                                         </td>
                                     </tr>
                                     @if($hasToggleFeaturedRoute)
-                                        <tr>
-                                            <th class="bg-light">Unggulan</th>
-                                            <td>
-                                                <form action="{{ route($toggleFeaturedRouteName, $product->id) }}" method="POST" class="d-flex align-items-center gap-2 mb-0">
-                                                    @csrf
-                                                    <input type="hidden" name="is_featured" value="0">
-                                                    <div class="form-check mb-0">
-                                                        <input class="form-check-input" type="checkbox" value="1" id="is_featured" name="is_featured" {{ $product->is_featured ? 'checked' : '' }}>
-                                                        <label class="form-check-label" for="is_featured">
-                                                            Jadikan layanan unggulan
-                                                        </label>
-                                                    </div>
-                                                    <button type="submit" class="btn btn-sm btn-outline-primary ml-2">Simpan</button>
-                                                </form>
-                                            </td>
-                                        </tr>
+                                    <tr>
+                                        <th class="bg-light">Unggulan</th>
+                                        <td>
+                                            <form action="{{ route($toggleFeaturedRouteName, $product->id) }}" method="POST" class="d-flex align-items-center gap-2 mb-0">
+                                                @csrf
+                                                <input type="hidden" name="is_featured" value="0">
+                                                <div class="form-check mb-0">
+                                                    <input class="form-check-input" type="checkbox" value="1" id="is_featured" name="is_featured" {{ $product->is_featured ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="is_featured">
+                                                        Jadikan layanan unggulan
+                                                    </label>
+                                                </div>
+                                                <button type="submit" class="btn btn-sm btn-outline-primary ml-2">Simpan</button>
+                                            </form>
+                                        </td>
+                                    </tr>
                                     @endif
                                     <tr>
                                         <th class="bg-light">Urutan Tampilan</th>
@@ -277,17 +279,17 @@
 
                     <div class="mt-3 text-center">
                         @if($hasTefaShowRoute)
-                            <a href="{{ route($tefaShowRouteName, $product->tefa->id) }}"
-                                class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-external-link-alt mr-1"></i> Detail TEFA
-                            </a>
+                        <a href="{{ route($tefaShowRouteName, $product->tefa->id) }}"
+                            class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-external-link-alt mr-1"></i> Detail TEFA
+                        </a>
                         @endif
 
                         @if($hasTefaEditRoute)
-                            <a href="{{ route($tefaEditRouteName, $product->tefa->id) }}"
-                                class="btn btn-outline-warning btn-sm {{ $hasTefaShowRoute ? 'ml-2' : '' }}">
-                                <i class="fas fa-edit mr-1"></i> Edit TEFA
-                            </a>
+                        <a href="{{ route($tefaEditRouteName, $product->tefa->id) }}"
+                            class="btn btn-outline-warning btn-sm {{ $hasTefaShowRoute ? 'ml-2' : '' }}">
+                            <i class="fas fa-edit mr-1"></i> Edit TEFA
+                        </a>
                         @endif
                     </div>
                     @else
@@ -296,12 +298,12 @@
                         <p class="text-muted mb-0">Layanan ini belum memiliki TEFA</p>
                         <small class="text-muted">Tambahkan TEFA di halaman edit layanan</small>
                         @if($hasTefaCreateRoute)
-                            <div class="mt-3">
-                                <a href="{{ route($tefaCreateRouteName) }}"
-                                    class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-plus mr-1"></i> Buat TEFA Baru
-                                </a>
-                            </div>
+                        <div class="mt-3">
+                            <a href="{{ route($tefaCreateRouteName) }}"
+                                class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-plus mr-1"></i> Buat TEFA Baru
+                            </a>
+                        </div>
                         @endif
                     </div>
                     @endif
@@ -434,4 +436,3 @@
     });
 </script>
 @endpush
-

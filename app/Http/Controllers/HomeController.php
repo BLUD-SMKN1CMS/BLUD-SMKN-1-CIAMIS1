@@ -30,9 +30,9 @@ class HomeController extends Controller
             ];
 
             // 3. TEFA aktif dengan produk
-            $tefas = Tefa::with(['products' => function($query) {
-                    $query->where('status', 'active')->limit(3);
-                }])
+            $tefas = Tefa::with(['products' => function ($query) {
+                $query->where('status', 'active')->limit(3);
+            }])
                 ->where('is_active', true)
                 ->orderBy('order')
                 ->get();
@@ -113,7 +113,6 @@ class HomeController extends Controller
                 'footerServices',
                 'footerTefas'
             ));
-
         } catch (\Exception $e) {
             Log::error('HomeController error: ' . $e->getMessage());
 
@@ -153,9 +152,9 @@ class HomeController extends Controller
     // ========== ALL TEFA ==========
     public function allTefa()
     {
-        $tefas = Tefa::withCount(['products' => function($query) {
-                $query->where('status', 'active');
-            }])
+        $tefas = Tefa::withCount(['products' => function ($query) {
+            $query->where('status', 'active');
+        }])
             ->where('is_active', true)
             ->orderBy('order')
             ->get();
@@ -295,12 +294,28 @@ class HomeController extends Controller
             'whatsapp_number' => $settings['contact']['whatsapp_number'] ?? '6281234567890',
         ];
 
+        $tefaWhatsappUrl = $tefa->whatsapp_url;
+        if (!$tefaWhatsappUrl && !empty($tefa->contact_number)) {
+            $normalizedPhone = preg_replace('/\D+/', '', (string) $tefa->contact_number);
+            if ($normalizedPhone !== '' && str_starts_with($normalizedPhone, '0')) {
+                $normalizedPhone = '62' . substr($normalizedPhone, 1);
+            }
+            $tefaWhatsappUrl = $normalizedPhone !== '' ? 'https://wa.me/' . $normalizedPhone : null;
+        }
+
+        $tefaContactInfo = [
+            'phone' => $tefa->contact_number ?: ($contactInfo['company_phone'] ?? null),
+            'email' => $tefa->contact_email ?: ($contactInfo['company_email'] ?? null),
+            'whatsapp_url' => $tefaWhatsappUrl,
+        ];
+
         return view('tefa.show', compact(
             'tefa',
             'products',
             'featuredServices',
             'allServices',
             'contactInfo',
+            'tefaContactInfo',
             'footerTefas',
             'footerServices'
         ));
@@ -314,7 +329,7 @@ class HomeController extends Controller
 
         // Filter by TEFA jika ada
         if ($request->has('tefa') && $request->tefa != 'all') {
-            $query->whereHas('tefa', function($q) use ($request) {
+            $query->whereHas('tefa', function ($q) use ($request) {
                 $q->where('slug', $request->tefa);
             });
         }
@@ -327,9 +342,9 @@ class HomeController extends Controller
         // Filter by search keyword
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('description', 'like', '%' . $search . '%');
+                    ->orWhere('description', 'like', '%' . $search . '%');
             });
         }
 
@@ -449,9 +464,9 @@ class HomeController extends Controller
         // Filter by search
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('description', 'like', '%' . $search . '%');
+                    ->orWhere('description', 'like', '%' . $search . '%');
             });
         }
 
@@ -629,29 +644,29 @@ class HomeController extends Controller
         // Search products
         $products = Product::with('tefa')
             ->where('status', 'active')
-            ->where(function($query) use ($keyword) {
+            ->where(function ($query) use ($keyword) {
                 $query->where('name', 'like', '%' . $keyword . '%')
-                      ->orWhere('description', 'like', '%' . $keyword . '%')
-                      ->orWhere('category', 'like', '%' . $keyword . '%');
+                    ->orWhere('description', 'like', '%' . $keyword . '%')
+                    ->orWhere('category', 'like', '%' . $keyword . '%');
             })
             ->limit(10)
             ->get();
 
         // Search services
         $services = Service::where('status', 'available')
-            ->where(function($query) use ($keyword) {
+            ->where(function ($query) use ($keyword) {
                 $query->where('name', 'like', '%' . $keyword . '%')
-                      ->orWhere('description', 'like', '%' . $keyword . '%');
+                    ->orWhere('description', 'like', '%' . $keyword . '%');
             })
             ->limit(10)
             ->get();
 
         // Search TEFA
         $tefas = Tefa::where('is_active', true)
-            ->where(function($query) use ($keyword) {
+            ->where(function ($query) use ($keyword) {
                 $query->where('name', 'like', '%' . $keyword . '%')
-                      ->orWhere('description', 'like', '%' . $keyword . '%')
-                      ->orWhere('code', 'like', '%' . $keyword . '%');
+                    ->orWhere('description', 'like', '%' . $keyword . '%')
+                    ->orWhere('code', 'like', '%' . $keyword . '%');
             })
             ->limit(10)
             ->get();

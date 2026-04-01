@@ -70,6 +70,57 @@
                             <small class="text-muted">Username tidak dapat diubah</small>
                         </div>
 
+                        @if($admin->isAdminTefa())
+                        <hr class="my-4">
+                        <h6 class="text-primary fw-bold mb-3">
+                            <i class="fas fa-phone-alt me-2"></i>Pengaturan Kontak Halaman Jurusan
+                        </h6>
+                        <p class="text-muted small mb-3">Data ini akan tampil di bagian "Ada Pertanyaan?" pada halaman jurusan Anda.</p>
+
+                        @php
+                        $existingWhatsapp = '';
+                        if (!empty($adminTefa?->whatsapp_url)) {
+                        $existingWhatsapp = preg_replace('/\D+/', '', (string) $adminTefa->whatsapp_url);
+                        if (str_starts_with($existingWhatsapp, '62')) {
+                        $existingWhatsapp = '0' . substr($existingWhatsapp, 2);
+                        }
+                        }
+                        @endphp
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Nomor Telepon</label>
+                                <input type="text" name="tefa_contact_phone"
+                                    class="form-control @error('tefa_contact_phone') is-invalid @enderror"
+                                    value="{{ old('tefa_contact_phone', $adminTefa?->contact_number) }}"
+                                    placeholder="Contoh: 081234567890">
+                                @error('tefa_contact_phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Email Kontak</label>
+                                <input type="email" name="tefa_contact_email"
+                                    class="form-control @error('tefa_contact_email') is-invalid @enderror"
+                                    value="{{ old('tefa_contact_email', $adminTefa?->contact_email) }}"
+                                    placeholder="Contoh: pplg@smkn1ciamis.sch.id">
+                                @error('tefa_contact_email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bold">Nomor WhatsApp</label>
+                                <input type="text" name="tefa_whatsapp_number"
+                                    class="form-control @error('tefa_whatsapp_number') is-invalid @enderror"
+                                    value="{{ old('tefa_whatsapp_number', $existingWhatsapp) }}"
+                                    placeholder="Contoh: 081234567890">
+                                @error('tefa_whatsapp_number')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        @endif
+
                         <div class="d-flex justify-content-between align-items-center mt-4">
                             <a href="{{ route($routePrefix . '.profile.change-password') }}" class="btn btn-outline-primary">
                                 <i class="fas fa-key me-2"></i> Ubah Password

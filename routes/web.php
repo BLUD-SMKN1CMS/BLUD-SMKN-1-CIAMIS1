@@ -59,6 +59,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Products
         Route::resource('products', ProductController::class);
         Route::post('/products/{product}/toggle-featured', [ProductController::class, 'toggleFeatured'])->name('products.toggle-featured');
+        Route::post('/products/{product}/toggle-status', [ProductController::class, 'toggleStatus'])->name('products.toggle-status');
 
         // Profile
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -93,6 +94,7 @@ Route::prefix('super-admin')->name('superadmin.')->group(function () {
         // Products
         Route::resource('products', ProductController::class);
         Route::post('/products/{product}/toggle-featured', [ProductController::class, 'toggleFeatured'])->name('products.toggle-featured');
+        Route::post('/products/{product}/toggle-status', [ProductController::class, 'toggleStatus'])->name('products.toggle-status');
 
         // Services
         Route::resource('services', ServiceController::class);

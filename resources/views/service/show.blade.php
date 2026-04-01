@@ -66,19 +66,19 @@
 <section id="service-details" class="py-5 mt-5">
     <div class="container">
         @php
-            $servicePhotoUrls = collect();
+        $servicePhotoUrls = collect();
 
-            if (!empty($service->image)) {
-                $servicePhotoUrls->push(asset('storage/' . ltrim($service->image, '/')));
-            }
+        if (!empty($service->image)) {
+        $servicePhotoUrls->push(asset('storage/' . ltrim($service->image, '/')));
+        }
 
-            $servicePhotoUrls = $servicePhotoUrls
-                ->concat(collect($service->gallery_image_urls ?? []))
-                ->filter(fn($url) => is_string($url) && trim($url) !== '')
-                ->unique()
-                ->values();
+        $servicePhotoUrls = $servicePhotoUrls
+        ->concat(collect($service->gallery_image_urls ?? []))
+        ->filter(fn($url) => is_string($url) && trim($url) !== '')
+        ->unique()
+        ->values();
 
-            $hasSidebarMedia = $servicePhotoUrls->isNotEmpty() || !empty($service->panorama_image_url);
+        $hasSidebarMedia = $servicePhotoUrls->isNotEmpty() || !empty($service->panorama_image_url);
         @endphp
         <div class="row g-4">
             <div class="col-lg-{{ $hasSidebarMedia ? '8' : '12' }}">
@@ -94,22 +94,22 @@
                     <div class="row g-3">
                         @php
                         $featureLines = collect(preg_split('/\r\n|\r|\n/', (string) $service->facilities))
-                            ->map(fn($line) => trim($line))
-                            ->filter()
-                            ->values();
+                        ->map(fn($line) => trim($line))
+                        ->filter()
+                        ->values();
 
                         $defaultFeatures = collect([
-                            ['title' => 'Aman & Terpercaya', 'desc' => 'Dijamin keamanan dan kualitasnya'],
-                            ['title' => 'Dukungan 24/7', 'desc' => 'Tim support siap membantu kapan saja'],
-                            ['title' => 'Perawatan Rutin', 'desc' => 'Fasilitas terawat dengan baik'],
+                        ['title' => 'Aman & Terpercaya', 'desc' => 'Dijamin keamanan dan kualitasnya'],
+                        ['title' => 'Dukungan 24/7', 'desc' => 'Tim support siap membantu kapan saja'],
+                        ['title' => 'Perawatan Rutin', 'desc' => 'Fasilitas terawat dengan baik'],
                         ]);
 
                         $parsedFeatures = $featureLines->map(function ($line) {
-                            $parts = array_map('trim', explode('|', $line, 2));
-                            return [
-                                'title' => $parts[0] ?? $line,
-                                'desc' => $parts[1] ?? '',
-                            ];
+                        $parts = array_map('trim', explode('|', $line, 2));
+                        return [
+                        'title' => $parts[0] ?? $line,
+                        'desc' => $parts[1] ?? '',
+                        ];
                         });
 
                         $features = $parsedFeatures->isNotEmpty() ? $parsedFeatures : $defaultFeatures;
@@ -124,7 +124,7 @@
                                 <div>
                                     <h5 class="fw-bold mb-1" style="color: #2d3748;">{{ $feature['title'] }}</h5>
                                     @if(!empty($feature['desc']))
-                                        <p class="mb-0" style="color: #718096; font-size: 0.95rem;">{{ $feature['desc'] }}</p>
+                                    <p class="mb-0" style="color: #718096; font-size: 0.95rem;">{{ $feature['desc'] }}</p>
                                     @endif
                                 </div>
                             </div>
@@ -137,21 +137,21 @@
                     <h3 class="fw-bold mb-4" style="color: #2d3748;">Syarat & Ketentuan</h3>
                     @php
                     $terms = collect(preg_split('/\r\n|\r|\n/', (string) $service->terms_conditions))
-                        ->map(fn($line) => trim($line))
-                        ->filter()
-                        ->values();
+                    ->map(fn($line) => trim($line))
+                    ->filter()
+                    ->values();
 
                     if ($terms->isEmpty()) {
-                        $terms = collect([
-                            'Melakukan pemesanan minimal 3 hari sebelumnya',
-                            'Membayar DP minimal 30% dari total biaya',
-                            'Menyertakan identitas diri yang valid (KTP/SIM)',
-                        ]);
+                    $terms = collect([
+                    'Melakukan pemesanan minimal 3 hari sebelumnya',
+                    'Membayar DP minimal 30% dari total biaya',
+                    'Menyertakan identitas diri yang valid (KTP/SIM)',
+                    ]);
                     }
                     @endphp
                     <ul class="list-unstyled" style="font-size: 1.05rem; color: #4a5568;">
                         @foreach($terms as $term)
-                            <li class="mb-3"><i class="fas fa-check-circle me-2" style="color: #48bb78;"></i> {{ $term }}</li>
+                        <li class="mb-3"><i class="fas fa-check-circle me-2" style="color: #48bb78;"></i> {{ $term }}</li>
                         @endforeach
                     </ul>
                 </div>
@@ -161,46 +161,46 @@
             <div class="col-lg-4">
                 <div class="service-content" style="background: white; border-radius: 20px; padding: 20px; box-shadow: 0 5px 30px rgba(0,0,0,0.08); position: sticky; top: 100px;">
                     @if($servicePhotoUrls->isNotEmpty())
-                        <h3 class="fw-bold mb-3" style="color: #2d3748;">Foto Layanan</h3>
-                        @if($servicePhotoUrls->count() > 1)
-                            <div id="servicePhotoCarousel" class="carousel slide {{ $service->panorama_image_url ? 'mb-4' : 'mb-0' }}" data-bs-ride="false" data-bs-interval="false">
-                                <div class="carousel-indicators mb-0">
-                                    @foreach($servicePhotoUrls as $index => $servicePhotoUrl)
-                                        <button type="button" data-bs-target="#servicePhotoCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}" aria-current="{{ $index === 0 ? 'true' : 'false' }}" aria-label="Slide {{ $index + 1 }}"></button>
-                                    @endforeach
-                                </div>
+                    <h3 class="fw-bold mb-3" style="color: #2d3748;">Foto Layanan</h3>
+                    @if($servicePhotoUrls->count() > 1)
+                    <div id="servicePhotoCarousel" class="carousel slide {{ $service->panorama_image_url ? 'mb-4' : 'mb-0' }}" data-bs-ride="false" data-bs-interval="false">
+                        <div class="carousel-indicators mb-0">
+                            @foreach($servicePhotoUrls as $index => $servicePhotoUrl)
+                            <button type="button" data-bs-target="#servicePhotoCarousel" data-bs-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}" aria-current="{{ $index === 0 ? 'true' : 'false' }}" aria-label="Slide {{ $index + 1 }}"></button>
+                            @endforeach
+                        </div>
 
-                                <div class="carousel-inner rounded" style="border: 1px solid #e2e8f0; border-radius: 12px; height: 220px;">
-                                    @foreach($servicePhotoUrls as $index => $servicePhotoUrl)
-                                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}" style="height: 220px;">
-                                            <img src="{{ $servicePhotoUrl }}" alt="Foto layanan {{ $service->name }}" style="width: 100%; height: 220px; object-fit: cover;">
-                                        </div>
-                                    @endforeach
-                                </div>
+                        <div class="carousel-inner rounded" style="border: 1px solid #e2e8f0; border-radius: 12px; height: 220px;">
+                            @foreach($servicePhotoUrls as $index => $servicePhotoUrl)
+                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}" style="height: 220px;">
+                                <img src="{{ $servicePhotoUrl }}" alt="Foto layanan {{ $service->name }}" style="width: 100%; height: 220px; object-fit: cover;">
+                            </div>
+                            @endforeach
+                        </div>
 
-                                <button class="carousel-control-prev" type="button" data-bs-target="#servicePhotoCarousel" data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Previous</span>
-                                </button>
-                                <button class="carousel-control-next" type="button" data-bs-target="#servicePhotoCarousel" data-bs-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Next</span>
-                                </button>
-                            </div>
-                        @else
-                            <div class="{{ $service->panorama_image_url ? 'mb-4' : 'mb-0' }}">
-                                <img src="{{ $servicePhotoUrls->first() }}" alt="Foto layanan {{ $service->name }}" style="width: 100%; height: 220px; border-radius: 12px; object-fit: cover; border: 1px solid #e2e8f0;">
-                            </div>
-                        @endif
+                        <button class="carousel-control-prev" type="button" data-bs-target="#servicePhotoCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#servicePhotoCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                    @else
+                    <div class="{{ $service->panorama_image_url ? 'mb-4' : 'mb-0' }}">
+                        <img src="{{ $servicePhotoUrls->first() }}" alt="Foto layanan {{ $service->name }}" style="width: 100%; height: 220px; border-radius: 12px; object-fit: cover; border: 1px solid #e2e8f0;">
+                    </div>
+                    @endif
                     @endif
 
                     @if($service->panorama_image_url)
-                        <h3 class="fw-bold mb-3" style="color: #2d3748;">Foto 360 Derajat</h3>
-                        <div id="panorama-viewer" style="width: 100%; height: 360px; border-radius: 14px; overflow: hidden;"></div>
-                        <p class="small text-muted mt-3 mb-0">
-                            <i class="fas fa-info-circle me-1"></i>
-                            Geser gambar untuk melihat sudut 360°.
-                        </p>
+                    <h3 class="fw-bold mb-3" style="color: #2d3748;">Foto 360 Derajat</h3>
+                    <div id="panorama-viewer" style="width: 100%; height: 360px; border-radius: 14px; overflow: hidden;"></div>
+                    <p class="small text-muted mt-3 mb-0">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Geser gambar untuk melihat sudut 360°.
+                    </p>
                     @endif
                 </div>
             </div>
@@ -253,14 +253,14 @@
                 <i class="fas fa-phone me-2"></i>Telepon
             </a>
             <a href="mailto:{{ $contactInfo['company_email'] }}" class="btn btn-outline-light btn-lg px-4 py-3" style="border-radius: 50px; font-weight: 600; border-width: 2px;">
-                <i class="fas fa-envelope me-2"></i>Email
+                <i class="fas fa-envelope me-2"></i>{{ $contactInfo['company_email'] }}
             </a>
         </div>
     </div>
 </section>
 
 @if($service->panorama_image_url)
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
 <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 <script>
     function initializePanorama() {

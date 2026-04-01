@@ -16,6 +16,17 @@
             <h6 class="m-0 font-weight-bold text-primary">Edit Data Carousel</h6>
         </div>
         <div class="card-body">
+            @if($errors->any())
+            <div class="alert alert-danger">
+                <strong>Gagal memperbarui carousel:</strong>
+                <ul class="mb-0 mt-2">
+                    @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
             <form action="{{ route($routePrefix . '.carousels.update', $carousel->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
@@ -100,7 +111,7 @@
                                 @if($carousel->image)
                                 <div class="text-center mb-3">
                                     <p class="text-muted small">Gambar Saat Ini:</p>
-                                    <img src="{{ asset('storage/' . $carousel->image) }}"
+                                    <img src="{{ $carousel->image_url }}"
                                         alt="{{ $carousel->title }}"
                                         class="img-fluid rounded border mb-2"
                                         style="max-height: 150px;">
@@ -118,7 +129,7 @@
                                     @error('image')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                    <small class="text-muted">Kosongkan jika tidak ingin mengganti gambar</small>
+                                    <small class="text-muted">Kosongkan jika tidak ingin mengganti gambar. Maksimal ukuran file 2MB.</small>
                                 </div>
 
                                 <!-- New Image Preview -->
@@ -168,6 +179,7 @@
     let cropper = null;
 
     function previewImage(input) {
+        const maxFileSize = 2 * 1024 * 1024; // 2MB
         const preview = document.getElementById('preview');
         const previewDiv = document.getElementById('imagePreview');
         const cropContainer = document.getElementById('cropContainer');
@@ -176,6 +188,16 @@
         const cropStatus = document.getElementById('cropStatus');
 
         if (input.files && input.files[0]) {
+            if (input.files[0].size > maxFileSize) {
+                input.value = '';
+                previewDiv.style.display = 'none';
+                preview.src = '';
+                cropContainer.style.display = 'none';
+                cropButtonsContainer.style.display = 'none';
+                cropStatus.innerHTML = '<i class="fas fa-exclamation-triangle me-2 text-danger"></i><small><strong>Ukuran gambar terlalu besar.</strong> Maksimal 2MB.</small>';
+                return;
+            }
+
             const reader = new FileReader();
 
             reader.onload = function(e) {
@@ -248,8 +270,10 @@
         document.getElementById('cropY').value = Math.round(cropData.y);
         document.getElementById('cropWidth').value = Math.round(cropData.width);
         document.getElementById('cropHeight').value = Math.round(cropData.height);
-        document.getElementById('cropScaleX').value = imageData.scaleX;
-        document.getElementById('cropScaleY').value = imageData.scaleY;
+        const safeScaleX = Number.isFinite(imageData.scaleX) ? imageData.scaleX : 1;
+        const safeScaleY = Number.isFinite(imageData.scaleY) ? imageData.scaleY : 1;
+        document.getElementById('cropScaleX').value = safeScaleX;
+        document.getElementById('cropScaleY').value = safeScaleY;
 
         // Update preview with cropped image
         const preview = document.getElementById('preview');

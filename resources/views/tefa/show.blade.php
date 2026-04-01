@@ -336,7 +336,7 @@ $embedVideoUrl = 'https://player.vimeo.com/video/' . $matches[1];
 
                 @if(!empty($tefaContactInfo['email']))
                 <a href="mailto:{{ $tefaContactInfo['email'] }}" class="contact-btn contact-btn-outline">
-                    <i class="fas fa-envelope"></i> Email
+                    <i class="fas fa-envelope"></i> {{ $tefaContactInfo['email'] }}
                 </a>
                 @endif
             </div>

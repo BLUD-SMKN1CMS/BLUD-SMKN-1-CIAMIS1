@@ -7,9 +7,47 @@ use App\Models\Carousel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class CarouselController extends Controller
 {
+    private function ensureUploadDirectory(string $relativePath): string
+    {
+        $fullPath = public_path($relativePath);
+
+        if (file_exists($fullPath) && !is_dir($fullPath)) {
+            throw new \RuntimeException('Path upload bukan direktori yang valid: ' . $relativePath);
+        }
+
+        if (!is_dir($fullPath) && !mkdir($fullPath, 0775, true) && !is_dir($fullPath)) {
+            throw new \RuntimeException('Gagal membuat folder upload: ' . $relativePath);
+        }
+
+        if (!is_writable($fullPath)) {
+            throw new \RuntimeException('Folder upload tidak dapat ditulis: ' . $relativePath);
+        }
+
+        return $fullPath;
+    }
+
+    private function deleteCarouselImageIfExists(?string $path): void
+    {
+        if (!$path) {
+            return;
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
+
+        $publicRelative = ltrim($path, '/');
+        $publicFile = public_path($publicRelative);
+
+        if (file_exists($publicFile)) {
+            @unlink($publicFile);
+        }
+    }
+
     /**
      * Process uploaded carousel image with optional manual crop.
      * If crop data is provided, use it; otherwise, auto-crop to 16:9.
@@ -21,7 +59,7 @@ class CarouselController extends Controller
         }
 
         $filename = 'carousel_' . time() . '_' . uniqid() . '.jpg';
-        $path = 'carousels/' . $filename;
+        $path = 'uploads/carousels/' . $filename;
         $targetWidth = 1920;
         $targetHeight = 1080;
 
@@ -93,10 +131,22 @@ class CarouselController extends Controller
         );
 
         ob_start();
-        imagejpeg($canvas, null, 85);
+        $encoded = imagejpeg($canvas, null, 85);
         $binary = ob_get_clean();
 
-        Storage::disk('public')->put($path, $binary);
+        imagedestroy($canvas);
+        imagedestroy($source);
+
+        if (!$encoded || $binary === false || $binary === null) {
+            throw new \RuntimeException('Gagal memproses output gambar carousel.');
+        }
+
+        $uploadDir = $this->ensureUploadDirectory('uploads/carousels');
+        $savedBytes = @file_put_contents($uploadDir . DIRECTORY_SEPARATOR . $filename, $binary);
+
+        if ($savedBytes === false || $savedBytes <= 0) {
+            throw new \RuntimeException('Gagal menyimpan file gambar carousel ke folder upload.');
+        }
 
         return $path;
     }
@@ -114,7 +164,16 @@ class CarouselController extends Controller
                 'message' => $e->getMessage(),
             ]);
 
-            return $image->store('carousels', 'public');
+            $uploadDir = $this->ensureUploadDirectory('uploads/carousels');
+            $extension = strtolower($image->getClientOriginalExtension() ?: 'jpg');
+            $filename = 'carousel_' . time() . '_' . Str::random(8) . '.' . $extension;
+            $movedFile = $image->move($uploadDir, $filename);
+
+            if (!$movedFile || !file_exists($uploadDir . DIRECTORY_SEPARATOR . $filename)) {
+                throw new \RuntimeException('Gagal memindahkan file carousel ke folder upload.');
+            }
+
+            return 'uploads/carousels/' . $filename;
         }
     }
 
@@ -124,7 +183,7 @@ class CarouselController extends Controller
     public function index()
     {
         $carousels = Carousel::orderBy('order')->paginate(10);
-        
+
         return view('admin.carousels.index', compact('carousels'));
     }
 
@@ -141,8 +200,13 @@ class CarouselController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge([
+            'crop_scale_x' => is_numeric($request->input('crop_scale_x')) ? (float) $request->input('crop_scale_x') : null,
+            'crop_scale_y' => is_numeric($request->input('crop_scale_y')) ? (float) $request->input('crop_scale_y') : null,
+        ]);
+
         $validated = $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
+            'image' => 'required|file|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'status' => 'required|in:active,inactive',
             'order' => 'nullable|integer',
             'crop_x' => 'nullable|numeric',
@@ -151,11 +215,24 @@ class CarouselController extends Controller
             'crop_height' => 'nullable|numeric',
             'crop_scale_x' => 'nullable|numeric',
             'crop_scale_y' => 'nullable|numeric',
+        ], [
+            'image.required' => 'Gambar carousel wajib diunggah.',
+            'image.image' => 'File yang dipilih harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus jpeg, png, jpg, gif, atau webp.',
+            'image.max' => 'Ukuran gambar maksimal 2MB.',
+            'crop_scale_x.numeric' => 'Nilai skala crop X harus berupa angka.',
+            'crop_scale_y.numeric' => 'Nilai skala crop Y harus berupa angka.',
         ]);
 
         // Handle image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
+
+            if (!$image->isValid()) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['image' => 'Upload gambar gagal. Pastikan ukuran file tidak melebihi 2MB.']);
+            }
 
             // Prepare crop data if available
             $cropData = null;
@@ -190,7 +267,21 @@ class CarouselController extends Controller
         $validated['button_text'] = null;
         $validated['button_url'] = null;
 
-        Carousel::create($validated);
+        try {
+            Carousel::create($validated);
+        } catch (\Throwable $e) {
+            Log::error('Gagal menyimpan carousel baru.', [
+                'message' => $e->getMessage(),
+            ]);
+
+            if (!empty($validated['image'])) {
+                $this->deleteCarouselImageIfExists($validated['image']);
+            }
+
+            return back()
+                ->withInput()
+                ->withErrors(['image' => 'Gagal menyimpan carousel. Pastikan file valid lalu coba lagi.']);
+        }
 
         return redirect()->route('superadmin.carousels.index')
             ->with('success', 'Carousel berhasil ditambahkan!');
@@ -235,8 +326,13 @@ class CarouselController extends Controller
                 ->with('error', 'Carousel tidak ditemukan.');
         }
 
+        $request->merge([
+            'crop_scale_x' => is_numeric($request->input('crop_scale_x')) ? (float) $request->input('crop_scale_x') : null,
+            'crop_scale_y' => is_numeric($request->input('crop_scale_y')) ? (float) $request->input('crop_scale_y') : null,
+        ]);
+
         $validated = $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'image' => 'nullable|file|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'status' => 'required|in:active,inactive',
             'order' => 'nullable|integer',
             'crop_x' => 'nullable|numeric',
@@ -245,11 +341,23 @@ class CarouselController extends Controller
             'crop_height' => 'nullable|numeric',
             'crop_scale_x' => 'nullable|numeric',
             'crop_scale_y' => 'nullable|numeric',
+        ], [
+            'image.image' => 'File yang dipilih harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus jpeg, png, jpg, gif, atau webp.',
+            'image.max' => 'Ukuran gambar maksimal 2MB.',
+            'crop_scale_x.numeric' => 'Nilai skala crop X harus berupa angka.',
+            'crop_scale_y.numeric' => 'Nilai skala crop Y harus berupa angka.',
         ]);
 
         // Handle image upload if new image provided
         if ($request->hasFile('image')) {
             $image = $request->file('image');
+
+            if (!$image->isValid()) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['image' => 'Upload gambar gagal. Pastikan ukuran file tidak melebihi 2MB.']);
+            }
 
             // Prepare crop data if available
             $cropData = null;
@@ -268,9 +376,7 @@ class CarouselController extends Controller
             // Simpan gambar baru dulu, baru hapus gambar lama jika sukses.
             $newImagePath = $this->saveCarouselImage($image, $cropData);
 
-            if ($carousel->image && Storage::disk('public')->exists($carousel->image)) {
-                Storage::disk('public')->delete($carousel->image);
-            }
+            $this->deleteCarouselImageIfExists($carousel->image);
 
             $validated['image'] = $newImagePath;
         } else {
@@ -281,7 +387,22 @@ class CarouselController extends Controller
         // Remove crop data from validated array (not needed in DB)
         unset($validated['crop_x'], $validated['crop_y'], $validated['crop_width'], $validated['crop_height'], $validated['crop_scale_x'], $validated['crop_scale_y']);
 
-        $carousel->update($validated);
+        try {
+            $carousel->update($validated);
+        } catch (\Throwable $e) {
+            Log::error('Gagal memperbarui carousel.', [
+                'carousel_id' => $carousel->id,
+                'message' => $e->getMessage(),
+            ]);
+
+            if (isset($newImagePath) && $newImagePath) {
+                $this->deleteCarouselImageIfExists($newImagePath);
+            }
+
+            return back()
+                ->withInput()
+                ->withErrors(['image' => 'Gagal memperbarui carousel. Pastikan file valid lalu coba lagi.']);
+        }
 
         return redirect()->route('superadmin.carousels.index')
             ->with('success', 'Carousel berhasil diperbarui!');
@@ -299,9 +420,7 @@ class CarouselController extends Controller
         }
 
         // Delete image file if exists
-        if ($carousel->image && Storage::disk('public')->exists($carousel->image)) {
-            Storage::disk('public')->delete($carousel->image);
-        }
+        $this->deleteCarouselImageIfExists($carousel->image);
 
         $carousel->delete();
 

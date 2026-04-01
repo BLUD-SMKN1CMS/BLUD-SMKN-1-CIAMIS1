@@ -9,9 +9,8 @@
 <!-- Dynamic Modern Hero Section with Background Carousel -->
 @php
 $carouselImages = $carousels
-->pluck('image')
+->map(fn($carousel) => $carousel->image_url)
 ->filter()
-->map(fn($image) => asset('storage/' . $image))
 ->values();
 $heroBgImage = $carouselImages->first() ?? '';
 @endphp
@@ -558,6 +557,8 @@ $heroBgImage = $carouselImages->first() ?? '';
         opacity: 0;
         transition: opacity 900ms ease-in-out;
         will-change: opacity;
+        backface-visibility: hidden;
+        transform: translateZ(0);
         z-index: 0;
     }
 
@@ -776,8 +777,8 @@ $heroBgImage = $carouselImages->first() ?? '';
             images = [];
         }
 
-        if (window.__heroBackgroundSliderInterval) {
-            clearInterval(window.__heroBackgroundSliderInterval);
+        if (window.__heroBackgroundSliderTimer) {
+            clearTimeout(window.__heroBackgroundSliderTimer);
         }
 
         const setLayerBackground = (layer, imageUrl) => {
@@ -788,6 +789,8 @@ $heroBgImage = $carouselImages->first() ?? '';
         setLayerBackground(layerA, firstImage);
         layerA.classList.add('is-active');
         layerB.classList.remove('is-active');
+        layerA.style.zIndex = '1';
+        layerB.style.zIndex = '0';
 
         if (images.length <= 1) {
             return;
@@ -796,30 +799,59 @@ $heroBgImage = $carouselImages->first() ?? '';
         let currentIndex = 0;
         let activeLayer = layerA;
         let standbyLayer = layerB;
+        let isTransitioning = false;
 
-        window.__heroBackgroundSliderInterval = setInterval(function() {
+        const scheduleNext = () => {
+            window.__heroBackgroundSliderTimer = setTimeout(transitionToNext, 5000);
+        };
+
+        const finalizeTransition = (nextIndex) => {
+            const previousActive = activeLayer;
+            currentIndex = nextIndex;
+            activeLayer = standbyLayer;
+            standbyLayer = previousActive;
+            isTransitioning = false;
+            scheduleNext();
+        };
+
+        const runTransition = (nextImage, nextIndex) => {
+            setLayerBackground(standbyLayer, nextImage);
+            standbyLayer.style.zIndex = '1';
+            activeLayer.style.zIndex = '0';
+
+            // Force reflow to make sure the browser starts opacity transition consistently.
+            void standbyLayer.offsetWidth;
+
+            standbyLayer.classList.add('is-active');
+            activeLayer.classList.remove('is-active');
+
+            setTimeout(() => {
+                finalizeTransition(nextIndex);
+            }, 950);
+        };
+
+        const transitionToNext = () => {
+            if (isTransitioning) {
+                scheduleNext();
+                return;
+            }
+
             const nextIndex = (currentIndex + 1) % images.length;
             const nextImage = images[nextIndex];
+            isTransitioning = true;
 
-            const doTransition = () => {
-                setLayerBackground(standbyLayer, nextImage);
-
-                requestAnimationFrame(() => {
-                    standbyLayer.classList.add('is-active');
-                    activeLayer.classList.remove('is-active');
-                });
-
-                currentIndex = nextIndex;
-                const previousActive = activeLayer;
-                activeLayer = standbyLayer;
-                standbyLayer = previousActive;
-            };
+            if (!nextImage) {
+                finalizeTransition(nextIndex);
+                return;
+            }
 
             const preloader = new Image();
-            preloader.onload = doTransition;
-            preloader.onerror = doTransition;
+            preloader.onload = () => runTransition(nextImage, nextIndex);
+            preloader.onerror = () => runTransition(nextImage, nextIndex);
             preloader.src = nextImage;
-        }, 5000);
+        };
+
+        scheduleNext();
     }
 
     // ===== CONTACT FORM =====

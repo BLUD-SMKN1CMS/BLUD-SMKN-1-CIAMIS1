@@ -41,7 +41,7 @@
                             </td>
                             <td>
                                 @if ($carousel->image)
-                                <img src="{{ asset('storage/' . $carousel->image) }}"
+                                <img src="{{ $carousel->image_url }}"
                                     alt="Carousel {{ $carousel->id }}" class="img-thumbnail"
                                     style="width: 80px; height: 45px; object-fit: cover; border-radius: 4px;"
                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">

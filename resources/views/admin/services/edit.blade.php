@@ -41,25 +41,6 @@
 
                         <div class="row">
                             <div class="col-md-6 form-group">
-                                <label>Harga per Jam</label>
-                                <input type="number" step="0.01" min="0" name="price_per_hour" class="form-control @error('price_per_hour') is-invalid @enderror"
-                                    value="{{ old('price_per_hour', $service->price_per_hour) }}" placeholder="Contoh: 50000">
-                                @error('price_per_hour')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label>Harga per Hari</label>
-                                <input type="number" step="0.01" min="0" name="price_per_day" class="form-control @error('price_per_day') is-invalid @enderror"
-                                    value="{{ old('price_per_day', $service->price_per_day) }}" placeholder="Contoh: 300000">
-                                @error('price_per_day')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 form-group">
                                 <label>Kapasitas</label>
                                 <input type="number" min="0" name="capacity" class="form-control @error('capacity') is-invalid @enderror"
                                     value="{{ old('capacity', $service->capacity) }}" placeholder="Contoh: 100">
